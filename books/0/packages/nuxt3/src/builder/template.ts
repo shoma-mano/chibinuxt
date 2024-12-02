@@ -7,6 +7,11 @@ import * as nxt from './nxt'
 export interface NuxtTemplate {
   src: string // Absolute path to source file
   path: string // Relative path of destination
+  getContents?: (data: {
+    nuxt: any;
+    app: any;
+    options: any;
+}) => string
   data?: any
 }
 
@@ -29,7 +34,10 @@ async function compileTemplate ({ src, path, data }: NuxtTemplate, destDir: stri
 }
 
 export function compileTemplates (templates: NuxtTemplate[], destDir: string) {
-  return Promise.all(templates.map(t => compileTemplate(t, destDir)))
+  return Promise.all(templates.map((t) => {
+    console.log('t', t)
+    return compileTemplate(t, destDir)
+  }))
 }
 
 export async function scanTemplates (dir: string, data?: Object) {
