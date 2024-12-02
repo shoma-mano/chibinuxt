@@ -6,12 +6,12 @@ import { DeterminedGlobals, determineGlobals } from '../utils'
 import {
   templateData,
   compileTemplates,
-  scanTemplates,
   NuxtTemplate
 } from './template'
 import { createWatcher } from './watch'
 import { createApp, NuxtApp } from './app'
 import Ignore from './ignore'
+import * as defaultTemplates from './templates'
 
 export class Builder {
   nuxt: Nuxt
@@ -89,13 +89,10 @@ export async function generate (builder: Builder) {
   builder.app = await createApp(builder)
   // Todo: Call app:created hook
 
-  const templatesDir = join(builder.nuxt.options.appDir, '_templates')
-  const appTemplates = await scanTemplates(templatesDir, templateData(builder))
-  // Todo: Call app:templates hook
+  const data = templateData(builder)
+  const templates = Object.values(defaultTemplates).map(t => ({ ...t, data }))
 
-  builder.templates = [...appTemplates]
-
-  await compileTemplates(builder.templates, nuxt.options.buildDir)
+  await compileTemplates(templates, nuxt.options.buildDir)
 }
 
 async function bundle ({ nuxt }: Builder) {

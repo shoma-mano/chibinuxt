@@ -1,16 +1,18 @@
 import { join, relative, dirname } from 'path'
+import { get } from 'http'
 import fsExtra from 'fs-extra'
 import globby from 'globby'
 import lodashTemplate from 'lodash/template'
 import * as nxt from './nxt'
 
 export interface NuxtTemplate {
-  src: string // Absolute path to source file
-  path: string // Relative path of destination
+  src?: string // Absolute path to source file
+  fileName: string // Relative path of destination
   getContents?: (data: {
-    nuxt: any;
+    globals: any;
     app: any;
-    options: any;
+    nuxtOptions: any;
+    nxt: any
 }) => string
   data?: any
 }
@@ -24,31 +26,28 @@ export function templateData (builder) {
   }
 }
 
-async function compileTemplate ({ src, path, data }: NuxtTemplate, destDir: string) {
-  const srcContents = await fsExtra.readFile(src, 'utf-8')
-  const compiledSrc = lodashTemplate(srcContents, {})(data)
-  const dest = join(destDir, path)
-  // consola.log('Compile template', dest)
+async function compileTemplate ({ src, fileName, data, getContents }: NuxtTemplate, destDir: string) {
+  const compiledSrc = getContents ? getContents(data) : ''
+  const dest = join(destDir, fileName)
   await fsExtra.mkdirp(dirname(dest))
   await fsExtra.writeFile(dest, compiledSrc)
 }
 
 export function compileTemplates (templates: NuxtTemplate[], destDir: string) {
   return Promise.all(templates.map((t) => {
-    console.log('t', t)
     return compileTemplate(t, destDir)
   }))
 }
 
-export async function scanTemplates (dir: string, data?: Object) {
-  const templateFiles = (await globby(join(dir, '/**')))
+// export async function scanTemplates (dir: string, data?: Object) {
+//   const templateFiles = (await globby(join(dir, '/**')))
 
-  return templateFiles.map(src => ({
-    src,
-    path: relative(dir, src),
-    data
-  }))
-}
+//   return templateFiles.map(src => ({
+//     src,
+//     path: relative(dir, src),
+//     data
+//   }))
+// }
 
 export function watchTemplate (template: NuxtTemplate, _watcher: any, _cb: Function) {
   template.data = new Proxy(template.data, {

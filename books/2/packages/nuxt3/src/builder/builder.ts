@@ -92,7 +92,7 @@ export async function generate (builder: Builder) {
   const templatesDir = join(builder.nuxt.options.appDir, '_templates')
   const appTemplates = await scanTemplates(templatesDir, templateData(builder))
   // Todo: Call app:templates hook
-
+  console.log('appTemplates', appTemplates.map(t => t.path))
   builder.templates = [...appTemplates]
 
   await compileTemplates(builder.templates, nuxt.options.buildDir)
