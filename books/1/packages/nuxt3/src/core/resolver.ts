@@ -2,13 +2,13 @@ import { resolve, join } from 'path'
 import fs from 'fs-extra'
 
 import jiti from 'jiti'
-import { Nuxt } from '.'
 import {
   startsWithRootAlias,
   startsWithSrcAlias,
   isExternalDependency,
   clearRequireCache
 } from '../utils'
+import { Nuxt } from '.'
 
 interface ResolvePathOptions {
   isAlias?: boolean
@@ -28,7 +28,7 @@ export default class Resolver {
   nuxt: Nuxt
   options: Nuxt['options']
 
-  constructor (nuxt: Nuxt) {
+  constructor (nuxt?: Nuxt) {
     this.nuxt = nuxt
     this.options = this.nuxt.options
 

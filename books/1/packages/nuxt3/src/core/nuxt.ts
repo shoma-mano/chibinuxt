@@ -20,6 +20,66 @@ declare global {
   }
 }
 
+// export interface _Nuxt {
+//   _ready?: Promise<this>
+//   _initCalled?: boolean
+
+//   error?: Error & { statusCode?: number, headers?: IncomingHttpHeaders }
+//   options: NormalizedConfiguration
+//   resolver: Resolver
+//   server?: any
+//   renderer?: any
+//   render?: any['app']
+//   hooks:Hookable<any>
+//   showReady?: () => void
+//   init: () => void
+// }
+
+// export const createNuxt = (options: Configuration = {}) => {
+//   const hooks = createHooks<any>()
+
+//   const nuxt: _Nuxt = {
+//     hooks,
+//     _ready: undefined,
+//     _initCalled: false,
+//     error: undefined,
+//     options: getNuxtConfig(options) as any,
+//     resolver: new Resolver(),
+//     server: undefined,
+//     renderer: undefined,
+//     render: undefined,
+//     showReady: undefined,
+//     init: () => initNuxt(nuxt)
+//   }
+
+//   return nuxt
+// }
+
+// const initNuxt = async (nuxt: _Nuxt) => {
+//   if (nuxt._initCalled) {
+//     return this
+//   }
+//   nuxt._initCalled = true
+
+//   // Add hooks
+//   if (nuxt.options.hooks instanceof Function) {
+//     nuxt.options.hooks(nuxt.hooks)
+//   } else if (isPlainObject(nuxt.options.hooks)) {
+//     nuxt.hooks.addHooks(nuxt.options.hooks)
+//   }
+
+//   // Await for server
+//   await initNitro(nuxt)
+
+//   // Await for modules
+//   // await this.moduleContainer.ready()
+
+//   // Call ready hook
+//   await nuxt.hooks.callHook('ready', this)
+
+//   return nuxt
+// }
+
 export default class Nuxt extends Hookable {
   _ready?: Promise<this>
   _initCalled?: boolean
