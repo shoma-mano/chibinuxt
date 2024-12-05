@@ -1,6 +1,6 @@
 import { EnvConfig } from '../config/load'
 import { loadNuxtConfig } from '../config'
-import Nuxt from './nuxt'
+import { createNuxt } from './nuxt'
 
 const OVERRIDES = {
   dry: { dev: false, server: false },
@@ -44,7 +44,7 @@ export async function loadNuxt (loadOptions: LoadOptions | LoadOptions['for']) {
   Object.assign(config, override)
 
   // Initiate Nuxt
-  const nuxt = new Nuxt(config)
+  const nuxt = createNuxt(config)
   if (ready) {
     await nuxt.ready()
   }

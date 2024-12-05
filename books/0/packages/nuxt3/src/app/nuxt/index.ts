@@ -1,4 +1,4 @@
-import Hookable from 'hookable'
+import { createHooks, Hookable } from 'hookable'
 import type { App } from 'vue'
 import { defineGetter } from '../utils'
 import { callWithNuxt } from './composables'
@@ -44,7 +44,7 @@ export function createNuxt (options: CreateOptions) {
     ...options
   } as any as Nuxt
 
-  nuxt.hooks = new Hookable()
+  nuxt.hooks = createHooks()
   nuxt.hook = nuxt.hooks.hook
   nuxt.callHook = nuxt.hooks.callHook
 
