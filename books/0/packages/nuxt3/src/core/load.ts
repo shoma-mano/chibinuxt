@@ -1,6 +1,5 @@
 import path from 'path'
-import { EnvConfig } from '../config/load'
-import { loadNuxtConfig } from '../config'
+
 import { createNuxt } from './nuxt'
 
 const OVERRIDES = {
@@ -15,7 +14,6 @@ export interface LoadOptions {
   ready?: boolean
 
   rootDir?: string
-  envConfig?: EnvConfig
   configFile?: string
   configContext?: Record<string, any>,
   configOverrides?: Record<string, any>,

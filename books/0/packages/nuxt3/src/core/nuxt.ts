@@ -41,12 +41,32 @@ export interface Nuxt {
 export const createNuxt = (options: Configuration = {}) => {
   const hooks = createHooks<any>()
 
+  const normalizedOptions = getNuxtConfig(options)
+  delete normalizedOptions.pageTransition
+  delete normalizedOptions.features
+  delete normalizedOptions.layoutTransition
+  delete normalizedOptions.head
+  delete normalizedOptions.loadingIndicator
+  delete normalizedOptions.loading
+  delete normalizedOptions.modes
+  const deletes = [
+    'mode', 'modern', 'modules', 'messages', 'vue', 'vueMeta', 'css',
+    'plugins', 'extendPlugins', 'layouts', 'ErrorPage', 'env',
+    'buildModules', '_modules', 'serverMiddleware'
+  ]
+  for (const key of deletes) {
+    delete normalizedOptions[key]
+  }
+  // nitroで使用している
+  // delete normalizedOptions.dir
+  // delete normalizedOptions.router
+
   const nuxt: Nuxt = {
     hooks,
     _ready: undefined,
     _initCalled: false,
     error: undefined,
-    options: getNuxtConfig(options) as any,
+    options: normalizedOptions as any,
     server: undefined,
     renderer: undefined,
     render: undefined,
@@ -69,6 +89,7 @@ export const createNuxt = (options: Configuration = {}) => {
       }
     }
   }
+  console.log('nuxt normalized options', nuxt.options)
   nuxt.resolver = new Resolver(nuxt)
 
   return nuxt

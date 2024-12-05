@@ -7,9 +7,9 @@ import pick from 'lodash/pick'
 import uniq from 'lodash/uniq'
 import destr from 'destr'
 import { TARGETS, MODES, guardDir, isNonEmptyString, isPureObject, isUrl, getMainModule, urlJoin, getPKG } from '../utils'
-import type { EnvConfig } from './load'
-import { DefaultConfiguration, defaultNuxtConfigFile, getDefaultNuxtConfig } from './config'
-import { deleteProp, mergeConfigs, setProp, overrideProp, Optional } from './transformers'
+import type { EnvConfig } from '../config/load'
+import { DefaultConfiguration, defaultNuxtConfigFile, getDefaultNuxtConfig } from '../config/config'
+import { deleteProp, mergeConfigs, setProp, overrideProp, Optional } from '../config/transformers'
 
 interface InputConfiguration {
   documentPath?: string
