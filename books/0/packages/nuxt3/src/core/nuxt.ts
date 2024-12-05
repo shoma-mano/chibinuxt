@@ -8,7 +8,6 @@ import { getNuxtConfig, Configuration, NormalizedConfiguration } from '../config
 
 import { version } from '../../package.json'
 
-import ModuleContainer from './module'
 import Resolver from './resolver'
 import { initNitro } from './nitro'
 
@@ -42,24 +41,40 @@ export const createNuxt = (options: Configuration = {}) => {
   const hooks = createHooks<any>()
 
   const normalizedOptions = getNuxtConfig(options)
-  delete normalizedOptions.pageTransition
-  delete normalizedOptions.features
-  delete normalizedOptions.layoutTransition
-  delete normalizedOptions.head
-  delete normalizedOptions.loadingIndicator
-  delete normalizedOptions.loading
-  delete normalizedOptions.modes
   const deletes = [
-    'mode', 'modern', 'modules', 'messages', 'vue', 'vueMeta', 'css',
-    'plugins', 'extendPlugins', 'layouts', 'ErrorPage', 'env',
-    'buildModules', '_modules', 'serverMiddleware'
+    'mode', 'modern', 'modules', 'messages', 'vue', 'vueMeta', 'css','loadingIndicator','loading','modes',
+    'plugins', 'extendPlugins', 'layouts', 'ErrorPage','pageTransition','features','layoutTransition','head',
+    'buildModules', '_modules', 'serverMiddleware','editor','hooks','watchers','_build','__normalized__',
+    '_routerBaseSpecified','test','debug','fetch','_nuxtConfigFile','vite','_nuxtConfigFiles','export','telemetry',
+    'documentPath','cli','server','render','ssr','target','ignoreOptions','ignorePrefix','watch','alias','styleExtensions',
+    'publicRuntimeConfig','privateRuntimeConfig','globals'
   ]
   for (const key of deletes) {
     delete normalizedOptions[key]
   }
+
+  normalizedOptions.router= {
+    base: "/",
+  }
+
+  normalizedOptions.generate = {
+    dir:"/Users/mano/playground/nuxts/nuxt/books/0/playground/dist",
+    staticAssets: {
+      base: "/_nuxt/static",
+      dir: "static",
+    },
+  }
+
   // nitroで使用している
-  // delete normalizedOptions.dir
-  // delete normalizedOptions.router
+  // env dir router globalName
+  // どこで使われているかまだわからない
+  // _majorVersion appDir
+  // resolvePageRoutesで使用
+  // extensions
+  // getNitroContextで使用
+  // generate build srcDir buildDir
+  // Builderのconstructorで使用
+  // ignore
 
   const nuxt: Nuxt = {
     hooks,
