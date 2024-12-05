@@ -1,3 +1,4 @@
+import path from 'path'
 import { EnvConfig } from '../config/load'
 import { loadNuxtConfig } from '../config'
 import { createNuxt } from './nuxt'
@@ -38,7 +39,12 @@ export async function loadNuxt (loadOptions: LoadOptions | LoadOptions['for']) {
   }
 
   // Load Config
-  const config = await loadNuxtConfig(loadOptions)
+  // const config = await loadNuxtConfig(loadOptions)
+  const config = {
+    rootDir: path.resolve('.')
+  }
+  console.log('config', config)
+  // delete config._envConfig
 
   // Apply config overrides
   Object.assign(config, override)
