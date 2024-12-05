@@ -1,7 +1,3 @@
-# Nuxt Monorepo
+# Chibi Nuxt 
 
-## Development
-
-- Clone repository
-- Install dependencies with `yarn install`
-- Open playground with `yarn play`
+## Getting Started
