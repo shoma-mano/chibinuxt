@@ -1,149 +1,193 @@
-import env from 'std-env'
-import type { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import env from ".pnpm/std-env@3.0.0-alpha/node_modules/std-env";
+import type { BundleAnalyzerPlugin } from ".pnpm/@types+webpack-bundle-analyzer@3.9.9/node_modules/@types/webpack-bundle-analyzer";
 
-import type { TransformOptions, PluginItem } from '@babel/core'
-import type { Options as AutoprefixerOptions } from 'autoprefixer'
-import type { Options as FileLoaderOptions } from 'file-loader'
-import type { Options as HtmlMinifierOptions } from 'html-minifier'
-import type * as Less from 'less'
-import type { Options as SassOptions } from 'sass'
-import type { Plugin as PostcssPlugin } from 'postcss'
-import type { Options as PugOptions } from 'pug'
-import type { TerserPluginOptions } from 'terser-webpack-plugin'
-import type { VueLoaderOptions } from 'vue-loader'
+import type { TransformOptions, PluginItem } from "@babel/core";
+import type { Options as AutoprefixerOptions } from "autoprefixer";
+import type { Options as FileLoaderOptions } from ".pnpm/@types+file-loader@4.2.1/node_modules/@types/file-loader";
+import type { Options as HtmlMinifierOptions } from ".pnpm/@types+html-minifier@4.0.5/node_modules/@types/html-minifier";
+import type * as Less from "less";
+import type { Options as SassOptions } from "sass";
+import type { Plugin as PostcssPlugin } from ".pnpm/postcss@8.4.49/node_modules/postcss/lib/postcss";
+import type { Options as PugOptions } from "pug";
+import type { TerserPluginOptions } from "terser-webpack-plugin";
+import type { VueLoaderOptions } from ".pnpm/@pi0+vue-loader@16.1.2-patch.1/node_modules/@pi0/vue-loader/dist";
 import type {
-  Configuration as WebpackConfiguration, WebpackPluginFunction
-
-} from 'webpack'
-import type { Options as WebpackDevMiddlewareOptions } from 'webpack-dev-middleware'
-import type { MiddlewareOptions as WebpackHotMiddlewareOptions, ClientOptions as WebpackHotMiddlewareClientOptions } from 'webpack-hot-middleware'
+  Configuration as WebpackConfiguration,
+  WebpackPluginFunction,
+} from ".pnpm/webpack@5.96.1_esbuild@0.9.7/node_modules/webpack/types";
+import type { Options as WebpackDevMiddlewareOptions } from ".pnpm/@types+webpack-dev-middleware@4.3.0_esbuild@0.9.7/node_modules/@types/webpack-dev-middleware";
+import type {
+  MiddlewareOptions as WebpackHotMiddlewareOptions,
+  ClientOptions as WebpackHotMiddlewareClientOptions,
+} from ".pnpm/@types+webpack-hot-middleware@2.25.9_esbuild@0.9.7/node_modules/@types/webpack-hot-middleware";
 
 interface WebpackEnv {
-  isClient: boolean
-  isDev: boolean
-  isLegacy: boolean
-  isModern: boolean
-  isServer: boolean
+  isClient: boolean;
+  isDev: boolean;
+  isLegacy: boolean;
+  isModern: boolean;
+  isServer: boolean;
 }
 
 interface BabelPresetEnv {
-  envName: 'client' | 'modern' | 'server'
+  envName: "client" | "modern" | "server";
 }
 interface Warning {
-  message: string
-  name: string
+  message: string;
+  name: string;
 }
 
-interface BabelOptions extends Pick<TransformOptions, Exclude<keyof TransformOptions, 'presets' | 'plugins'>> {
-  cacheCompression?: boolean
-  cacheDirectory?: boolean
-  cacheIdentifier?: string
-  customize?: string | null
-  presets?: ((env: BabelPresetEnv & WebpackEnv, defaultPreset: [string, object]) => PluginItem[] | void) | PluginItem[] | null
-  plugins?: ((env: BabelPresetEnv & WebpackEnv) => NonNullable<TransformOptions['plugins']>) | TransformOptions['plugins']
+interface BabelOptions
+  extends Pick<
+    TransformOptions,
+    Exclude<keyof TransformOptions, "presets" | "plugins">
+  > {
+  cacheCompression?: boolean;
+  cacheDirectory?: boolean;
+  cacheIdentifier?: string;
+  customize?: string | null;
+  presets?:
+    | ((
+        env: BabelPresetEnv & WebpackEnv,
+        defaultPreset: [string, object]
+      ) => PluginItem[] | void)
+    | PluginItem[]
+    | null;
+  plugins?:
+    | ((
+        env: BabelPresetEnv & WebpackEnv
+      ) => NonNullable<TransformOptions["plugins"]>)
+    | TransformOptions["plugins"];
 }
 
-type CssLoaderUrlFunction = (url: string, resourcePath: string) => boolean
-type CssLoaderImportFunction = (parsedImport: string, resourcePath: string) => boolean
-type CssLoaderMode = 'global' | 'local'
+type CssLoaderUrlFunction = (url: string, resourcePath: string) => boolean;
+type CssLoaderImportFunction = (
+  parsedImport: string,
+  resourcePath: string
+) => boolean;
+type CssLoaderMode = "global" | "local";
 interface CssLoaderModulesOptions {
-  context?: string
-  getLocalIdent?: (context: string, localIdentName: string, localName: string, options: CssLoaderModulesOptions) => string
-  hashPrefix?: string
-  localIdentName?: string
-  localIdentRegExp?: string | RegExp
-  mode?: CssLoaderMode
+  context?: string;
+  getLocalIdent?: (
+    context: string,
+    localIdentName: string,
+    localName: string,
+    options: CssLoaderModulesOptions
+  ) => string;
+  hashPrefix?: string;
+  localIdentName?: string;
+  localIdentRegExp?: string | RegExp;
+  mode?: CssLoaderMode;
 }
 interface CssLoaderOptions {
-  import?: boolean | CssLoaderImportFunction
-  importLoaders?: number
-  localsConvention?: 'asIs' | 'camelCase' | 'camelCaseOnly' | 'dashes' | 'dashesOnly'
-  modules?: boolean | CssLoaderMode | CssLoaderModulesOptions
-  onlyLocals?: boolean
-  sourceMap?: boolean
-  url?: boolean | CssLoaderUrlFunction
+  import?: boolean | CssLoaderImportFunction;
+  importLoaders?: number;
+  localsConvention?:
+    | "asIs"
+    | "camelCase"
+    | "camelCaseOnly"
+    | "dashes"
+    | "dashesOnly";
+  modules?: boolean | CssLoaderMode | CssLoaderModulesOptions;
+  onlyLocals?: boolean;
+  sourceMap?: boolean;
+  url?: boolean | CssLoaderUrlFunction;
 }
 
 interface UrlLoaderOptions {
-  esModule?: boolean
+  esModule?: boolean;
   // TODO
-  fallback?: any // WebpackLoader
-  limit?: boolean | number | string
-  mimetype?: string
+  fallback?: any; // WebpackLoader
+  limit?: boolean | number | string;
+  mimetype?: string;
 }
 
 interface PostcssOrderPresetFunctions {
-  cssnanoLast: (names: string[]) => string[]
-  presetEnvAndCssnanoLast: (names: string[]) => string[]
-  presetEnvLast: (names: string[]) => string[]
+  cssnanoLast: (names: string[]) => string[];
+  presetEnvAndCssnanoLast: (names: string[]) => string[];
+  presetEnvLast: (names: string[]) => string[];
 }
-type PostcssOrderPreset = keyof PostcssOrderPresetFunctions
+type PostcssOrderPreset = keyof PostcssOrderPresetFunctions;
 interface PostcssVariableMap {
-  customMedia: Record<string, string>
-  customProperties: Record<string, string>
-  customSelectors: Record<string, string>
-  environmentVariables?: Record<string, string>
+  customMedia: Record<string, string>;
+  customProperties: Record<string, string>;
+  customSelectors: Record<string, string>;
+  environmentVariables?: Record<string, string>;
 }
 
 interface PostcssConfiguration {
-  order?: PostcssOrderPreset | string[] | ((names: string[], presets: PostcssOrderPresetFunctions) => string[])
-  plugins?: {
-    [key: string]: false | { [key: string]: any }
-  } | ((loader: any) => PostcssPlugin[]) | Array<[string | PostcssPlugin, any] | string | PostcssPlugin>
+  order?:
+    | PostcssOrderPreset
+    | string[]
+    | ((names: string[], presets: PostcssOrderPresetFunctions) => string[]);
+  plugins?:
+    | {
+        [key: string]: false | { [key: string]: any };
+      }
+    | ((loader: any) => PostcssPlugin[])
+    | Array<[string | PostcssPlugin, any] | string | PostcssPlugin>;
   preset?: {
-    autoprefixer?: false | AutoprefixerOptions
-    browsers?: string
-    exportTo?: string | string[] | Partial<PostcssVariableMap> | ((map: PostcssVariableMap) => Partial<PostcssVariableMap>)
+    autoprefixer?: false | AutoprefixerOptions;
+    browsers?: string;
+    exportTo?:
+      | string
+      | string[]
+      | Partial<PostcssVariableMap>
+      | ((map: PostcssVariableMap) => Partial<PostcssVariableMap>);
     features?: {
-      [key: string]: boolean | { [key: string]: any }
-    }
-    importFrom?: string | string[] | Partial<PostcssVariableMap> | (() => Partial<PostcssVariableMap>)
-    insertAfter?: { [key: string]: PostcssPlugin }
-    insertBefore?: { [key: string]: PostcssPlugin }
-    preserve?: boolean
-    stage?: 0 | 1 | 2 | 3 | 4 | false
-  }
+      [key: string]: boolean | { [key: string]: any };
+    };
+    importFrom?:
+      | string
+      | string[]
+      | Partial<PostcssVariableMap>
+      | (() => Partial<PostcssVariableMap>);
+    insertAfter?: { [key: string]: PostcssPlugin };
+    insertBefore?: { [key: string]: PostcssPlugin };
+    preserve?: boolean;
+    stage?: 0 | 1 | 2 | 3 | 4 | false;
+  };
 }
 
 interface Loaders {
-  css?: CssLoaderOptions
-  cssModules?: CssLoaderOptions
-  file?: FileLoaderOptions
-  fontUrl?: UrlLoaderOptions
-  imgUrl?: UrlLoaderOptions
-  less?: Less.Options
-  pugPlain?: PugOptions
-  sass?: SassOptions
-  scss?: SassOptions
-  stylus?: any // TBD
-  vue?: VueLoaderOptions
+  css?: CssLoaderOptions;
+  cssModules?: CssLoaderOptions;
+  file?: FileLoaderOptions;
+  fontUrl?: UrlLoaderOptions;
+  imgUrl?: UrlLoaderOptions;
+  less?: Less.Options;
+  pugPlain?: PugOptions;
+  sass?: SassOptions;
+  scss?: SassOptions;
+  stylus?: any; // TBD
+  vue?: VueLoaderOptions;
   vueStyle?: {
-    manualInject?: boolean
-    ssrId?: boolean
-    shadowMode?: boolean
-  }
+    manualInject?: boolean;
+    ssrId?: boolean;
+    shadowMode?: boolean;
+  };
 }
 
 export interface Template {
   /**
    * Source file. Can be absolute or relative.
    */
-  src: string,
+  src: string;
   /**
    * Destination file within `.nuxt` filter. This filename should be relative to the project `.nuxt` dir
    */
-  dst: string,
+  dst: string;
   /**
    * Options are provided to template as `options` key
    */
-  options?: Record<string, any>
+  options?: Record<string, any>;
 }
 
 export default () => ({
   /**
    * @private
    */
-  _publicPath: '/_nuxt/',
+  _publicPath: "/_nuxt/",
 
   additionalExtensions: [] as string[],
   aggressiveCodeRemoval: false,
@@ -155,7 +199,7 @@ export default () => ({
   babel: {
     configFile: false,
     babelrc: false,
-    cacheDirectory: undefined
+    cacheDirectory: undefined,
   } as BabelOptions,
   /**
    * Enable cache of [terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin#options) and [cache-loader](https://github.com/webpack-contrib/cache-loader#cache-loader)
@@ -164,7 +208,7 @@ export default () => ({
    * @default false
    */
   cache: false,
-  corejs: undefined as undefined | 'auto' | 2 | 3,
+  corejs: undefined as undefined | "auto" | 2 | 3,
   crossorigin: undefined as undefined | string,
   /**
    * Enables CSS Source Map support.
@@ -173,12 +217,14 @@ export default () => ({
   cssSourceMap: undefined as undefined | boolean,
   devMiddleware: {} as WebpackDevMiddlewareOptions,
   devtools: undefined as undefined | boolean,
-  extend: null as null | ((
-    config: WebpackConfiguration,
-    ctx: {
-      loaders: Loaders
-    } & WebpackEnv
-  ) => void),
+  extend: null as
+    | null
+    | ((
+        config: WebpackConfiguration,
+        ctx: {
+          loaders: Loaders;
+        } & WebpackEnv
+      ) => void),
   /**
    * Enables Common CSS Extraction using Vue Server Renderer guidelines.
    *
@@ -191,12 +237,22 @@ export default () => ({
    * Customize bundle filenames.
    */
   filenames: {
-    app: ({ isDev, isModern }: WebpackEnv) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[name].[contenthash:7]${isModern ? '.modern' : ''}.js`,
-    chunk: ({ isDev, isModern }: WebpackEnv) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[name].[contenthash:7]${isModern ? '.modern' : ''}.js`,
-    css: ({ isDev }: WebpackEnv) => isDev ? '[name].css' : '[name].[contenthash:7].css',
-    img: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'img/[name].[contenthash:7].[ext]',
-    font: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'fonts/[name].[contenthash:7].[ext]',
-    video: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'videos/[name].[contenthash:7].[ext]'
+    app: ({ isDev, isModern }: WebpackEnv) =>
+      isDev
+        ? `[name]${isModern ? ".modern" : ""}.js`
+        : `[name].[contenthash:7]${isModern ? ".modern" : ""}.js`,
+    chunk: ({ isDev, isModern }: WebpackEnv) =>
+      isDev
+        ? `[name]${isModern ? ".modern" : ""}.js`
+        : `[name].[contenthash:7]${isModern ? ".modern" : ""}.js`,
+    css: ({ isDev }: WebpackEnv) =>
+      isDev ? "[name].css" : "[name].[contenthash:7].css",
+    img: ({ isDev }: WebpackEnv) =>
+      isDev ? "[path][name].[ext]" : "img/[name].[contenthash:7].[ext]",
+    font: ({ isDev }: WebpackEnv) =>
+      isDev ? "[path][name].[ext]" : "fonts/[name].[contenthash:7].[ext]",
+    video: ({ isDev }: WebpackEnv) =>
+      isDev ? "[path][name].[ext]" : "videos/[name].[contenthash:7].[ext]",
   },
   /**
    * By default, the build process does not scan files inside symlinks. This boolean includes them, thus allowing usage of symlinks inside folders such as the "pages" folder, for example.
@@ -209,7 +265,9 @@ export default () => ({
    */
   friendlyErrors: true,
   hardSource: false,
-  hotMiddleware: {} as WebpackHotMiddlewareOptions & { client?: WebpackHotMiddlewareClientOptions },
+  hotMiddleware: {} as WebpackHotMiddlewareOptions & {
+    client?: WebpackHotMiddlewareClientOptions;
+  },
   html: {
     /**
      * Configuration for the [html-minifier plugin](https://github.com/kangax/html-minifier) used to minify HTML files created during the build process (will be applied for all modes).
@@ -223,14 +281,14 @@ export default () => ({
       removeEmptyAttributes: true,
       removeRedundantAttributes: true,
       trimCustomFragments: true,
-      useShortDoctype: true
-    }
+      useShortDoctype: true,
+    },
   } as { minify: HtmlMinifierOptions },
   indicator: {
-    position: 'bottom-right',
-    backgroundColor: '#2E495E',
-    color: '#00C48D'
-  } as boolean | { position: string, backgroundColor: string, color: string },
+    position: "bottom-right",
+    backgroundColor: "#2E495E",
+    color: "#00C48D",
+  } as boolean | { position: string; backgroundColor: string; color: string },
   /**
    * Customize options of Nuxt.js integrated webpack loaders.
    */
@@ -244,31 +302,31 @@ export default () => ({
     pugPlain: {},
     vue: {
       transformAssetUrls: {
-        video: 'src',
-        source: 'src',
-        object: 'src',
-        embed: 'src'
-      }
+        video: "src",
+        source: "src",
+        object: "src",
+        embed: "src",
+      },
     },
     css: {
-      esModule: false
+      esModule: false,
     },
     cssModules: {
       esModule: false,
       modules: {
-        localIdentName: '[local]_[hash:base64:5]'
-      }
+        localIdentName: "[local]_[hash:base64:5]",
+      },
     },
     less: {},
     sass: {
       sassOptions: {
-        indentedSyntax: true
-      }
+        indentedSyntax: true,
+      },
     },
     scss: {},
     // tODO
     stylus: {},
-    vueStyle: {}
+    vueStyle: {},
   } as Loaders,
   loadingScreen: {} as Record<string, any> | false,
   optimizeCSS: undefined as Record<string, any> | false | undefined,
@@ -276,15 +334,15 @@ export default () => ({
     minimize: undefined as boolean | undefined,
     minimizer: undefined,
     splitChunks: {
-      chunks: 'all',
+      chunks: "all",
       name: undefined,
       cacheGroups: {
         default: {
-          name: undefined
-        }
-      }
-    }
-  } as WebpackConfiguration['optimization'],
+          name: undefined,
+        },
+      },
+    },
+  } as WebpackConfiguration["optimization"],
   /**
    * Enable [thread-loader](https://github.com/webpack-contrib/thread-loader#thread-loader) in webpack building
    *
@@ -296,14 +354,14 @@ export default () => ({
   postcss: {
     preset: {
       // https://cssdb.org/#staging-process
-      stage: 2
-    }
+      stage: 2,
+    },
   } as string[] | boolean | PostcssConfiguration | (() => PostcssConfiguration),
   /**
    * Enable the profiler in [WebpackBar](https://github.com/nuxt/webpackbar#profile)
    * @default false unless enabled by command line argument `--profile`
    */
-  profile: process.argv.includes('--profile'),
+  profile: process.argv.includes("--profile"),
   /**
    * Nuxt.js lets you upload your dist files to your CDN for maximum performances, simply set the `publicPath` to your CDN.
    * @default '/_nuxt/'
@@ -317,7 +375,7 @@ export default () => ({
     ```
     Then, when launching nuxt build, upload the content of .nuxt/dist/client directory to your CDN and voilà!
    */
-  publicPath: '/_nuxt/',
+  publicPath: "/_nuxt/",
   /**
    * Suppresses most of the build output log
    * @default true when a CI or test environment is detected by [std-env](https://github.com/nuxt-contrib/std-env)
@@ -326,11 +384,11 @@ export default () => ({
   /**
    * @default 'url'
    */
-  serverURLPolyfill: 'url',
+  serverURLPolyfill: "url",
   splitChunks: {
     layouts: false,
     pages: true,
-    commons: true
+    commons: true,
   },
   /**
    * Creates special webpack bundle for SSR renderer.
@@ -345,9 +403,9 @@ export default () => ({
     excludeAssets: [
       /.map$/,
       /index\..+\.html$/,
-      /vue-ssr-(client|modern)-manifest.json/
-    ]
-  } as 'none' | false | { excludeAssets: RegExp[] },
+      /vue-ssr-(client|modern)-manifest.json/,
+    ],
+  } as "none" | false | { excludeAssets: RegExp[] },
   styleResources: {},
   template: undefined,
   /**
@@ -359,11 +417,12 @@ export default () => ({
    */
   terser: {} as TerserPluginOptions | boolean,
   // Name of NPM packages to be transpiled
-  transpile: [] as Array<string | RegExp | ((context: WebpackEnv) => string | RegExp | undefined)>,
+  transpile: [] as Array<
+    string | RegExp | ((context: WebpackEnv) => string | RegExp | undefined)
+  >,
   warningIgnoreFilters: [] as Array<(warn: Warning) => boolean>,
   /**
    * You can provide your custom files to watch and regenerate after changes. This feature is specially useful for using with modules.
    */
-  watch: [] as string[]
-
-})
+  watch: [] as string[],
+});

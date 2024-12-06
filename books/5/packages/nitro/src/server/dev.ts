@@ -1,16 +1,13 @@
 import { Worker } from "worker_threads";
-import { createApp } from ".pnpm/h3@0.2.12/node_modules/h3/dist";
+import { createApp } from "h3";
 import { resolve } from "upath";
 import debounce from ".pnpm/debounce@1.2.1/node_modules/debounce";
-import chokidar from ".pnpm/chokidar@3.6.0/node_modules/chokidar/types";
-import {
-  listen,
-  Listener,
-} from ".pnpm/listhen@0.1.4_encoding@0.1.13/node_modules/listhen/dist";
+import chokidar from "chokidar";
+import { listen, Listener } from "listhen";
 import serveStatic from ".pnpm/serve-static@1.16.2/node_modules/serve-static";
-import servePlaceholder from ".pnpm/serve-placeholder@1.2.4/node_modules/serve-placeholder/src";
+import servePlaceholder from ".pnpm/serve-placeholder@1.2.4/node_modules/serve-placeholder";
 import { createProxy } from ".pnpm/http-proxy@1.18.1/node_modules/http-proxy";
-import { stat } from ".pnpm/fs-extra@9.1.0/node_modules/fs-extra/lib";
+import { stat } from ".pnpm/fs-extra@9.1.0/node_modules/fs-extra";
 import type { NitroContext } from "../context";
 
 export function createDevServer(nitroContext: NitroContext) {
@@ -20,6 +17,8 @@ export function createDevServer(nitroContext: NitroContext) {
     nitroContext.output.serverDir,
     "index.js"
   );
+  console.log("serverDir", nitroContext.output.serverDir);
+  console.log("[worker] entry:", workerEntry);
   let pendingWorker: Worker;
   let activeWorker: Worker;
   let workerAddress: string;
