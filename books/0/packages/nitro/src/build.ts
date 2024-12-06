@@ -147,6 +147,13 @@ async function _watch(nitroContext: NitroContext) {
   let watcher = startRollupWatcher(nitroContext);
 
   console.log("nitroContext", nitroContext);
+  const deletes = [];
+  for (const key of deletes) {
+    delete nitroContext[key];
+  }
+
+  // buildで使われている
+  // _internal(hooksが使われている)
 
   nitroContext.scannedMiddleware = await scanMiddleware(
     nitroContext._nuxt.serverDir,

@@ -1,7 +1,7 @@
 import { resolve } from "upath";
 import defu from "defu";
 import type { NuxtOptions } from "@nuxt/types";
-import Hookable, { configHooksT } from "hookable";
+import { createHooks, Hookable, Hooks } from "hookable";
 import type { Preset } from "@nuxt/un";
 import { tryImport, resolvePath, detectTarget, extendPreset } from "./utils";
 import * as PRESETS from "./presets";
@@ -23,8 +23,8 @@ export interface NitroContext {
   serveStatic: boolean;
   middleware: ServerMiddleware[];
   scannedMiddleware: ServerMiddleware[];
-  hooks: configHooksT;
-  nuxtHooks: configHooksT;
+  hooks: Hooks;
+  nuxtHooks: Hooks;
   ignore: string[];
   env: Preset;
   output: {
@@ -114,7 +114,7 @@ export function getNitroContext(
     },
     _internal: {
       runtimeDir: resolve(__dirname, "./runtime"),
-      hooks: new Hookable(),
+      hooks: createHooks(),
     },
   };
 

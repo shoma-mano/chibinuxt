@@ -1,7 +1,6 @@
 import type { IncomingHttpHeaders } from "http";
 
 import isPlainObject from "lodash/isPlainObject";
-import consola from "consola";
 import { Hookable, createHooks } from "hookable";
 
 import {
@@ -14,7 +13,6 @@ import { version } from "../../package.json";
 
 import Resolver from "./resolver";
 import { initNitro } from "./nitro";
-import { getConfig } from "./config";
 
 declare global {
   namespace NodeJS {
@@ -45,17 +43,19 @@ export interface Nuxt {
 export const createNuxt = (options: Configuration = {}) => {
   const hooks = createHooks<any>();
 
+  const normalizedOptions = getNuxtConfig(options);
+
   const nuxt: Nuxt = {
     hooks,
     _ready: undefined,
     _initCalled: false,
     error: undefined,
-    options: getConfig({}),
+    options: normalizedOptions as any,
     server: undefined,
     renderer: undefined,
     render: undefined,
     showReady: undefined,
-    ready: async () => {
+    ready: () => {
       if (!nuxt._ready) {
         nuxt._ready = initNuxt(nuxt);
       }
@@ -73,7 +73,6 @@ export const createNuxt = (options: Configuration = {}) => {
       }
     },
   };
-  console.log("nuxt normalized options", nuxt.options);
   nuxt.resolver = new Resolver(nuxt);
 
   return nuxt;
