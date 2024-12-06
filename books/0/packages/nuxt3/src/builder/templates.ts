@@ -42,7 +42,7 @@ import serverPlugins from './plugins.server'
 import App from '${app.main}'
 
 export default async function createNuxtAppServer (ssrContext = {}) {
-   const app = createApp()
+   const app = createApp(App)
    
    const nuxt = createNuxt({ app, ssrContext })
    
