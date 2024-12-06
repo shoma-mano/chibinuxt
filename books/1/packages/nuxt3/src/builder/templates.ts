@@ -88,7 +88,6 @@ export const allPluginsTemplate: NuxtTemplate = {
   getContents: ({ app, nxt }) => `
     import head from 'nuxt/app/plugins/head'
     import router from 'nuxt/app/plugins/router'
-    import vuex from 'nuxt/app/plugins/vuex'
     import legacy from 'nuxt/app/plugins/legacy'
 
     ${app.plugins.filter(p => p.mode === 'all').map(p => `import ${nxt.importName(p.src)} from '${p.src}'`).join('\n')}
@@ -96,7 +95,6 @@ export const allPluginsTemplate: NuxtTemplate = {
     export default [
       head,
       router,
-      vuex,
       legacy,
       ${app.plugins.filter(p => p.mode === 'all').map(p => nxt.importName(p.src)).join(',\n\t')}
     ]

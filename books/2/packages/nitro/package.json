@@ -15,9 +15,7 @@
   "build": {
     "entries": {
       "index": {},
-      "compat": {
-        "format": "cjs"
-      },
+
       "runtime/": {}
     },
     "dependencies": [
