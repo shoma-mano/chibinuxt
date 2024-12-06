@@ -1,9 +1,9 @@
 import { resolve } from 'path'
-import { Nuxt } from 'src/core'
 import { mkdirp, writeFile } from 'fs-extra'
 import vue from '@vitejs/plugin-vue'
 import consola from 'consola'
 import * as vite from 'vite'
+import { Nuxt } from '../../core/nuxt'
 
 interface ViteBuildContext {
   nuxt: Nuxt
@@ -80,7 +80,7 @@ async function buildClient (ctx: ViteBuildContext) {
 
   if (ctx.nuxt.options.dev) {
     const viteServer = await vite.createServer(clientConfig)
-    await ctx.nuxt.callHook('server:devMiddleware', (req, res, next) => {
+    await ctx.nuxt.hooks.callHook('server:devMiddleware', (req, res, next) => {
       // Workaround: vite devmiddleware modifies req.url
       const originalURL = req.url
       viteServer.middlewares.handle(req, res, (err) => {
@@ -117,7 +117,7 @@ async function buildServer (ctx: ViteBuildContext) {
   await vite.build(serverConfig)
 
   if (ctx.nuxt.options.dev) {
-    ctx.nuxt.hook('builder:watch', () => {
+    ctx.nuxt.hooks.hook('builder:watch', () => {
       vite.build(serverConfig).catch(consola.error)
     })
   }
