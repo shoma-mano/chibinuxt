@@ -1,18 +1,13 @@
 import "../app/config";
 import { createApp, useBase } from "h3";
-import { createFetch } from "ohmyfetch";
 import destr from "destr";
-import {
-  createCall,
-  createFetch as createLocalFetch,
-} from "@nuxt/un/runtime/fetch";
-import { handleError } from "./error";
+
 // @ts-ignore
 import serverMiddleware from "~serverMiddleware";
 
 const app = createApp({
   debug: destr(process.env.DEBUG),
-  onError: handleError,
+  onError: () => "error",
 });
 
 app.use(serverMiddleware);
@@ -22,6 +17,3 @@ app.use(() => import("../app/render").then((e) => e.renderMiddleware), {
 
 export const stack = app.stack;
 export const handle = useBase(process.env.ROUTER_BASE, app);
-export const localCall = createCall(handle);
-export const localFetch = createLocalFetch(localCall, global.fetch);
-export const $fetch = (global.$fetch = createFetch({ fetch: localFetch }));
