@@ -1,11 +1,11 @@
 import path from "path";
 import fs from "fs";
-import consola from ".pnpm/consola@2.15.3/node_modules/consola/types/consola";
-import defu from ".pnpm/defu@3.2.2/node_modules/defu/dist/defu";
-import defaultsDeep from ".pnpm/@types+lodash@4.17.13/node_modules/@types/lodash/defaultsDeep";
-import pick from ".pnpm/@types+lodash@4.17.13/node_modules/@types/lodash/pick";
-import uniq from ".pnpm/@types+lodash@4.17.13/node_modules/@types/lodash/uniq";
-import destr from ".pnpm/destr@1.2.2/node_modules/destr/dist";
+import consola from "consola";
+import defu from "defu";
+import defaultsDeep from "lodash/defaultsDeep";
+import pick from "lodash/pick";
+import uniq from "lodash/uniq";
+import destr from "destr";
 import {
   TARGETS,
   MODES,
@@ -68,7 +68,89 @@ export function getNuxtConfig(_options: Configuration) {
     return _options;
   }
 
-  return normalizeConfig(_options as CliConfiguration);
+  const normalizedOptions = normalizeConfig(
+    _options as CliConfiguration
+  ) as any;
+
+  const deletes = [
+    "mode",
+    "modern",
+    "modules",
+    "messages",
+    "vue",
+    "vueMeta",
+    "css",
+    "loadingIndicator",
+    "loading",
+    "modes",
+    "plugins",
+    "extendPlugins",
+    "layouts",
+    "ErrorPage",
+    "pageTransition",
+    "features",
+    "layoutTransition",
+    "head",
+    "buildModules",
+    "_modules",
+    "serverMiddleware",
+    "editor",
+    "hooks",
+    "watchers",
+    "_build",
+    "__normalized__",
+    "_routerBaseSpecified",
+    "test",
+    "debug",
+    "fetch",
+    "_nuxtConfigFile",
+    "vite",
+    "_nuxtConfigFiles",
+    "export",
+    "telemetry",
+    "documentPath",
+    "cli",
+    "server",
+    "render",
+    "ssr",
+    "target",
+    "ignoreOptions",
+    "ignorePrefix",
+    "watch",
+    "alias",
+    "styleExtensions",
+    "publicRuntimeConfig",
+    "privateRuntimeConfig",
+    "globals",
+  ];
+  for (const key of deletes) {
+    delete normalizedOptions[key];
+  }
+
+  normalizedOptions.router = {
+    base: "/",
+  };
+
+  normalizedOptions.generate = {
+    dir: "/Users/mano/playground/nuxts/nuxt/books/0/playground/dist",
+    staticAssets: {
+      base: "/_nuxt/static",
+      dir: "static",
+    },
+  };
+
+  // nitroで使用している
+  // env dir router globalName
+  // どこで使われているかまだわからない
+  // _majorVersion appDir
+  // resolvePageRoutesで使用
+  // extensions
+  // getNitroContextで使用
+  // generate build srcDir buildDir
+  // Builderのconstructorで使用
+  // ignore
+
+  return normalizedOptions;
 }
 
 function normalizeConfig(_options: CliConfiguration) {

@@ -1,14 +1,11 @@
 import { resolve, join } from "upath";
-import consola from ".pnpm/consola@2.15.3/node_modules/consola/types/consola";
-import {
-  rollup,
-  watch as rollupWatch,
-} from ".pnpm/rollup@2.79.2/node_modules/rollup/dist/rollup";
+import consola from "consola";
+import { rollup, watch as rollupWatch } from "rollup";
 import {
   readFile,
   emptyDir,
   copy,
-} from ".pnpm/fs-extra@9.1.0/node_modules/fs-extra/lib";
+} from ".pnpm/fs-extra@9.1.0/node_modules/fs-extra";
 import { printFSTree } from "./utils/tree";
 import { getRollupConfig } from "./rollup/config";
 import {
@@ -153,14 +150,23 @@ function startRollupWatcher(nitroContext: NitroContext) {
 async function _watch(nitroContext: NitroContext) {
   let watcher = startRollupWatcher(nitroContext);
 
-  nitroContext.scannedMiddleware = await scanMiddleware(
-    nitroContext._nuxt.serverDir,
-    (middleware, event) => {
-      nitroContext.scannedMiddleware = middleware;
-      if (["add", "addDir"].includes(event)) {
-        watcher.close();
-        watcher = startRollupWatcher(nitroContext);
-      }
-    }
-  );
+  console.log("nitroContext", nitroContext);
+  const deletes = [];
+  for (const key of deletes) {
+    delete nitroContext[key];
+  }
+
+  // buildで使われている
+  // _internal(hooksが使われている)
+
+  // nitroContext.scannedMiddleware = await scanMiddleware(
+  //   nitroContext._nuxt.serverDir,
+  //   (middleware, event) => {
+  //     nitroContext.scannedMiddleware = middleware;
+  //     if (["add", "addDir"].includes(event)) {
+  //       watcher.close();
+  //       watcher = startRollupWatcher(nitroContext);
+  //     }
+  //   }
+  // );
 }

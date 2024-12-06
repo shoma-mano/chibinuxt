@@ -1,20 +1,17 @@
 import { dirname, join, relative, resolve } from "upath";
-import {
-  InputOptions,
-  OutputOptions,
-} from ".pnpm/rollup@2.79.2/node_modules/rollup/dist/rollup";
-import defu from ".pnpm/defu@3.2.2/node_modules/defu/dist/defu";
-import { terser } from ".pnpm/rollup-plugin-terser@7.0.2_rollup@2.79.2/node_modules/rollup-plugin-terser/rollup-plugin-terser";
-import commonjs from ".pnpm/@rollup+plugin-commonjs@17.1.0_rollup@2.79.2/node_modules/@rollup/plugin-commonjs/types";
-import nodeResolve from ".pnpm/@rollup+plugin-node-resolve@11.2.1_rollup@2.79.2/node_modules/@rollup/plugin-node-resolve/types";
-import alias from ".pnpm/@rollup+plugin-alias@3.1.9_rollup@2.79.2/node_modules/@rollup/plugin-alias/types";
-import json from ".pnpm/@rollup+plugin-json@4.1.0_rollup@2.79.2/node_modules/@rollup/plugin-json/types";
-import replace from ".pnpm/@rollup+plugin-replace@2.4.2_rollup@2.79.2/node_modules/@rollup/plugin-replace/types";
-import virtual from ".pnpm/@rollup+plugin-virtual@2.1.0_rollup@2.79.2/node_modules/@rollup/plugin-virtual/types";
-import inject from ".pnpm/@rollup+plugin-inject@4.0.4_rollup@2.79.2/node_modules/@rollup/plugin-inject";
-import analyze from ".pnpm/rollup-plugin-analyzer@4.0.0/node_modules/rollup-plugin-analyzer";
-import type { Preset } from ".pnpm/@nuxt+un@0.1.1_encoding@0.1.13/node_modules/@nuxt/un/dist";
-import * as un from ".pnpm/@nuxt+un@0.1.1_encoding@0.1.13/node_modules/@nuxt/un/dist";
+import { InputOptions, OutputOptions } from "rollup";
+import defu from "defu";
+import { terser } from "rollup-plugin-terser";
+import commonjs from "@rollup/plugin-commonjs";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import alias from "@rollup/plugin-alias";
+import json from "@rollup/plugin-json";
+import replace from "@rollup/plugin-replace";
+import virtual from "@rollup/plugin-virtual";
+import inject from "@rollup/plugin-inject";
+import analyze from "rollup-plugin-analyzer";
+import type { Preset } from "@nuxt/un";
+import * as un from "@nuxt/un";
 
 import { NitroContext } from "../context";
 import { resolvePath, MODULE_DIR } from "../utils";
@@ -187,7 +184,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
   );
 
   // Polyfill
-  console.log("env", env);
   rollupConfig.plugins.push(
     virtual({
       "~polyfill": env.polyfill.map((p) => `import '${p}';`).join("\n"),

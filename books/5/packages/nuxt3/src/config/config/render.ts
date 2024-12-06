@@ -1,79 +1,124 @@
 // TODO: Refactor @nuxt/server related options into `server.js`
-import type { ServerResponse, IncomingMessage } from 'http'
-import type { CompressionOptions } from 'compression'
-import type { ServeStaticOptions } from 'serve-static'
-import type etag from 'etag'
-import type { ServerMiddleware } from './_common'
+import type { ServerResponse, IncomingMessage } from "http";
+import type { CompressionOptions } from ".pnpm/@types+compression@1.7.5/node_modules/@types/compression";
+import type { ServeStaticOptions } from ".pnpm/@types+serve-static@1.15.7/node_modules/@types/serve-static";
+import type etag from ".pnpm/@types+etag@1.8.3/node_modules/@types/etag";
+import type { ServerMiddleware } from "./_common";
 
 interface PreloadFile {
-  asType: 'script' | 'style' | 'font'
-  extension: string
-  file: string
-  fileWithoutQuery: string
+  asType: "script" | "style" | "font";
+  extension: string;
+  file: string;
+  fileWithoutQuery: string;
 }
 
-type ServePlaceholderHandler = 'default' | 'css' | 'html' | 'js' | 'json' | 'map' | 'plain' | 'image'
+type ServePlaceholderHandler =
+  | "default"
+  | "css"
+  | "html"
+  | "js"
+  | "json"
+  | "map"
+  | "plain"
+  | "image";
 interface ServePlaceholderOptions {
-  handlers?: Record<string, ServePlaceholderHandler | null | false>
-  mimes?: Record<ServePlaceholderHandler, string | false | undefined>
-  noCache?: boolean
-  placeholders?: Record<ServePlaceholderHandler, string | Buffer | false>
-  skipUnknown?: boolean
-  statusCode?: false | number
+  handlers?: Record<string, ServePlaceholderHandler | null | false>;
+  mimes?: Record<ServePlaceholderHandler, string | false | undefined>;
+  noCache?: boolean;
+  placeholders?: Record<ServePlaceholderHandler, string | Buffer | false>;
+  skipUnknown?: boolean;
+  statusCode?: false | number;
 }
 
-type CspPolicyName = 'child-src' | 'connect-src' | 'default-src' | 'font-src' | 'frame-src' | 'img-src' | 'manifest-src' | 'media-src' | 'object-src' | 'prefetch-src' | 'script-src' | 'script-src-elem' | 'script-src-attr' | 'style-src' | 'style-src-elem' | 'style-src-attr' | 'worker-src' | 'base-uri' | 'plugin-types' | 'sandbox' | 'form-action' | 'frame-ancestors' | 'navigate-to' | 'report-uri' | 'report-to' | 'block-all-mixed-content' | 'referrer' | 'require-sri-for' | 'trusted-types' | 'upgrade-insecure-requests'
+type CspPolicyName =
+  | "child-src"
+  | "connect-src"
+  | "default-src"
+  | "font-src"
+  | "frame-src"
+  | "img-src"
+  | "manifest-src"
+  | "media-src"
+  | "object-src"
+  | "prefetch-src"
+  | "script-src"
+  | "script-src-elem"
+  | "script-src-attr"
+  | "style-src"
+  | "style-src-elem"
+  | "style-src-attr"
+  | "worker-src"
+  | "base-uri"
+  | "plugin-types"
+  | "sandbox"
+  | "form-action"
+  | "frame-ancestors"
+  | "navigate-to"
+  | "report-uri"
+  | "report-to"
+  | "block-all-mixed-content"
+  | "referrer"
+  | "require-sri-for"
+  | "trusted-types"
+  | "upgrade-insecure-requests";
 
 interface RenderOptions {
   bundleRenderer: {
-    shouldPrefetch: (fileWithoutQuery: string, asType: string) => boolean
-    shouldPreload: (fileWithoutQuery: string, asType: string) => boolean
-    runInNewContext?: boolean
-  }
-  compressor: CompressionOptions | ServerMiddleware | false
-  crossorigin?: 'anonymous' | 'use-credentials' | ''
-  csp: boolean | {
-    addMeta?: boolean
-    allowedSources?: string[]
-    hashAlgorithm?: string
-    policies?: Record<CspPolicyName, string[]>
-    reportOnly?: boolean
-    unsafeInlineCompatibility?: boolean
-  }
-  dist: ServeStaticOptions
-  etag: false | etag.Options & {
-    hash?: (html: string) => string
-  }
+    shouldPrefetch: (fileWithoutQuery: string, asType: string) => boolean;
+    shouldPreload: (fileWithoutQuery: string, asType: string) => boolean;
+    runInNewContext?: boolean;
+  };
+  compressor: CompressionOptions | ServerMiddleware | false;
+  crossorigin?: "anonymous" | "use-credentials" | "";
+  csp:
+    | boolean
+    | {
+        addMeta?: boolean;
+        allowedSources?: string[];
+        hashAlgorithm?: string;
+        policies?: Record<CspPolicyName, string[]>;
+        reportOnly?: boolean;
+        unsafeInlineCompatibility?: boolean;
+      };
+  dist: ServeStaticOptions;
+  etag:
+    | false
+    | (etag.Options & {
+        hash?: (html: string) => string;
+      });
   fallback?: {
-    dist?: ServePlaceholderOptions
-    static?: ServePlaceholderOptions
-  }
+    dist?: ServePlaceholderOptions;
+    static?: ServePlaceholderOptions;
+  };
   /**
    * @deprecated
    */
-  gzip?: CompressionOptions | ServerMiddleware | false
+  gzip?: CompressionOptions | ServerMiddleware | false;
   http2?: {
-    push?: boolean
-    shouldPush?: boolean | null
-    pushAssets?: null | ((
-      req: IncomingMessage,
-      res: ServerResponse,
-      publicPath: string,
-      preloadFiles: PreloadFile[]
-    ) => string[])
-  }
-  injectScripts?: boolean
-  resourceHints: boolean
-  ssr?: boolean
-  ssrLog?: boolean | 'collapsed'
-  static: ServeStaticOptions & { prefix?: string }
+    push?: boolean;
+    shouldPush?: boolean | null;
+    pushAssets?:
+      | null
+      | ((
+          req: IncomingMessage,
+          res: ServerResponse,
+          publicPath: string,
+          preloadFiles: PreloadFile[]
+        ) => string[]);
+  };
+  injectScripts?: boolean;
+  resourceHints: boolean;
+  ssr?: boolean;
+  ssrLog?: boolean | "collapsed";
+  static: ServeStaticOptions & { prefix?: string };
 }
 
 export default (): RenderOptions => ({
   bundleRenderer: {
     shouldPrefetch: () => false,
-    shouldPreload: (_fileWithoutQuery, asType) => ['script', 'style'].includes(asType),
-    runInNewContext: undefined
+    shouldPreload: (_fileWithoutQuery, asType) =>
+      ["script", "style"].includes(asType),
+    runInNewContext: undefined,
   },
   crossorigin: undefined,
   resourceHints: true,
@@ -82,21 +127,21 @@ export default (): RenderOptions => ({
   http2: {
     push: false,
     shouldPush: null,
-    pushAssets: null
+    pushAssets: null,
   },
   static: {},
   compressor: {
-    threshold: 0
+    threshold: 0,
   },
   etag: {
-    weak: false
+    weak: false,
   },
   csp: false,
   dist: {
     // Don't serve index.html template
     index: false,
     // 1 year in production
-    maxAge: '1y'
+    maxAge: "1y",
   },
   // https://github.com/nuxt/serve-placeholder
   fallback: {
@@ -104,9 +149,9 @@ export default (): RenderOptions => ({
     static: {
       skipUnknown: true,
       handlers: {
-        '.htm': false,
-        '.html': false
-      }
-    }
-  }
-})
+        ".htm": false,
+        ".html": false,
+      },
+    },
+  },
+});
