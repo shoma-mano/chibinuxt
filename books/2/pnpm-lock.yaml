@@ -171,8 +171,8 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
       hookable:
-        specifier: ^4.4.1
-        version: 4.4.1
+        specifier: 5.5.3
+        version: 5.5.3
       http-proxy:
         specifier: ^1.18.1
         version: 1.18.1
@@ -484,14 +484,20 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
 
-  playground:
+  playgrounds/nitro-playground:
+    dependencies:
+      '@nuxt/nitro':
+        specifier: workspace:*
+        version: link:../../packages/nitro
+
+  playgrounds/nuxt-playground:
     dependencies:
       '@nuxt/devalue':
         specifier: ^1.2.5
         version: 1.2.5
       '@nuxt/nitro':
         specifier: workspace:*
-        version: link:../packages/nitro
+        version: link:../../packages/nitro
       '@nuxt/un':
         specifier: 0.1.1
         version: 0.1.1(encoding@0.1.13)
@@ -515,7 +521,7 @@ importers:
         version: 5.5.3
       nuxt3:
         specifier: workspace:*
-        version: link:../packages/nuxt3
+        version: link:../../packages/nuxt3
       ohmyfetch:
         specifier: ^0.1.8
         version: 0.1.8(encoding@0.1.13)
@@ -3779,9 +3785,6 @@ packages:
 
   hex-color-regex@1.1.0:
     resolution: {integrity: sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==}
-
-  hookable@4.4.1:
-    resolution: {integrity: sha512-KWjZM8C7IVT2qne5HTXjM6R6VnRfjfRlf/oCnHd+yFxoHO1DzOl6B9LzV/VqGQK/IrFewq+EG+ePVrE9Tpc3fg==}
 
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
@@ -10928,8 +10931,6 @@ snapshots:
   he@1.2.0: {}
 
   hex-color-regex@1.1.0: {}
-
-  hookable@4.4.1: {}
 
   hookable@5.5.3: {}
 

@@ -106,7 +106,7 @@ export function getNitroContext (nuxtOptions: NuxtOptions, input: NitroInput): N
       }
     },
     _internal: {
-      runtimeDir: resolve(__dirname, '../runtime'),
+      runtimeDir: resolve(__dirname, './runtime'),
       hooks: new Hookable()
     }
   }

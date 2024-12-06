@@ -108,6 +108,8 @@ export async function loadNuxtConfig ({
     rc.readUser('.nuxtrc')
   )
 
+  console.log('options after defu', options)
+
   // Load env to options._env
   options._env = env
   options._envConfig = envConfig

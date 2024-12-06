@@ -10,17 +10,17 @@ export function initNitro (nuxt: Nuxt) {
   nuxt.server = createDevServer(nitroDevContext)
 
   // Connect hooks
-  nuxt.addHooks(nitroContext.nuxtHooks)
-  nuxt.hook('close', () => nitroContext._internal.hooks.callHook('close'))
+  nuxt.hooks.addHooks(nitroContext.nuxtHooks)
+  nuxt.hooks.hook('close', () => nitroContext._internal.hooks.callHook('close'))
 
-  nuxt.addHooks(nitroDevContext.nuxtHooks)
-  nuxt.hook('close', () => nitroDevContext._internal.hooks.callHook('close'))
+  nuxt.hooks.addHooks(nitroDevContext.nuxtHooks)
+  nuxt.hooks.hook('close', () => nitroDevContext._internal.hooks.callHook('close'))
 
   // Expose process.env.NITRO_PRESET
   nuxt.options.env.NITRO_PRESET = nitroContext.preset
 
   // Resolve middleware
-  nuxt.hook('modules:done', () => {
+  nuxt.hooks.hook('modules:done', () => {
     const { middleware, legacyMiddleware } =
       resolveMiddleware(nuxt.options.serverMiddleware, nuxt.resolver.resolvePath)
     nuxt.server.setLegacyMiddleware(legacyMiddleware)
@@ -29,7 +29,7 @@ export function initNitro (nuxt: Nuxt) {
   })
 
   // nuxt build/dev
-  nuxt.hook('build:done', async () => {
+  nuxt.hooks.hook('build:done', async () => {
     if (nuxt.options.dev) {
       await build(nitroDevContext)
     } else if (!nitroContext._nuxt.isStatic) {
@@ -42,7 +42,7 @@ export function initNitro (nuxt: Nuxt) {
   // nude dev
   if (nuxt.options.dev) {
     nitroDevContext._internal.hooks.hook('nitro:compiled', () => { nuxt.server.watch() })
-    nuxt.hook('build:compile', ({ compiler }) => { compiler.outputFileSystem = wpfs })
-    nuxt.hook('server:devMiddleware', (m) => { nuxt.server.setDevMiddleware(m) })
+    nuxt.hooks.hook('build:compile', ({ compiler }) => { compiler.outputFileSystem = wpfs })
+    nuxt.hooks.hook('server:devMiddleware', (m) => { nuxt.server.setDevMiddleware(m) })
   }
 }
