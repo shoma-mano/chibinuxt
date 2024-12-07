@@ -9,7 +9,6 @@ import * as un from "@nuxt/un";
 import { NitroContext } from "../context";
 import { resolvePath, MODULE_DIR } from "../utils";
 
-import { dynamicRequire } from "./plugins/dynamic-require";
 import { externals } from "./plugins/externals";
 import { esbuild } from "./plugins/esbuild";
 
@@ -43,10 +42,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
   const env = un.env(nodePreset, builtinPreset, nitroContext.env);
 
   delete env.alias["node-fetch"]; // FIX ME
-
-  if (nitroContext.sourceMap) {
-    env.polyfill.push("source-map-support/register");
-  }
 
   const rollupConfig: RollupConfig = {
     input: resolvePath(nitroContext, nitroContext.entry),
@@ -86,26 +81,11 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     })
   );
 
-  // Dynamic Require Support
-  rollupConfig.plugins.push(
-    dynamicRequire({
-      dir: resolve(nitroContext._nuxt.buildDir, "dist/server"),
-      inline: nitroContext.node === false || nitroContext.inlineDynamicImports,
-      globbyOptions: {
-        ignore: ["server.js"],
-      },
-    })
-  );
-
   rollupConfig.plugins.push(
     alias({
       entries: {
         "~runtime": nitroContext._internal.runtimeDir,
-        "~renderer": require.resolve(
-          resolve(nitroContext._internal.runtimeDir, "app", "vue3")
-        ),
         "~build": nitroContext._nuxt.buildDir,
-        ...env.alias,
       },
     })
   );
