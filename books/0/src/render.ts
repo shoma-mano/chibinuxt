@@ -16,7 +16,7 @@ const renderer = createRenderer(_createApp, {
 });
 
 export const renderMiddleware = defineEventHandler(async (event) => {
-  const { req, res } = event.node;
+  const { res } = event.node;
   const rendered = await renderer.renderToString({});
   const data = renderHTML(rendered);
   res.setHeader("Content-Type", "text/html;charset=UTF-8");
