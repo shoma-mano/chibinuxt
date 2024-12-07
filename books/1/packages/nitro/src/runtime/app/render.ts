@@ -34,6 +34,7 @@ export async function renderMiddleware(req, res) {
     );
   }
 
+  console.log("req.context", req.context);
   const ssrContext = {
     url,
     ...(req.context || {}),

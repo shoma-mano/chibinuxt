@@ -2,9 +2,7 @@ import { createApp, toNodeListener, fromNodeMiddleware } from "h3";
 import { createServer } from "http";
 import { renderMiddleware } from "./render";
 
-const app = createApp({
-  onError: () => "error",
-});
+const app = createApp();
 
 app.use(renderMiddleware);
 

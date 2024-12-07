@@ -17,35 +17,22 @@ const renderer = createRenderer(_createApp, {
 
 export const renderMiddleware = defineEventHandler(async (event) => {
   const { req, res } = event.node;
-  const url = req.url;
-  const ssrContext = {
-    url,
-  };
-  const rendered = await renderer.renderToString(ssrContext);
-  const data = renderHTML(rendered, ssrContext);
+  const rendered = await renderer.renderToString({});
+  const data = renderHTML(rendered);
   res.setHeader("Content-Type", "text/html;charset=UTF-8");
   res.end(data, "utf-8");
 });
 
-function renderHTML(rendered, ssrContext) {
+function renderHTML(rendered) {
   const _html = rendered.html;
 
-  const {
-    htmlAttrs = "",
-    bodyAttrs = "",
-    headTags = "",
-    headAttrs = "",
-  } = (ssrContext.head && ssrContext.head()) || {};
+  const { htmlAttrs = "", bodyAttrs = "", headTags = "", headAttrs = "" } = {};
 
   return htmlTemplate({
     HTML_ATTRS: htmlAttrs,
     HEAD_ATTRS: headAttrs,
     BODY_ATTRS: bodyAttrs,
-    HEAD:
-      headTags +
-      rendered.renderResourceHints() +
-      rendered.renderStyles() +
-      (ssrContext.styles || ""),
+    HEAD: headTags + rendered.renderResourceHints() + rendered.renderStyles(),
     APP: _html + rendered.renderScripts(),
   });
 }
