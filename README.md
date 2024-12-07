@@ -5,5 +5,5 @@
 ```bash
 cd books/0
 pnpm install
-bun main.ts
+bun src/main.ts
 ```

@@ -2,13 +2,10 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "target": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
+    "module": "ESNext",
     "strict": false,
     "allowJs": true,
-    "resolveJsonModule": true,
-    "types": [
-      "node",
-      "jest"
-    ]
+    "resolveJsonModule": true
   }
 }

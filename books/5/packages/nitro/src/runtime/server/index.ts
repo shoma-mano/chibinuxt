@@ -1,4 +1,3 @@
-import "../app/config";
 import { createApp, useBase } from "h3";
 import destr from "destr";
 

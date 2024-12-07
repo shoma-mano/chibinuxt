@@ -489,6 +489,9 @@ importers:
       '@nuxt/nitro':
         specifier: workspace:*
         version: link:../../packages/nitro
+      vue:
+        specifier: ^3.0.7
+        version: 3.5.13(typescript@4.9.5)
 
   playgrounds/nuxt-playground:
     dependencies:

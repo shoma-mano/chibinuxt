@@ -1,161 +1,132 @@
-import type { WatchOptions as ChokidarWatchOptions } from ".pnpm/chokidar@3.6.0/node_modules/chokidar/types";
-import type express from "express";
-import type { configHooksT } from ".pnpm/hookable@5.5.3/node_modules/hookable/dist";
-import ignore from ".pnpm/ignore@5.3.2/node_modules/ignore";
-import capitalize from ".pnpm/@types+lodash@4.17.13/node_modules/@types/lodash/capitalize";
-import env from ".pnpm/std-env@3.0.0-alpha/node_modules/std-env";
-import type { Configuration as WebpackConfiguration } from ".pnpm/webpack@5.96.1_esbuild@0.9.7/node_modules/webpack/types";
-import Hookable from ".pnpm/hookable@5.5.3/node_modules/hookable/dist";
-import { TARGETS, MODES, Target, Mode } from "../../utils";
+import type { WatchOptions as ChokidarWatchOptions } from 'chokidar'
+import type express from 'express'
+import type { configHooksT } from 'hookable'
+import ignore from 'ignore'
+import capitalize from 'lodash/capitalize'
+import env from 'std-env'
+import type { Configuration as WebpackConfiguration } from 'webpack'
+import Hookable from 'hookable'
+import { TARGETS, MODES, Target, Mode } from '../../utils'
 
-import { APP_DIR } from "../../consts";
-import type { NormalizedConfiguration } from "../../core/options";
+import { APP_DIR } from '../../consts'
+import type { NormalizedConfiguration } from '../../core/options'
 
-type IgnoreOptions = Parameters<typeof ignore>[0];
-type IgnoreInstance = ReturnType<typeof ignore>;
+type IgnoreOptions = Parameters<typeof ignore>[0]
+type IgnoreInstance = ReturnType<typeof ignore>
 
 interface ExtendFunctionContext {
-  isClient: boolean;
-  isDev: boolean;
-  isLegacy: boolean;
-  isModern: boolean;
-  isServer: boolean;
+  isClient: boolean
+  isDev: boolean
+  isLegacy: boolean
+  isModern: boolean
+  isServer: boolean
   // TODO
   // loaders: NuxtOptionsLoaders
 }
 
-type ExtendFunction = (
-  config: WebpackConfiguration,
-  ctx: ExtendFunctionContext
-) => void;
+type ExtendFunction = (config: WebpackConfiguration, ctx: ExtendFunctionContext) => void
 
 interface NuxtHooks extends configHooksT {
+
   build?: {
-    before?(builder: any, buildOptions: any): void;
-    compile?(params: { name: "client" | "server"; compiler: any }): void;
-    compiled?(params: {
-      name: "client" | "server";
-      compiler: any;
-      stats: any;
-    }): void;
-    done?(builder: any): void;
-    extendRoutes?(routes: any, resolve: any): void;
-    templates?(params: {
-      templateFiles: any;
-      templateVars: any;
-      resolve: any;
-    }): void;
-  };
-  close?(nuxt: any): void;
-  error?(error: Error): void;
+    before?(builder: any, buildOptions: any): void
+    compile?(params: { name: 'client' | 'server', compiler: any }): void
+    compiled?(params: { name: 'client' | 'server', compiler: any, stats: any }): void
+    done?(builder: any): void
+    extendRoutes?(routes: any, resolve: any): void
+    templates?(params: { templateFiles: any, templateVars: any, resolve: any }): void
+  }
+  close?(nuxt: any): void
+  error?(error: Error): void
   generate?: {
-    before?(generator: any, generateOptions: any): void;
-    distCopied?(generator: any): void;
-    distRemoved?(generator: any): void;
-    done?(generator: any): void;
-    extendRoutes?(routes: any): void;
-    page?(params: { route: any; path: any; html: any }): void;
-    routeCreated?(route: any, path: any, errors: any): void;
-    routeFailed?(route: any, errors: any): void;
-  };
-  listen?(server: any, params: { host: string; port: number | string }): void;
+    before?(generator: any, generateOptions: any): void
+    distCopied?(generator: any): void
+    distRemoved?(generator: any): void
+    done?(generator: any): void
+    extendRoutes?(routes: any): void
+    page?(params: { route: any, path: any, html: any }): void
+    routeCreated?(route: any, path: any, errors: any): void
+    routeFailed?(route: any, errors: any): void
+  }
+  listen?(server: any, params: { host: string, port: number | string }): void
   modules?: {
-    before?(moduleContainer: any, options: any): void;
-    done?(moduleContainer: any): void;
-  };
-  ready?(nuxt: any): void;
+    before?(moduleContainer: any, options: any): void
+    done?(moduleContainer: any): void
+  }
+  ready?(nuxt: any): void
   render?: {
-    before?(renderer: any, options: any): void;
-    done?(renderer: any): void;
-    errorMiddleware?(app: express.Application): void;
-    resourcesLoaded?(resources: any): void;
-    route?(url: string, result: any, context: any): void;
-    routeContext?(context: any): void;
-    routeDone?(url: string, result: any, context: any): void;
-    beforeResponse?(url: string, result: any, context: any): void;
-    setupMiddleware?(app: express.Application): void;
-  };
+    before?(renderer: any, options: any): void
+    done?(renderer: any): void
+    errorMiddleware?(app: express.Application): void
+    resourcesLoaded?(resources: any): void
+    route?(url: string, result: any, context: any): void
+    routeContext?(context: any): void
+    routeDone?(url: string, result: any, context: any): void
+    beforeResponse?(url: string, result: any, context: any): void
+    setupMiddleware?(app: express.Application): void
+  }
 }
 
 interface ModuleThis {
-  extendBuild(fn: ExtendFunction): void;
-  options: NormalizedConfiguration;
-  nuxt: any; // TBD
-  [key: string]: any; // TBD
+  extendBuild(fn: ExtendFunction): void
+  options: NormalizedConfiguration
+  nuxt: any // TBD
+  [key: string]: any // TBD
 }
 
-export type ModuleHandler<T = any> = (
-  this: ModuleThis,
-  moduleOptions: T
-) => Promise<void> | void;
+export type ModuleHandler<T = any> = (this: ModuleThis, moduleOptions: T) => Promise<void> | void
 
-export type NuxtModule = string | ModuleHandler | [string | ModuleHandler, any];
+export type NuxtModule = string | ModuleHandler | [string | ModuleHandler, any]
 
-export type ServerMiddleware =
-  | string
-  | { path: string; prefix?: boolean; handler: string | express.NextFunction }
-  | express.NextFunction;
+export type ServerMiddleware = string | { path: string, prefix?: boolean, handler: string | express.NextFunction } | express.NextFunction
 
 interface CommonConfiguration {
-  _majorVersion: Number;
-  _modules: NuxtModule[];
-  _nuxtConfigFile?: string;
-  alias: Record<string, string>;
-  appDir: string;
-  buildDir: string;
-  vite: boolean;
-  buildModules: NuxtModule[];
-  createRequire?: (module: NodeJS.Module) => NodeJS.Require;
-  debug?: boolean;
-  dev: boolean;
-  dir: {
-    [key in
-      | "app"
-      | "assets"
-      | "layouts"
-      | "middleware"
-      | "pages"
-      | "static"
-      | "store"]: string;
-  };
-  editor: undefined;
-  env: NodeJS.ProcessEnv;
-  extensions: string[];
-  globalName?: string;
+  _majorVersion: Number
+  _modules: NuxtModule[]
+  _nuxtConfigFile?: string
+  alias: Record<string, string>
+  appDir: string,
+  buildDir: string,
+  vite: boolean,
+  buildModules: NuxtModule[]
+  createRequire?: (module: NodeJS.Module) => NodeJS.Require
+  debug?: boolean
+  dev: boolean
+  dir: { [key in 'app' | 'assets' | 'layouts' | 'middleware' | 'pages' | 'static' | 'store']: string }
+  editor: undefined
+  env: NodeJS.ProcessEnv
+  extensions: string[]
+  globalName?: string,
   globals: {
-    id: (globalName: string) => string;
-    nuxt: (globalName: string) => string;
-    context: (globalName: string) => string;
-    pluginPrefix: (globalName: string) => string;
-    readyCallback: (globalName: string) => string;
-    loadedCallback: (globalName: string) => string;
-  };
-  hooks: null | ((hook: Hookable["hook"]) => void) | NuxtHooks;
-  ignoreOptions?: IgnoreOptions;
-  ignorePrefix: string;
-  ignore: Array<string | IgnoreInstance>;
+    id: (globalName: string) => string
+    nuxt: (globalName: string) => string
+    context: (globalName: string) => string
+    pluginPrefix: (globalName: string) => string
+    readyCallback: (globalName: string) => string
+    loadedCallback: (globalName: string) => string
+  }
+  hooks: null | ((hook: Hookable['hook']) => void) | NuxtHooks
+  ignoreOptions?: IgnoreOptions
+  ignorePrefix: string
+  ignore: Array<string | IgnoreInstance>
   // TODO: remove in Nuxt 3
-  mode: Mode;
-  modern?: boolean | "client" | "server";
-  modules: NuxtModule[];
-  privateRuntimeConfig:
-    | Record<string, any>
-    | ((env: NodeJS.ProcessEnv) => Record<string, any>);
-  publicRuntimeConfig:
-    | Record<string, any>
-    | ((env: NodeJS.ProcessEnv) => Record<string, any>);
-  serverMiddleware: Array<ServerMiddleware> | Record<string, express.Handler>;
-  ssr: boolean;
-  target: Target;
-  test: boolean;
-  srcDir?: string;
-  modulesDir: string[];
-  styleExtensions: string[];
-  watch: string[];
+  mode: Mode
+  modern?: boolean | 'client' | 'server'
+  modules: NuxtModule[]
+  privateRuntimeConfig: Record<string, any> | ((env: NodeJS.ProcessEnv) => Record<string, any>)
+  publicRuntimeConfig: Record<string, any> | ((env: NodeJS.ProcessEnv) => Record<string, any>)
+  serverMiddleware: Array<ServerMiddleware> | Record<string, express.Handler>
+  ssr: boolean
+  target: Target
+  test: boolean
+  srcDir?: string
+  modulesDir: string[]
+  styleExtensions: string[]
+  watch: string[]
   watchers: {
-    webpack: WebpackConfiguration["watchOptions"];
-    chokidar: ChokidarWatchOptions;
-  };
+    webpack: WebpackConfiguration['watchOptions']
+    chokidar: ChokidarWatchOptions
+  }
 }
 
 export default (): CommonConfiguration => ({
@@ -186,12 +157,12 @@ export default (): CommonConfiguration => ({
 
   globalName: undefined,
   globals: {
-    id: (globalName) => `__${globalName}`,
-    nuxt: (globalName) => `$${globalName}`,
-    context: (globalName) => `__${globalName.toUpperCase()}__`,
-    pluginPrefix: (globalName) => globalName,
-    readyCallback: (globalName) => `on${capitalize(globalName)}Ready`,
-    loadedCallback: (globalName) => `_on${capitalize(globalName)}Loaded`,
+    id: globalName => `__${globalName}`,
+    nuxt: globalName => `$${globalName}`,
+    context: globalName => `__${globalName.toUpperCase()}__`,
+    pluginPrefix: globalName => globalName,
+    readyCallback: globalName => `on${capitalize(globalName)}Ready`,
+    loadedCallback: globalName => `_on${capitalize(globalName)}Loaded`
   },
 
   // Server
@@ -200,46 +171,42 @@ export default (): CommonConfiguration => ({
   // Dirs and extensions
   _nuxtConfigFile: undefined,
   srcDir: undefined,
-  buildDir: ".nuxt",
+  buildDir: '.nuxt',
   vite: false,
-  modulesDir: ["node_modules"],
+  modulesDir: [
+    'node_modules'
+  ],
   appDir: APP_DIR,
   dir: {
-    assets: "assets",
-    app: "app",
-    layouts: "layouts",
-    middleware: "middleware",
-    pages: "pages",
-    static: "static",
-    store: "store",
+    assets: 'assets',
+    app: 'app',
+    layouts: 'layouts',
+    middleware: 'middleware',
+    pages: 'pages',
+    static: 'static',
+    store: 'store'
   },
   extensions: [],
-  styleExtensions: [
-    "css",
-    "pcss",
-    "postcss",
-    "styl",
-    "stylus",
-    "scss",
-    "sass",
-    "less",
-  ],
+  styleExtensions: ['css', 'pcss', 'postcss', 'styl', 'stylus', 'scss', 'sass', 'less'],
   alias: {},
 
   // Ignores
   ignoreOptions: undefined,
-  ignorePrefix: "_",
-  ignore: ["**/*.test.*", "**/*.spec.*"],
+  ignorePrefix: '_',
+  ignore: [
+    '**/*.test.*',
+    '**/*.spec.*'
+  ],
 
   // Watch
   watch: [],
   watchers: {
     webpack: {
-      aggregateTimeout: 1000,
+      aggregateTimeout: 1000
     },
     chokidar: {
-      ignoreInitial: true,
-    },
+      ignoreInitial: true
+    }
   },
 
   // Editor
@@ -250,5 +217,5 @@ export default (): CommonConfiguration => ({
 
   // runtimeConfig
   privateRuntimeConfig: {},
-  publicRuntimeConfig: {},
-});
+  publicRuntimeConfig: {}
+})

@@ -1,98 +1,93 @@
-import {
-  createHooks,
-  Hookable,
-} from ".pnpm/hookable@5.5.3/node_modules/hookable/dist";
-import type { App } from ".pnpm/vue@3.5.13_typescript@4.9.5/node_modules/vue/dist/vue";
-import { defineGetter } from "../utils";
-import { callWithNuxt } from "./composables";
+import { createHooks, Hookable } from 'hookable'
+import type { App } from 'vue'
+import { defineGetter } from '../utils'
+import { callWithNuxt } from './composables'
 
 export interface Nuxt {
-  app: App;
-  globalName: string;
+  app: App
+  globalName: string
 
-  hooks: Hookable;
-  hook: Hookable["hook"];
-  callHook: Hookable["callHook"];
+  hooks: Hookable
+  hook: Hookable['hook']
+  callHook: Hookable['callHook']
 
-  [key: string]: any;
+  [key: string]: any
 
-  ssrContext?: Record<string, any>;
+  ssrContext?: Record<string, any>
   payload: {
-    serverRendered?: true;
-    data?: Record<string, any>;
-    rendered?: Function;
-    [key: string]: any;
-  };
+    serverRendered?: true
+    data?: Record<string, any>
+    rendered?: Function
+    [key: string]: any
+  }
 
-  provide: (name: string, value: any) => void;
+  provide: (name: string, value: any) => void
 }
 
 export interface Plugin {
-  (nuxt: Nuxt, provide?: Nuxt["provide"]): Promise<void> | void;
+  (nuxt: Nuxt, provide?: Nuxt['provide']): Promise<void> | void
 }
 
 export interface CreateOptions {
-  app: Nuxt["app"];
-  ssrContext?: Nuxt["ssrContext"];
-  globalName?: Nuxt["globalName"];
+  app: Nuxt['app']
+  ssrContext?: Nuxt['ssrContext']
+  globalName?: Nuxt['globalName']
 }
 
-export function createNuxt(options: CreateOptions) {
+export function createNuxt (options: CreateOptions) {
   const nuxt: Nuxt = {
     provide: undefined,
-    globalName: "nuxt",
+    globalName: 'nuxt',
     state: {},
     payload: {},
     isHydrating: process.client,
-    ...options,
-  } as any as Nuxt;
+    ...options
+  } as any as Nuxt
 
-  nuxt.hooks = createHooks();
-  nuxt.hook = nuxt.hooks.hook;
-  nuxt.callHook = nuxt.hooks.callHook;
+  nuxt.hooks = createHooks()
+  nuxt.hook = nuxt.hooks.hook
+  nuxt.callHook = nuxt.hooks.callHook
 
   nuxt.provide = (name: string, value: any) => {
-    const $name = "$" + name;
-    defineGetter(nuxt, $name, value);
-    defineGetter(nuxt.app.config.globalProperties, $name, value);
-  };
+    const $name = '$' + name
+    defineGetter(nuxt, $name, value)
+    defineGetter(nuxt.app.config.globalProperties, $name, value)
+  }
 
   // Inject $nuxt
-  defineGetter(nuxt.app, "$nuxt", nuxt);
-  defineGetter(nuxt.app.config.globalProperties, "$nuxt", nuxt);
+  defineGetter(nuxt.app, '$nuxt', nuxt)
+  defineGetter(nuxt.app.config.globalProperties, '$nuxt', nuxt)
 
   // Expose nuxt to the renderContext
   if (nuxt.ssrContext) {
-    nuxt.ssrContext.nuxt = nuxt;
+    nuxt.ssrContext.nuxt = nuxt
   }
 
   if (process.server) {
     nuxt.payload = {
-      serverRendered: true, // TODO: legacy
-    };
+      serverRendered: true // TODO: legacy
+    }
 
-    nuxt.ssrContext = nuxt.ssrContext || {};
+    nuxt.ssrContext = nuxt.ssrContext || {}
 
     // Expose to server renderer to create window.__NUXT__
-    nuxt.ssrContext.payload = nuxt.payload;
+    nuxt.ssrContext.payload = nuxt.payload
   }
 
   if (process.client) {
-    nuxt.payload = window.__NUXT__ || {};
+    nuxt.payload = window.__NUXT__ || {}
   }
 
-  return nuxt;
+  return nuxt
 }
 
-export function applyPlugin(nuxt: Nuxt, plugin: Plugin) {
-  if (typeof plugin !== "function") {
-    return;
-  }
-  return callWithNuxt(nuxt, () => plugin(nuxt));
+export function applyPlugin (nuxt: Nuxt, plugin: Plugin) {
+  if (typeof plugin !== 'function') { return }
+  return callWithNuxt(nuxt, () => plugin(nuxt))
 }
 
-export async function applyPlugins(nuxt: Nuxt, plugins: Plugin[]) {
+export async function applyPlugins (nuxt: Nuxt, plugins: Plugin[]) {
   for (const plugin of plugins) {
-    await applyPlugin(nuxt, plugin);
+    await applyPlugin(nuxt, plugin)
   }
 }
