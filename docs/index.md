@@ -4,21 +4,64 @@ layout: home
 
 hero:
   name: "chibinuxt"
-  text: "A VitePress Site"
-  tagline: My great project tagline
+  text: "Build Your Own Nuxt"
+  tagline: "Build Your Own Nuxt Step by Step. \nA Comprehensive Guide to Mastering Nuxt.js"
   actions:
     - theme: brand
-      text: Markdown Examples
+      text: Getting Started
       link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
+  image:
+    src: /image.png
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Nitro
+    icon: 🐿️
+    details: Learn How Nitro is integrated with Nuxt.
+  - title: Vite
+    icon: 🦦
+    details: Learn How Vite is integrated with Nuxt.
+  - title: Modules
+    icon: 🦔
+    details: Learn How Nuxt Modules worls.
 ---
+
+<style>
+:root {
+  --vp-home-hero-name-color: transparent !important;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #34fe4f 20%, #41ffb1 40%, #34fe4f 60%, #41ffb1 80%) !important;  
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #34fe4f 70%, #41ffb1 30%) !important;
+  --vp-home-hero-image-filter: blur(44px) !important;
+  }
+
+.image-bg {
+  width: 280px !important;
+  height: 280px !important;
+}
+
+
+.VPImage {
+  max-height: 220px !important;
+}
+
+#VPContent {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.VPHero{
+  margin-bottom: 15px;
+}
+
+
+@media (min-width: 640px) {
+  :root {
+    --vp-home-hero-image-filter: blur(56px) !important;
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --vp-home-hero-image-filter: blur(68px) !important;
+  }
+}
+</style>
