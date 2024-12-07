@@ -1,13 +1,13 @@
 import { Worker } from "worker_threads";
 import { createApp } from "h3";
 import { resolve } from "upath";
-import debounce from ".pnpm/debounce@1.2.1/node_modules/debounce";
+import debounce from "debounce";
 import chokidar from "chokidar";
 import { listen, Listener } from "listhen";
-import serveStatic from ".pnpm/serve-static@1.16.2/node_modules/serve-static";
-import servePlaceholder from ".pnpm/serve-placeholder@1.2.4/node_modules/serve-placeholder";
-import { createProxy } from ".pnpm/http-proxy@1.18.1/node_modules/http-proxy";
-import { stat } from ".pnpm/fs-extra@9.1.0/node_modules/fs-extra";
+import serveStatic from "serve-static";
+import servePlaceholder from "serve-placeholder";
+import { createProxy } from "http-proxy";
+import { stat } from "fs-extra";
 import type { NitroContext } from "../context";
 
 export function createDevServer(nitroContext: NitroContext) {
@@ -28,6 +28,7 @@ export function createDevServer(nitroContext: NitroContext) {
       workerAddress = null;
       pendingWorker = null;
     }
+    console.log("entry file", workerEntry);
     if (!(await stat(workerEntry)).isFile) {
       throw new Error("Entry not found: " + workerEntry);
     }
@@ -57,14 +58,14 @@ export function createDevServer(nitroContext: NitroContext) {
   const app = createApp();
 
   // _nuxt and static
-  app.use(
-    nitroContext._nuxt.publicPath,
-    serveStatic(resolve(nitroContext._nuxt.buildDir, "dist/client"))
-  );
-  app.use(
-    nitroContext._nuxt.routerBase,
-    serveStatic(resolve(nitroContext._nuxt.staticDir))
-  );
+  // app.use(
+  //   nitroContext._nuxt.publicPath,
+  //   serveStatic(resolve(nitroContext._nuxt.buildDir, "dist/client"))
+  // );
+  // app.use(
+  //   nitroContext._nuxt.routerBase,
+  //   serveStatic(resolve(nitroContext._nuxt.staticDir))
+  // );
 
   // Dynamic Middlwware
   const legacyMiddleware = createDynamicMiddleware();
@@ -73,11 +74,11 @@ export function createDevServer(nitroContext: NitroContext) {
   app.use(devMiddleware.middleware);
 
   // serve placeholder 404 assets instead of hitting SSR
-  app.use(nitroContext._nuxt.publicPath, servePlaceholder());
-  app.use(
-    nitroContext._nuxt.routerBase,
-    servePlaceholder({ skipUnknown: true })
-  );
+  // app.use(nitroContext._nuxt.publicPath, servePlaceholder());
+  // app.use(
+  //   nitroContext._nuxt.routerBase,
+  //   servePlaceholder({ skipUnknown: true })
+  // );
 
   // SSR Proxy
   const proxy = createProxy();
@@ -111,7 +112,7 @@ export function createDevServer(nitroContext: NitroContext) {
     watcher = chokidar
       .watch([
         resolve(nitroContext.output.serverDir, pattern),
-        resolve(nitroContext._nuxt.buildDir, "dist/server", pattern),
+        // resolve(nitroContext._nuxt.buildDir, "dist/server", pattern),
       ])
       .on("all", (event) => events.includes(event) && dReload());
   }

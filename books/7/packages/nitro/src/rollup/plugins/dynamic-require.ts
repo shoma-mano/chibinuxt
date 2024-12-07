@@ -1,45 +1,49 @@
-import { resolve } from 'upath'
-import globby, { GlobbyOptions } from 'globby'
-import type { Plugin } from 'rollup'
+import { resolve } from "upath";
+import globby, { GlobbyOptions } from ".pnpm/globby@11.1.0/node_modules/globby";
+import type { Plugin } from ".pnpm/rollup@2.79.2/node_modules/rollup/dist/rollup";
 
-const PLUGIN_NAME = 'dynamic-require'
-const HELPER_DYNAMIC = `\0${PLUGIN_NAME}.js`
-const DYNAMIC_REQUIRE_RE = /require\("\.\/" ?\+/g
+const PLUGIN_NAME = "dynamic-require";
+const HELPER_DYNAMIC = `\0${PLUGIN_NAME}.js`;
+const DYNAMIC_REQUIRE_RE = /require\("\.\/" ?\+/g;
 
 interface Options {
-  dir: string
-  inline: boolean
-  globbyOptions: GlobbyOptions
-  outDir?: string
-  prefix?: string
+  dir: string;
+  inline: boolean;
+  globbyOptions: GlobbyOptions;
+  outDir?: string;
+  prefix?: string;
 }
 
 interface Chunk {
-  id: string
-  src: string
-  name: string
+  id: string;
+  src: string;
+  name: string;
   meta?: {
-    id?: string
-    ids?: string[]
-    moduleIds?: string[]
-  }
+    id?: string;
+    ids?: string[];
+    moduleIds?: string[];
+  };
 }
 
 interface TemplateContext {
-  chunks: Chunk[]
+  chunks: Chunk[];
 }
 
-export function dynamicRequire ({ dir, globbyOptions, inline }: Options): Plugin {
+export function dynamicRequire({
+  dir,
+  globbyOptions,
+  inline,
+}: Options): Plugin {
   return {
     name: PLUGIN_NAME,
-    transform (code: string, _id: string) {
+    transform(code: string, _id: string) {
       return {
         code: code.replace(DYNAMIC_REQUIRE_RE, `require('${HELPER_DYNAMIC}')(`),
-        map: null
-      }
+        map: null,
+      };
     },
-    resolveId (id: string) {
-      return id === HELPER_DYNAMIC ? id : null
+    resolveId(id: string) {
+      return id === HELPER_DYNAMIC ? id : null;
     },
     // TODO: Async chunk loading over netwrok!
     // renderDynamicImport () {
@@ -47,61 +51,66 @@ export function dynamicRequire ({ dir, globbyOptions, inline }: Options): Plugin
     //     left: 'fetch(', right: ')'
     //   }
     // },
-    async load (_id: string) {
+    async load(_id: string) {
       if (_id !== HELPER_DYNAMIC) {
-        return null
+        return null;
       }
 
       // Scan chunks
-      const files = await globby('**/*.js', { cwd: dir, absolute: false, ...globbyOptions })
-      const chunks = files.map(id => ({
+      const files = await globby("**/*.js", {
+        cwd: dir,
+        absolute: false,
+        ...globbyOptions,
+      });
+      const chunks = files.map((id) => ({
         id,
-        src: resolve(dir, id).replace(/\\/g, '/'),
-        name: '_' + id.replace(/[^a-zA-Z0-9_]/g, '_'),
-        meta: getWebpackChunkMeta(resolve(dir, id))
-      }))
+        src: resolve(dir, id).replace(/\\/g, "/"),
+        name: "_" + id.replace(/[^a-zA-Z0-9_]/g, "_"),
+        meta: getWebpackChunkMeta(resolve(dir, id)),
+      }));
 
-      return inline ? TMPL_INLINE({ chunks }) : TMPL_LAZY({ chunks })
+      return inline ? TMPL_INLINE({ chunks }) : TMPL_LAZY({ chunks });
     },
-    renderChunk (code) {
+    renderChunk(code) {
       if (inline) {
         return {
           map: null,
-          code
-        }
+          code,
+        };
       }
       return {
         map: null,
         code: code.replace(
           /Promise.resolve\(\).then\(function \(\) \{ return require\('([^']*)' \/\* webpackChunk \*\/\); \}\).then\(function \(n\) \{ return n.([_a-zA-Z0-9]*); \}\)/g,
-          "require('$1').$2")
-      }
-    }
-  }
+          "require('$1').$2"
+        ),
+      };
+    },
+  };
 }
 
-function getWebpackChunkMeta (src: string) {
-  const chunk = require(src) || {}
-  const { id, ids, modules } = chunk
+function getWebpackChunkMeta(src: string) {
+  const chunk = require(src) || {};
+  const { id, ids, modules } = chunk;
   return {
     id,
     ids,
-    moduleIds: Object.keys(modules)
-  }
+    moduleIds: Object.keys(modules),
+  };
 }
 
-function TMPL_INLINE ({ chunks }: TemplateContext) {
-  return `${chunks.map(i => `import ${i.name} from '${i.src}'`).join('\n')}
+function TMPL_INLINE({ chunks }: TemplateContext) {
+  return `${chunks.map((i) => `import ${i.name} from '${i.src}'`).join("\n")}
 const dynamicChunks = {
-  ${chunks.map(i => ` ['${i.id}']: ${i.name}`).join(',\n')}
+  ${chunks.map((i) => ` ['${i.id}']: ${i.name}`).join(",\n")}
 };
 
 export default function dynamicRequire(id) {
   return dynamicChunks[id];
-};`
+};`;
 }
 
-function TMPL_LAZY ({ chunks }: TemplateContext) {
+function TMPL_LAZY({ chunks }: TemplateContext) {
   return `
 function dynamicWebpackModule(id, getChunk) {
   return function (module, exports, require) {
@@ -127,10 +136,17 @@ function webpackChunk (meta, getChunk) {
 };
 
 const dynamicChunks = {
-${chunks.map(i => ` ['${i.id}']: () => webpackChunk(${JSON.stringify(i.meta)}, () => import('${i.src}' /* webpackChunk */))`).join(',\n')}
+${chunks
+  .map(
+    (i) =>
+      ` ['${i.id}']: () => webpackChunk(${JSON.stringify(
+        i.meta
+      )}, () => import('${i.src}' /* webpackChunk */))`
+  )
+  .join(",\n")}
 };
 
 export default function dynamicRequire(id) {
   return dynamicChunks[id]();
-};`
+};`;
 }

@@ -18,7 +18,6 @@ import { resolvePath, MODULE_DIR } from "../utils";
 
 import { dynamicRequire } from "./plugins/dynamic-require";
 import { externals } from "./plugins/externals";
-import { timing } from "./plugins/timing";
 import { autoMock } from "./plugins/automock";
 import { staticAssets, dirnames } from "./plugins/static";
 import { middleware } from "./plugins/middleware";
@@ -107,10 +106,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
       }
     },
   };
-
-  if (nitroContext.timing) {
-    rollupConfig.plugins.push(timing());
-  }
 
   // https://github.com/rollup/plugins/tree/master/packages/replace
   rollupConfig.plugins.push(

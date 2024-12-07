@@ -7,7 +7,7 @@ import {
   build,
   prepare,
   generate,
-} from "../../../nitro/dist";
+} from "@nuxt/nitro";
 import type { Nuxt } from "./index";
 
 export function initNitro(nuxt: Nuxt) {
