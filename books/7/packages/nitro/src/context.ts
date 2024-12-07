@@ -1,10 +1,8 @@
 import { resolve } from "upath";
-import defu from ".pnpm/defu@3.2.2/node_modules/defu/dist/defu";
-import type { NuxtOptions } from ".pnpm/@nuxt+types@2.18.1/node_modules/@nuxt/types";
-import Hookable, {
-  configHooksT,
-} from ".pnpm/hookable@5.5.3/node_modules/hookable/dist";
-import type { Preset } from ".pnpm/@nuxt+un@0.1.1_encoding@0.1.13/node_modules/@nuxt/un/dist";
+import defu from "defu";
+import type { NuxtOptions } from "@nuxt/types";
+import { createHooks, Hookable, Hooks } from "hookable";
+import type { Preset } from "@nuxt/un";
 import { tryImport, resolvePath, detectTarget, extendPreset } from "./utils";
 import * as PRESETS from "./presets";
 import type { NodeExternalsOptions } from "./rollup/plugins/externals";
@@ -25,8 +23,8 @@ export interface NitroContext {
   serveStatic: boolean;
   middleware: ServerMiddleware[];
   scannedMiddleware: ServerMiddleware[];
-  hooks: configHooksT;
-  nuxtHooks: configHooksT;
+  hooks: Hooks;
+  nuxtHooks: Hooks;
   ignore: string[];
   env: Preset;
   output: {
@@ -116,7 +114,7 @@ export function getNitroContext(
     },
     _internal: {
       runtimeDir: resolve(__dirname, "./runtime"),
-      hooks: new Hookable(),
+      hooks: createHooks(),
     },
   };
 
@@ -143,6 +141,7 @@ export function getNitroContext(
     nitroContext,
     nitroContext.output.serverDir
   );
+  console.log("nitroContext.output.serverDir", nitroContext.output.serverDir);
 
   nitroContext._internal.hooks.addHooks(nitroContext.hooks);
 
@@ -151,3 +150,12 @@ export function getNitroContext(
 
   return nitroContext;
 }
+
+export const createNitroContext = () => {
+  const context = {
+    _internal: {
+      hooks: createHooks(),
+      runtimeDir: resolve(__dirname, "./runtime"),
+    },
+  } as NitroContext;
+};

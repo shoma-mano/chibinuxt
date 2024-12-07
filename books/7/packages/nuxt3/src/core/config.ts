@@ -1,4 +1,4 @@
-import defu from ".pnpm/defu@3.2.2/node_modules/defu/dist/defu";
+import defu from "defu";
 
 export function getConfig(_options: any) {
   // Prevent duplicate calls

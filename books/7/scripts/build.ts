@@ -2,21 +2,16 @@ import { promisify } from "util";
 import { resolve, relative, dirname } from "path";
 import Module from "module";
 import { writeFile, mkdir } from "fs/promises";
-import chalk from ".pnpm/chalk@4.1.2/node_modules/chalk";
+import chalk from "chalk";
 import consola from "consola";
-import rimraf from ".pnpm/rimraf@3.0.2/node_modules/rimraf/rimraf";
-import {
-  RollupOptions,
-  OutputOptions,
-  OutputChunk,
-  rollup,
-} from ".pnpm/rollup@2.79.2/node_modules/rollup/dist/rollup";
-import commonjs from ".pnpm/@rollup+plugin-commonjs@17.1.0_rollup@2.79.2/node_modules/@rollup/plugin-commonjs/types";
-import nodeResolve from ".pnpm/@rollup+plugin-node-resolve@11.2.1_rollup@2.79.2/node_modules/@rollup/plugin-node-resolve/types";
-import alias from ".pnpm/@rollup+plugin-alias@3.1.9_rollup@2.79.2/node_modules/@rollup/plugin-alias/types";
-import esbuild from ".pnpm/rollup-plugin-esbuild@3.0.4_esbuild@0.9.7_rollup@2.79.2/node_modules/rollup-plugin-esbuild/dist";
-import { mkdist } from ".pnpm/mkdist@0.1.7_typescript@4.9.5/node_modules/mkdist/dist";
-import prettyBytes from ".pnpm/pretty-bytes@5.6.0/node_modules/pretty-bytes";
+import rimraf from ".pnpm/rimraf@3.0.2/node_modules/rimraf";
+import { RollupOptions, OutputOptions, OutputChunk, rollup } from "rollup";
+import commonjs from "@rollup/plugin-commonjs";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import alias from "@rollup/plugin-alias";
+import esbuild from "rollup-plugin-esbuild";
+import { mkdist } from "mkdist";
+import prettyBytes from "pretty-bytes";
 
 interface BuildEntry {
   name: string;

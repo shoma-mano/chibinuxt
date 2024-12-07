@@ -23,7 +23,7 @@
     "ohmyfetch": "^0.1.8",
     "source-map-support": "^0.5.21",
     "vue": "^3.0.7",
-    "vue-bundle-renderer": "^0.2.3",
+    "vue-bundle-renderer": "^0.2.10",
     "vue-router": "^4.0.5"
   }
 }

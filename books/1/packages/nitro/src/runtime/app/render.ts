@@ -13,7 +13,7 @@ function _interopDefault(e) {
 }
 
 const renderer = createRenderer(_interopDefault(createApp), {
-  clientManifest: _interopDefault(clientManifest),
+  // clientManifest: _interopDefault(clientManifest),
   renderToString,
 });
 

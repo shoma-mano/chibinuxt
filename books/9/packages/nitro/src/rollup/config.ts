@@ -162,6 +162,7 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
   }))
 
   // Polyfill
+  console.log('env', env)
   rollupConfig.plugins.push(virtual({
     '~polyfill': env.polyfill.map(p => `import '${p}';`).join('\n')
   }))

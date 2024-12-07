@@ -1,11 +1,11 @@
-import { Color } from ".pnpm/chalk@4.1.2/node_modules/chalk";
+import { Color } from 'chalk'
 
 export interface CliOptions {
-  badgeMessages: string[];
-  bannerColor: typeof Color;
+  badgeMessages: string[]
+  bannerColor: typeof Color
 }
 
 export default (): CliOptions => ({
   badgeMessages: [],
-  bannerColor: "green",
-});
+  bannerColor: 'green'
+})
