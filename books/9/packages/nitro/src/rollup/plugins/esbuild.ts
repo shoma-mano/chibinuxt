@@ -3,7 +3,7 @@
 import { extname, relative } from 'path'
 import { Plugin, PluginContext } from 'rollup'
 import { Loader, TransformResult, transform } from 'esbuild'
-import { createFilter, FilterPattern } from '@rollup/pluginutils'
+import { createFilter, FilterPattern } from '.pnpm/@rollup+pluginutils@4.2.1/node_modules/@rollup/pluginutils'
 
 const defaultLoaders: { [ext: string]: Loader } = {
   '.ts': 'ts',

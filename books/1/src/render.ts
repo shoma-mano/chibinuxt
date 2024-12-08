@@ -1,21 +1,22 @@
 import { createRenderer } from "vue-bundle-renderer/runtime";
 import { renderToString } from "vue/server-renderer";
+import { h, createApp } from "vue";
 import { defineEventHandler } from "h3";
-import { join } from "path";
 
-let renderer: ReturnType<typeof createRenderer>;
+const _createApp = () => {
+  const app = createApp({
+    render: () => h("div", "hello world"),
+  });
+  return app;
+};
+
+const renderer = createRenderer(_createApp, {
+  renderToString,
+  manifest: {},
+});
+
 export const renderMiddleware = defineEventHandler(async (event) => {
-  if (!renderer) {
-    const createApp = await import(
-      join(import.meta.dirname, "dist/createApp.js")
-    ).then((m) => m.default);
-    renderer = createRenderer(createApp, {
-      renderToString,
-      manifest: {},
-    });
-    console.log("renderer created", renderer);
-  }
-  const { req, res } = event.node;
+  const { res } = event.node;
   const rendered = await renderer.renderToString({});
   const data = renderHTML(rendered);
   res.setHeader("Content-Type", "text/html;charset=UTF-8");

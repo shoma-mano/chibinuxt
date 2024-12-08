@@ -5,23 +5,29 @@ layout: home
 hero:
   name: "chibinuxt"
   text: "Build Your Own Nuxt"
-  tagline: "Build Your Own Nuxt Step by Step. \nA Comprehensive Guide to Mastering Nuxt.js"
+  tagline: "Build Your Own Nuxt Step by Step. \nA Comprehensive Guide to Mastering Nuxt.js."
   actions:
     - theme: brand
-      text: Getting Started
+      text: Continue..?
+      link: /part-1/markdown-examples
+    - theme: alt
+      text: Nuxt Official
       link: /markdown-examples
   image:
     src: /image.png
 
 features:
   - title: Nitro
-    icon: 🐿️
+    icon:
+      src: /satake-ken.png
     details: Learn How Nitro is integrated with Nuxt.
   - title: Vite
-    icon: 🦦
+    icon:
+      src: /satake-risu.png
     details: Learn How Vite is integrated with Nuxt.
   - title: Modules
-    icon: 🦔
+    icon:
+      src: /satake-nezumi.png
     details: Learn How Nuxt Modules worls.
 ---
 
@@ -38,6 +44,9 @@ features:
   height: 280px !important;
 }
 
+.VPButton.brand {
+  background-color: #444d82 !important;
+}
 
 .VPImage {
   max-height: 220px !important;

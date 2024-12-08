@@ -1,7 +1,6 @@
 import { createRenderer } from "vue-bundle-renderer";
 import devalue from "@nuxt/devalue";
-// @ts-ignore
-import { renderToString } from "~renderer";
+import { renderToString } from "./vue3";
 // @ts-ignore
 import createApp from "~build/dist/server/server";
 // @ts-ignore
@@ -14,7 +13,7 @@ function _interopDefault(e) {
 }
 
 const renderer = createRenderer(_interopDefault(createApp), {
-  clientManifest: _interopDefault(clientManifest),
+  // clientManifest: _interopDefault(clientManifest),
   renderToString,
 });
 
@@ -35,6 +34,7 @@ export async function renderMiddleware(req, res) {
     );
   }
 
+  console.log("req.context", req.context);
   const ssrContext = {
     url,
     ...(req.context || {}),

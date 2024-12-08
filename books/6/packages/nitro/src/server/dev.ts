@@ -1,5 +1,5 @@
 import { Worker } from "worker_threads";
-import { createApp } from "h3";
+import { createApp } from "../../../../node_modules/.pnpm/h3@0.2.12/node_modules/h3/dist/index.cjs";
 import { resolve } from "upath";
 import debounce from "debounce";
 import chokidar from "chokidar";

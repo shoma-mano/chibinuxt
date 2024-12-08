@@ -1,11 +1,7 @@
 import { resolve, join } from "upath";
 import consola from "consola";
 import { rollup, watch as rollupWatch } from "rollup";
-import {
-  readFile,
-  emptyDir,
-  copy,
-} from ".pnpm/fs-extra@9.1.0/node_modules/fs-extra";
+import { readFile, emptyDir, copy } from "fs-extra";
 import { printFSTree } from "./utils/tree";
 import { getRollupConfig } from "./rollup/config";
 import {
@@ -63,11 +59,12 @@ export async function generate(nitroContext: NitroContext) {
 
 export async function build(nitroContext: NitroContext) {
   // Compile html template
-  const htmlSrc = resolve(
-    nitroContext._nuxt.buildDir,
-    `views/${{ 2: "app", 3: "document" }[2]}.template.html`
-  );
-  const htmlTemplate = { src: htmlSrc, contents: "", dst: "", compiled: "" };
+  const htmlTemplate = {
+    src: nitroContext.templatePath,
+    contents: "",
+    dst: "",
+    compiled: "",
+  };
   htmlTemplate.dst = htmlTemplate.src
     .replace(/.html$/, ".js")
     .replace("app.", "document.");

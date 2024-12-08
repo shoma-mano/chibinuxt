@@ -5,18 +5,7 @@
     },
     {
       "path": "."
-    },
-    {
-      "path": "./packages/nitro"
-    },
-    {
-      "path": "./packages/nuxt3"
-    },
-    {
-      "path": "./playgrounds/nitro-playground"
-    },
-    {
-      "path": "./playgrounds/nuxt-playground"
     }
-  ]
+  ],
+  "settings": {}
 }
