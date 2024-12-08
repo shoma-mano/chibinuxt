@@ -1,196 +1,186 @@
-import { resolve, join } from "path";
-import fs from ".pnpm/@types+fs-extra@9.0.13/node_modules/@types/fs-extra";
+import { resolve, join } from 'path'
+import fs from 'fs-extra'
 
-import jiti from ".pnpm/jiti@1.21.6/node_modules/jiti/dist/jiti";
+import jiti from 'jiti'
 import {
   startsWithRootAlias,
   startsWithSrcAlias,
   isExternalDependency,
-  clearRequireCache,
-} from "../utils";
-import { Nuxt } from ".";
+  clearRequireCache
+} from '../utils'
+import { Nuxt } from '.'
 
 interface ResolvePathOptions {
-  isAlias?: boolean;
-  isModule?: boolean;
-  isStyle?: boolean;
+  isAlias?: boolean
+  isModule?: boolean
+  isStyle?: boolean
 }
 
 interface RequireModuleOptions {
-  useESM?: boolean;
-  isAlias?: boolean;
-  interopDefault?: any;
+  useESM?: boolean
+  isAlias?: boolean
+  interopDefault?: any
 }
 
 export default class Resolver {
-  _require: NodeJS.Require;
-  _resolve: NodeJS.RequireResolve;
-  nuxt: Nuxt;
-  options: Nuxt["options"];
+  _require: NodeJS.Require
+  _resolve: NodeJS.RequireResolve
+  nuxt: Nuxt
+  options: Nuxt['options']
 
-  constructor(nuxt?: Nuxt) {
-    this.nuxt = nuxt;
-    this.options = this.nuxt.options;
+  constructor (nuxt?: Nuxt) {
+    this.nuxt = nuxt
+    this.options = this.nuxt.options
 
     // Binds
-    this.resolvePath = this.resolvePath.bind(this);
-    this.resolveAlias = this.resolveAlias.bind(this);
-    this.resolveModule = this.resolveModule.bind(this);
-    this.requireModule = this.requireModule.bind(this);
+    this.resolvePath = this.resolvePath.bind(this)
+    this.resolveAlias = this.resolveAlias.bind(this)
+    this.resolveModule = this.resolveModule.bind(this)
+    this.requireModule = this.requireModule.bind(this)
 
-    this._require = jiti(__filename);
-    this._resolve = this._require.resolve;
+    this._require = jiti(__filename)
+    this._resolve = this._require.resolve
   }
 
-  resolveModule(path: string) {
+  resolveModule (path: string) {
     try {
       return this._resolve(path, {
-        paths: this.options.modulesDir,
-      });
+        paths: this.options.modulesDir
+      })
     } catch (error) {
-      if (error.code !== "MODULE_NOT_FOUND") {
+      if (error.code !== 'MODULE_NOT_FOUND') {
         // TODO: remove after https://github.com/facebook/jest/pull/8487 released
-        if (
-          process.env.NODE_ENV === "test" &&
-          error.message.startsWith("Cannot resolve module")
-        ) {
-          return;
+        if (process.env.NODE_ENV === 'test' && error.message.startsWith('Cannot resolve module')) {
+          return
         }
-        throw error;
+        throw error
       }
     }
   }
 
-  resolveAlias(path: string) {
+  resolveAlias (path: string) {
     if (startsWithRootAlias(path)) {
-      return join(this.options.rootDir, path.substr(2));
+      return join(this.options.rootDir, path.substr(2))
     }
 
     if (startsWithSrcAlias(path)) {
-      return join(this.options.srcDir, path.substr(1));
+      return join(this.options.srcDir, path.substr(1))
     }
 
-    return resolve(this.options.srcDir, path);
+    return resolve(this.options.srcDir, path)
   }
 
-  resolvePath(
-    path: string,
-    { isAlias, isModule, isStyle }: ResolvePathOptions = {}
-  ) {
+  resolvePath (path: string, { isAlias, isModule, isStyle }: ResolvePathOptions = {}) {
     // Fast return in case of path exists
     if (fs.existsSync(path)) {
-      return path;
+      return path
     }
 
-    let resolvedPath: string;
+    let resolvedPath: string
 
     // Try to resolve it as a regular module
     if (isModule !== false) {
-      resolvedPath = this.resolveModule(path);
+      resolvedPath = this.resolveModule(path)
     }
 
     // Try to resolve alias
     if (!resolvedPath && isAlias !== false) {
-      resolvedPath = this.resolveAlias(path);
+      resolvedPath = this.resolveAlias(path)
     }
 
     // Use path for resolvedPath
     if (!resolvedPath) {
-      resolvedPath = path;
+      resolvedPath = path
     }
 
-    let isDirectory: boolean;
+    let isDirectory: boolean
 
     // Check if resolvedPath exits and is not a directory
     if (fs.existsSync(resolvedPath)) {
-      isDirectory = fs.lstatSync(resolvedPath).isDirectory();
+      isDirectory = fs.lstatSync(resolvedPath).isDirectory()
 
       if (!isDirectory) {
-        return resolvedPath;
+        return resolvedPath
       }
     }
 
-    const extensions = isStyle
-      ? this.options.styleExtensions
-      : this.options.extensions;
+    const extensions = isStyle ? this.options.styleExtensions : this.options.extensions
 
     // Check if any resolvedPath.[ext] or resolvedPath/index.[ext] exists
     for (const ext of extensions) {
-      if (!isDirectory && fs.existsSync(resolvedPath + "." + ext)) {
-        return resolvedPath + "." + ext;
+      if (!isDirectory && fs.existsSync(resolvedPath + '.' + ext)) {
+        return resolvedPath + '.' + ext
       }
 
-      const resolvedPathwithIndex = join(resolvedPath, "index." + ext);
+      const resolvedPathwithIndex = join(resolvedPath, 'index.' + ext)
       if (isDirectory && fs.existsSync(resolvedPathwithIndex)) {
-        return resolvedPathwithIndex;
+        return resolvedPathwithIndex
       }
     }
 
     // If there's no index.[ext] we just return the directory path
     if (isDirectory) {
-      return resolvedPath;
+      return resolvedPath
     }
 
     // Give up
-    throw new Error(`Cannot resolve "${path}" from "${resolvedPath}"`);
+    throw new Error(`Cannot resolve "${path}" from "${resolvedPath}"`)
   }
 
-  tryResolvePath(path: string, options?: ResolvePathOptions) {
+  tryResolvePath (path: string, options?: ResolvePathOptions) {
     try {
-      return this.resolvePath(path, options);
-    } catch (e) {}
+      return this.resolvePath(path, options)
+    } catch (e) {
+    }
   }
 
-  requireModule<T>(
-    path: string,
-    { useESM, isAlias, interopDefault }: RequireModuleOptions = {}
-  ): T {
-    let resolvedPath = path;
-    let requiredModule: any;
+  requireModule <T> (path: string, { useESM, isAlias, interopDefault }: RequireModuleOptions = {}): T {
+    let resolvedPath = path
+    let requiredModule: any
 
-    let lastError: any;
+    let lastError: any
 
     // Try to resolve path
     try {
-      resolvedPath = this.resolvePath(path, { isAlias });
+      resolvedPath = this.resolvePath(path, { isAlias })
     } catch (e) {
-      lastError = e;
+      lastError = e
     }
 
-    const isExternal = isExternalDependency(resolvedPath);
+    const isExternal = isExternalDependency(resolvedPath)
 
     // in dev mode make sure to clear the require cache so after
     // a dev server restart any changed file is reloaded
     if (this.options.dev && !isExternal) {
-      clearRequireCache(resolvedPath);
+      clearRequireCache(resolvedPath)
     }
 
     // By default use esm only for js,mjs files outside of node_modules
     if (useESM === undefined) {
-      useESM = !isExternal && /.(js|mjs)$/.test(resolvedPath);
+      useESM = !isExternal && /.(js|mjs)$/.test(resolvedPath)
     }
 
     // Try to require
     try {
       if (useESM) {
-        requiredModule = this._require(resolvedPath);
+        requiredModule = this._require(resolvedPath)
       } else {
-        requiredModule = require(resolvedPath);
+        requiredModule = require(resolvedPath)
       }
     } catch (e) {
-      lastError = e;
+      lastError = e
     }
 
     // Interop default
     if (interopDefault !== false && requiredModule && requiredModule.default) {
-      requiredModule = requiredModule.default;
+      requiredModule = requiredModule.default
     }
 
     // Throw error if failed to require
     if (requiredModule === undefined && lastError) {
-      throw lastError;
+      throw lastError
     }
 
-    return requiredModule;
+    return requiredModule
   }
 }

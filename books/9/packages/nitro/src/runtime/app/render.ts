@@ -1,5 +1,5 @@
-import { createRenderer } from ".pnpm/vue-bundle-renderer@0.2.10/node_modules/vue-bundle-renderer/dist";
-import devalue from ".pnpm/@nuxt+devalue@1.2.5/node_modules/@nuxt/devalue/types";
+import { createRenderer } from "vue-bundle-renderer";
+import devalue from "@nuxt/devalue";
 import config from "./config";
 // @ts-ignore
 import { renderToString } from "~renderer";
@@ -77,7 +77,11 @@ function renderHTML(payload, rendered, ssrContext) {
     headTags = "",
     headAttrs = "",
   } = (ssrContext.head && ssrContext.head()) || {};
-
+  const HEAD =
+    headTags + rendered.renderResourceHints() + rendered.renderStyles();
+  console.log("HEAD", HEAD);
+  const APP = _html + state + rendered.renderScripts();
+  console.log("APP", APP);
   return htmlTemplate({
     HTML_ATTRS: htmlAttrs,
     HEAD_ATTRS: headAttrs,

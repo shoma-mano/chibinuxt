@@ -1,80 +1,67 @@
-import hasha from ".pnpm/hasha@5.2.2/node_modules/hasha";
-import { relative } from "upath";
-import {
-  table,
-  getBorderCharacters,
-} from ".pnpm/table@6.8.2/node_modules/table/dist/src";
-import isPrimitive from ".pnpm/is-primitive@3.0.1/node_modules/is-primitive";
-import stdenv from ".pnpm/std-env@2.3.1/node_modules/std-env";
-import type { ServerMiddleware } from "../../server/middleware";
-import virtual from "./virtual";
+import hasha from 'hasha'
+import { relative } from 'upath'
+import { table, getBorderCharacters } from 'table'
+import isPrimitive from 'is-primitive'
+import stdenv from 'std-env'
+import type { ServerMiddleware } from '../../server/middleware'
+import virtual from './virtual'
 
-export function middleware(getMiddleware: () => ServerMiddleware[]) {
-  const getImportId = (p) => "_" + hasha(p).substr(0, 6);
+export function middleware (getMiddleware: () => ServerMiddleware[]) {
+  const getImportId = p => '_' + hasha(p).substr(0, 6)
 
-  let lastDump = "";
+  let lastDump = ''
 
   return virtual({
-    "~serverMiddleware": () => {
-      const middleware = getMiddleware();
+    '~serverMiddleware': () => {
+      const middleware = getMiddleware()
 
       if (!stdenv.test) {
-        const dumped = dumpMiddleware(middleware);
+        const dumped = dumpMiddleware(middleware)
         if (dumped !== lastDump) {
-          lastDump = dumped;
+          lastDump = dumped
           if (middleware.length) {
-            console.log(dumped);
+            console.log(dumped)
           }
         }
       }
 
       return `
-${middleware
-  .filter((m) => m.lazy === false)
-  .map((m) => `import ${getImportId(m.handle)} from '${m.handle}';`)
-  .join("\n")}
+${middleware.filter(m => m.lazy === false).map(m => `import ${getImportId(m.handle)} from '${m.handle}';`).join('\n')}
 
-${middleware
-  .filter((m) => m.lazy !== false)
-  .map((m) => `const ${getImportId(m.handle)} = () => import('${m.handle}');`)
-  .join("\n")}
+${middleware.filter(m => m.lazy !== false).map(m => `const ${getImportId(m.handle)} = () => import('${m.handle}');`).join('\n')}
 
 const middleware = [
-  ${middleware
-    .map(
-      (m) =>
-        `{ route: '${m.route}', handle: ${getImportId(m.handle)}, lazy: ${
-          m.lazy || true
-        }, promisify: ${m.promisify !== undefined ? m.promisify : true} }`
-    )
-    .join(",\n")}
+  ${middleware.map(m => `{ route: '${m.route}', handle: ${getImportId(m.handle)}, lazy: ${m.lazy || true}, promisify: ${m.promisify !== undefined ? m.promisify : true} }`).join(',\n')}
 ];
 
 export default middleware
-`;
-    },
-  });
+`
+    }
+  })
 }
 
-function dumpMiddleware(middleware: ServerMiddleware[]) {
+function dumpMiddleware (middleware: ServerMiddleware[]) {
   const data = middleware.map(({ route, handle, ...props }) => {
     return [
-      route && route !== "/" ? route : "*",
+      (route && route !== '/') ? route : '*',
       relative(process.cwd(), handle),
-      dumpObject(props),
-    ];
-  });
-  return table([["Route", "Handle", "Options"], ...data], {
+      dumpObject(props)
+    ]
+  })
+  return table([
+    ['Route', 'Handle', 'Options'],
+    ...data
+  ], {
     singleLine: true,
-    border: getBorderCharacters("norc"),
-  });
+    border: getBorderCharacters('norc')
+  })
 }
 
-function dumpObject(obj: any) {
-  const items = [];
+function dumpObject (obj: any) {
+  const items = []
   for (const key in obj) {
-    const val = obj[key];
-    items.push(`${key}: ${isPrimitive(val) ? val : JSON.stringify(val)}`);
+    const val = obj[key]
+    items.push(`${key}: ${isPrimitive(val) ? val : JSON.stringify(val)}`)
   }
-  return items.join(", ");
+  return items.join(', ')
 }

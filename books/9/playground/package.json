@@ -18,7 +18,7 @@
     "@vueuse/head": "^0.5.1",
     "destr": "^1.1.0",
     "h3": "^0.2.5",
-    "hookable": "5.5.3",
+    "hookable": "^4.4.1",
     "nuxt3": "workspace:*",
     "ohmyfetch": "^0.1.8",
     "source-map-support": "^0.5.21",

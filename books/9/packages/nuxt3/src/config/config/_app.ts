@@ -1,82 +1,74 @@
-import type { App } from ".pnpm/vue@3.5.13_typescript@4.9.5/node_modules/vue/dist/vue";
-import type { MetaInfo, VueMetaOptions } from "vue-meta";
+import type { App } from 'vue'
+import type { MetaInfo, VueMetaOptions } from 'vue-meta'
 
-type Plugin =
-  | string
-  | { mode?: "all" | "client" | "server"; src: string; ssr?: boolean };
+type Plugin = string | { mode?: 'all' | 'client' | 'server', src: string, ssr?: boolean }
 
 interface AppOptions {
-  css: string[];
-  head: MetaInfo | (() => MetaInfo);
-  ErrorPage: null | string;
-  extendPlugins: null | ((plugins: Plugin[]) => Plugin[]);
+  css: string[]
+  head: MetaInfo | (() => MetaInfo)
+  ErrorPage: null | string
+  extendPlugins: null | ((plugins: Plugin[]) => Plugin[])
   features: {
-    store: boolean;
-    layouts: boolean;
-    meta: boolean;
-    middleware: boolean;
-    transitions: boolean;
-    deprecations: boolean;
-    validate: boolean;
-    asyncData: boolean;
-    fetch: boolean;
-    clientOnline: boolean;
-    clientPrefetch: boolean;
-    clientUseUrl: boolean;
-    componentAliases: boolean;
-    componentClientOnly: boolean;
-  };
+    store: boolean
+    layouts: boolean
+    meta: boolean
+    middleware: boolean
+    transitions: boolean
+    deprecations: boolean
+    validate: boolean
+    asyncData: boolean
+    fetch: boolean
+    clientOnline: boolean
+    clientPrefetch: boolean
+    clientUseUrl: boolean
+    componentAliases: boolean
+    componentClientOnly: boolean
+  }
   fetch: {
-    server: boolean;
-    client: boolean;
-  };
-  layouts: {};
+    server: boolean
+    client: boolean
+  }
+  layouts: {}
   layoutTransition: {
-    name: string;
-    mode?: string | "out-in";
-  };
-  loading:
-    | string
-    | false
-    | {
-        color?: string;
-        continuous?: boolean;
-        css?: boolean;
-        duration?: number;
-        failedColor?: string;
-        height?: string;
-        rtl?: boolean;
-        throttle?: number;
-      };
-  loadingIndicator:
-    | string
-    | false
-    | {
-        background?: string;
-        color?: string;
-        color2?: string;
-        name?: string;
-      };
+    name: string
+    mode?: string | 'out-in'
+  }
+  loading: string | false | {
+    color?: string
+    continuous?: boolean
+    css?: boolean
+    duration?: number
+    failedColor?: string
+    height?: string
+    rtl?: boolean
+    throttle?: number
+  }
+  loadingIndicator: string | false | {
+    background?: string
+    color?: string
+    color2?: string
+    name?: string
+  }
   pageTransition: {
-    name: string;
-    mode?: string | "out-in";
-    appear?: boolean;
-    appearClass?: string;
-    appearActiveClass?: string;
-    appearToClass?: string;
-  };
-  plugins: Array<Plugin>;
+    name: string
+    mode?: string | 'out-in'
+    appear?: boolean
+    appearClass?: string
+    appearActiveClass?: string
+    appearToClass?: string
+  }
+  plugins: Array<Plugin>
   vue: {
-    config: Partial<App["config"]>;
-  };
-  vueMeta: null | VueMetaOptions;
+    config: Partial<App['config']>
+  }
+  vueMeta: null | VueMetaOptions
 }
 
 export default (): AppOptions => ({
   vue: {
     config: {
-      performance: undefined, // = dev
-    },
+      performance: undefined // = dev
+    }
   },
 
   vueMeta: null,
@@ -85,12 +77,12 @@ export default (): AppOptions => ({
     meta: [],
     link: [],
     style: [],
-    script: [],
+    script: []
   },
 
   fetch: {
     server: true,
-    client: true,
+    client: true
   },
 
   plugins: [],
@@ -104,30 +96,30 @@ export default (): AppOptions => ({
   ErrorPage: null,
 
   loading: {
-    color: "black",
-    failedColor: "red",
-    height: "2px",
+    color: 'black',
+    failedColor: 'red',
+    height: '2px',
     throttle: 200,
     duration: 5000,
     continuous: false,
     rtl: false,
-    css: true,
+    css: true
   },
 
-  loadingIndicator: "default",
+  loadingIndicator: 'default',
 
   pageTransition: {
-    name: "page",
-    mode: "out-in",
+    name: 'page',
+    mode: 'out-in',
     appear: false,
-    appearClass: "appear",
-    appearActiveClass: "appear-active",
-    appearToClass: "appear-to",
+    appearClass: 'appear',
+    appearActiveClass: 'appear-active',
+    appearToClass: 'appear-to'
   },
 
   layoutTransition: {
-    name: "layout",
-    mode: "out-in",
+    name: 'layout',
+    mode: 'out-in'
   },
 
   features: {
@@ -144,9 +136,9 @@ export default (): AppOptions => ({
     clientPrefetch: true,
     clientUseUrl: false,
     componentAliases: true,
-    componentClientOnly: true,
-  },
-});
+    componentClientOnly: true
+  }
+})
 
 // type NormalizedConfiguration<T extends Record<string, any>> = T & {
 //   pageTransition?: Exclude<T['pageTransition'], string>

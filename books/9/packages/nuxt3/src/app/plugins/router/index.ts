@@ -1,51 +1,51 @@
-import { shallowRef } from ".pnpm/vue@3.5.13_typescript@4.9.5/node_modules/vue/dist/vue";
+import { shallowRef } from 'vue'
 import {
   createRouter,
   createWebHistory,
   createMemoryHistory,
-  RouterLink,
-} from ".pnpm/vue-router@4.4.5_vue@3.5.13_typescript@4.9.5_/node_modules/vue-router/dist/vue-router";
-import type { Plugin } from "nuxt/app";
-import routes from "nuxt/build/routes";
-import NuxtPage from "./NuxtPage.vue";
+  RouterLink
+} from 'vue-router'
+import type { Plugin } from 'nuxt/app'
+import routes from 'nuxt/build/routes'
+import NuxtPage from './NuxtPage.vue'
 
-export default <Plugin>function router(nuxt) {
-  const { app } = nuxt;
+export default <Plugin> function router (nuxt) {
+  const { app } = nuxt
 
-  app.component("NuxtPage", NuxtPage);
-  app.component("NuxtLink", RouterLink);
+  app.component('NuxtPage', NuxtPage)
+  app.component('NuxtLink', RouterLink)
 
   const routerHistory = process.client
     ? createWebHistory()
-    : createMemoryHistory();
+    : createMemoryHistory()
 
   const router = createRouter({
     history: routerHistory,
-    routes,
-  });
-  app.use(router);
-  nuxt.provide("router", router);
+    routes
+  })
+  app.use(router)
+  nuxt.provide('router', router)
 
-  const previousRoute = shallowRef(router.currentRoute.value);
+  const previousRoute = shallowRef(router.currentRoute.value)
   router.afterEach((_to, from) => {
-    previousRoute.value = from;
-  });
+    previousRoute.value = from
+  })
 
-  Object.defineProperty(app.config.globalProperties, "previousRoute", {
-    get: () => previousRoute.value,
-  });
+  Object.defineProperty(app.config.globalProperties, 'previousRoute', {
+    get: () => previousRoute.value
+  })
 
-  nuxt.hook("app:created", async () => {
+  nuxt.hook('app:created', async () => {
     if (process.server) {
-      router.push(nuxt.ssrContext.url);
+      router.push(nuxt.ssrContext.url)
     }
     try {
-      await router.isReady();
+      await router.isReady()
       if (!router.currentRoute.value.matched.length) {
         // TODO
       }
     } catch (err) {
       // TODO
     }
-  });
-};
+  })
+}

@@ -1,6 +1,6 @@
-import path from 'path'
-
-import { createNuxt } from './nuxt'
+import { EnvConfig } from '../config/load'
+import { loadNuxtConfig } from '../config'
+import Nuxt from './nuxt'
 
 const OVERRIDES = {
   dry: { dev: false, server: false },
@@ -14,6 +14,7 @@ export interface LoadOptions {
   ready?: boolean
 
   rootDir?: string
+  envConfig?: EnvConfig
   configFile?: string
   configContext?: Record<string, any>,
   configOverrides?: Record<string, any>,
@@ -37,18 +38,13 @@ export async function loadNuxt (loadOptions: LoadOptions | LoadOptions['for']) {
   }
 
   // Load Config
-  // const config = await loadNuxtConfig(loadOptions)
-  const config = {
-    rootDir: path.resolve('.')
-  }
-  console.log('config', config)
-  // delete config._envConfig
+  const config = await loadNuxtConfig(loadOptions)
 
   // Apply config overrides
   Object.assign(config, override)
 
   // Initiate Nuxt
-  const nuxt = createNuxt(config)
+  const nuxt = new Nuxt(config)
   if (ready) {
     await nuxt.ready()
   }
