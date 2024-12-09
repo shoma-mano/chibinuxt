@@ -3,7 +3,7 @@ import { NuxtTemplate } from "./template";
 export const entryClientTemplate: NuxtTemplate = {
   fileName: "entry.client.js",
   getContents: ({ app, globals, nuxtOptions }) =>
-    `${nuxtOptions.vite ? "import('vite/dynamic-import-polyfill')" : ""}
+    `
 import { createSSRApp, nextTick } from 'vue'
 import { createNuxt, applyPlugins } from 'nuxt/app/nuxt'
 import plugins from './plugins'
@@ -149,12 +149,8 @@ export const htmlTemplate: NuxtTemplate = {
       </head>
       <body {{ BODY_ATTRS }}>
         <div id="__nuxt">{{ APP }}</div>
-${
-  nuxtOptions.vite && nuxtOptions.dev
-    ? `<script type="module" src="/@vite/client"></script>
-<script type="module" src="/entry.client.js"></script>`
-    : ""
-}
+        <script type="module" src="/@vite/client"></script>
+        <script type="module" src="/entry.client.js"></script>
       </body>
     </html>
   `,

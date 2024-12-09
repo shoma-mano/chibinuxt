@@ -59,11 +59,12 @@ export async function generate(nitroContext: NitroContext) {
 
 export async function build(nitroContext: NitroContext) {
   // Compile html template
-  const htmlSrc = resolve(
-    nitroContext._nuxt.buildDir,
-    `views/${{ 2: "app", 3: "document" }[2]}.template.html`
-  );
-  const htmlTemplate = { src: htmlSrc, contents: "", dst: "", compiled: "" };
+  const htmlTemplate = {
+    src: nitroContext.templatePath,
+    contents: "",
+    dst: "",
+    compiled: "",
+  };
   htmlTemplate.dst = htmlTemplate.src
     .replace(/.html$/, ".js")
     .replace("app.", "document.");

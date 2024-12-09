@@ -3,13 +3,12 @@ import { InputOptions, OutputOptions } from "rollup";
 import defu from "defu";
 import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
-import nodeResolve from "@rollup/plugin-node-resolve";
+import nodeResolve from "../../../../node_modules/.pnpm/@rollup+plugin-node-resolve@11.2.1_rollup@2.79.2/node_modules/@rollup/plugin-node-resolve/dist/cjs";
 import alias from "@rollup/plugin-alias";
-import json from "@rollup/plugin-json";
-import replace from "@rollup/plugin-replace";
-import virtual from "@rollup/plugin-virtual";
-import inject from "@rollup/plugin-inject";
-import analyze from "rollup-plugin-analyzer";
+import json from "../../../../../8/node_modules/.pnpm/@rollup+plugin-json@4.1.0_rollup@2.79.2/node_modules/@rollup/plugin-json/types";
+import virtual from "../../../../../8/node_modules/.pnpm/@rollup+plugin-virtual@2.1.0_rollup@2.79.2/node_modules/@rollup/plugin-virtual/types";
+import inject from "../../../../../8/node_modules/.pnpm/@rollup+plugin-inject@4.0.4_rollup@2.79.2/node_modules/@rollup/plugin-inject";
+import analyze from "../../../../../8/node_modules/.pnpm/rollup-plugin-analyzer@4.0.0/node_modules/rollup-plugin-analyzer";
 import type { Preset } from "@nuxt/un";
 import * as un from "@nuxt/un";
 
@@ -19,8 +18,6 @@ import { resolvePath, MODULE_DIR } from "../utils";
 import { dynamicRequire } from "./plugins/dynamic-require";
 import { externals } from "./plugins/externals";
 import { autoMock } from "./plugins/automock";
-import { staticAssets, dirnames } from "./plugins/static";
-import { middleware } from "./plugins/middleware";
 import { esbuild } from "./plugins/esbuild";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
@@ -107,39 +104,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     },
   };
 
-  // https://github.com/rollup/plugins/tree/master/packages/replace
-  rollupConfig.plugins.push(
-    replace({
-      // @ts-ignore https://github.com/rollup/plugins/pull/810
-      preventAssignment: true,
-      values: {
-        "process.env.NODE_ENV": nitroContext._nuxt.dev
-          ? '"development"'
-          : '"production"',
-        "typeof window": '"undefined"',
-        "process.env.ROUTER_BASE": JSON.stringify(
-          nitroContext._nuxt.routerBase
-        ),
-        "process.env.PUBLIC_PATH": JSON.stringify(
-          nitroContext._nuxt.publicPath
-        ),
-        "process.env.NUXT_STATIC_BASE": JSON.stringify(
-          nitroContext._nuxt.staticAssets.base
-        ),
-        "process.env.NUXT_STATIC_VERSION": JSON.stringify(
-          nitroContext._nuxt.staticAssets.version
-        ),
-        "process.env.NUXT_FULL_STATIC": nitroContext._nuxt
-          .fullStatic as unknown as string,
-        "process.env.NITRO_PRESET": JSON.stringify(nitroContext.preset),
-        "process.env.RUNTIME_CONFIG": JSON.stringify(
-          nitroContext._nuxt.runtimeConfig
-        ),
-        "process.env.DEBUG": JSON.stringify(nitroContext._nuxt.dev),
-      },
-    })
-  );
-
   // ESBuild
   rollupConfig.plugins.push(
     esbuild({
@@ -155,26 +119,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
       globbyOptions: {
         ignore: ["server.js"],
       },
-    })
-  );
-
-  // Static
-  if (nitroContext.serveStatic) {
-    rollupConfig.plugins.push(dirnames());
-    rollupConfig.plugins.push(staticAssets(nitroContext));
-  }
-
-  // Middleware
-  rollupConfig.plugins.push(
-    middleware(() => {
-      const _middleware = [
-        ...nitroContext.scannedMiddleware,
-        ...nitroContext.middleware,
-      ];
-      if (nitroContext.serveStatic) {
-        _middleware.unshift({ route: "/", handle: "~runtime/server/static" });
-      }
-      return _middleware;
     })
   );
 

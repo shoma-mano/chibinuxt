@@ -1,23 +1,15 @@
-import { dirname, join, relative, resolve } from "upath";
+import { dirname, join, resolve } from "upath";
 import { InputOptions, OutputOptions } from "rollup";
 import defu from "defu";
-import { terser } from "rollup-plugin-terser";
-import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import alias from "@rollup/plugin-alias";
-import json from "@rollup/plugin-json";
-import virtual from "@rollup/plugin-virtual";
-import inject from "@rollup/plugin-inject";
-import analyze from "rollup-plugin-analyzer";
 import type { Preset } from "@nuxt/un";
 import * as un from "@nuxt/un";
 
 import { NitroContext } from "../context";
 import { resolvePath, MODULE_DIR } from "../utils";
 
-import { dynamicRequire } from "./plugins/dynamic-require";
 import { externals } from "./plugins/externals";
-import { autoMock } from "./plugins/automock";
 import { esbuild } from "./plugins/esbuild";
 
 export type RollupConfig = InputOptions & { output: OutputOptions };
@@ -51,37 +43,13 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
 
   delete env.alias["node-fetch"]; // FIX ME
 
-  if (nitroContext.sourceMap) {
-    env.polyfill.push("source-map-support/register");
-  }
-
-  const buildServerDir = join(nitroContext._nuxt.buildDir, "dist/server");
-  const runtimeAppDir = join(nitroContext._internal.runtimeDir, "app");
-
   const rollupConfig: RollupConfig = {
     input: resolvePath(nitroContext, nitroContext.entry),
     output: {
       dir: nitroContext.output.serverDir,
       entryFileNames: "index.js",
-      chunkFileNames(chunkInfo) {
-        let prefix = "";
-        const modules = Object.keys(chunkInfo.modules);
-        const lastModule = modules[modules.length - 1];
-        if (lastModule.startsWith(buildServerDir)) {
-          prefix = join("app", relative(buildServerDir, dirname(lastModule)));
-        } else if (lastModule.startsWith(runtimeAppDir)) {
-          prefix = "app";
-        } else if (lastModule.startsWith(nitroContext._nuxt.buildDir)) {
-          prefix = "nuxt";
-        } else if (lastModule.startsWith(nitroContext._internal.runtimeDir)) {
-          prefix = "nitro";
-        } else if (
-          !prefix &&
-          nitroContext.middleware.find((m) => lastModule.startsWith(m.handle))
-        ) {
-          prefix = "middleware";
-        }
-        return join("chunks", prefix, "[name].js");
+      chunkFileNames() {
+        return join("chunks", "[name].js");
       },
       inlineDynamicImports: nitroContext.inlineDynamicImports,
       format: "cjs",
@@ -104,6 +72,8 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     },
   };
 
+  if (!rollupConfig.plugins) return;
+
   // ESBuild
   rollupConfig.plugins.push(
     esbuild({
@@ -111,41 +81,11 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     })
   );
 
-  // Dynamic Require Support
-  rollupConfig.plugins.push(
-    dynamicRequire({
-      dir: resolve(nitroContext._nuxt.buildDir, "dist/server"),
-      inline: nitroContext.node === false || nitroContext.inlineDynamicImports,
-      globbyOptions: {
-        ignore: ["server.js"],
-      },
-    })
-  );
-
-  // Polyfill
-  rollupConfig.plugins.push(
-    virtual({
-      "~polyfill": env.polyfill.map((p) => `import '${p}';`).join("\n"),
-    })
-  );
-
-  // https://github.com/rollup/plugins/tree/master/packages/alias
-  const renderer =
-    nitroContext.renderer ||
-    (nitroContext._nuxt.majorVersion === 3 ? "vue3" : "vue2");
-  const vue2ServerRenderer =
-    "vue-server-renderer/" +
-    (nitroContext._nuxt.dev ? "build.dev.js" : "build.prod.js");
   rollupConfig.plugins.push(
     alias({
       entries: {
         "~runtime": nitroContext._internal.runtimeDir,
-        "~renderer": require.resolve(
-          resolve(nitroContext._internal.runtimeDir, "app", renderer)
-        ),
-        "~vueServerRenderer": vue2ServerRenderer,
         "~build": nitroContext._nuxt.buildDir,
-        ...env.alias,
       },
     })
   );
@@ -159,23 +99,20 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
 
   // Externals Plugin
   if (nitroContext.externals) {
-    rollupConfig.plugins.push(
-      externals(
-        defu(nitroContext.externals as any, {
-          outDir: nitroContext.output.serverDir,
-          moduleDirectories,
-          ignore: [
-            nitroContext._internal.runtimeDir,
-            ...(nitroContext._nuxt.dev ? [] : [nitroContext._nuxt.buildDir]),
-            ...nitroContext.middleware.map((m) => m.handle),
-            nitroContext._nuxt.serverDir,
-          ],
-          traceOptions: {
-            base: nitroContext._nuxt.rootDir,
-          },
-        })
-      )
-    );
+    const external = defu(nitroContext.externals as any, {
+      outDir: nitroContext.output.serverDir,
+      ignore: [
+        nitroContext._internal.runtimeDir,
+        ...(nitroContext._nuxt.dev ? [] : [nitroContext._nuxt.buildDir]),
+        ...nitroContext.middleware.map((m) => m.handle),
+        nitroContext._nuxt.serverDir,
+      ],
+      traceOptions: {
+        base: nitroContext._nuxt.rootDir,
+      },
+    });
+    console.log("externals", external);
+    rollupConfig.plugins.push(externals(external));
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/node-resolve
@@ -188,43 +125,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
       mainFields: ["main"], // Force resolve CJS (@vue/runtime-core ssrUtils)
     })
   );
-
-  // Automatically mock unresolved externals
-  rollupConfig.plugins.push(autoMock());
-
-  // https://github.com/rollup/plugins/tree/master/packages/commonjs
-  rollupConfig.plugins.push(
-    commonjs({
-      extensions: extensions.filter((ext) => ext !== ".json"),
-    })
-  );
-
-  // https://github.com/rollup/plugins/tree/master/packages/json
-  rollupConfig.plugins.push(json());
-
-  // https://github.com/rollup/plugins/tree/master/packages/inject
-  rollupConfig.plugins.push(inject(env.inject));
-
-  if (nitroContext.analyze) {
-    // https://github.com/doesdev/rollup-plugin-analyzer
-    rollupConfig.plugins.push(analyze());
-  }
-
-  // https://github.com/TrySound/rollup-plugin-terser
-  // https://github.com/terser/terser#minify-nitroContext
-  if (nitroContext.minify) {
-    rollupConfig.plugins.push(
-      terser({
-        mangle: {
-          keep_fnames: true,
-          keep_classnames: true,
-        },
-        format: {
-          comments: false,
-        },
-      })
-    );
-  }
 
   return rollupConfig;
 };
