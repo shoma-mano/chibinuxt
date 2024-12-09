@@ -35,11 +35,11 @@ export async function createApp(
   });
 
   // Resolve app.main
-  // if (!app.main) {
-  //   app.main =
-  //     nuxt.resolver.tryResolvePath('~/App') ||
-  //     nuxt.resolver.tryResolvePath('~/app')
-  // }
+  if (!app.main) {
+    app.main =
+      nuxt.resolver.tryResolvePath("~/App") ||
+      nuxt.resolver.tryResolvePath("~/app");
+  }
 
   // Resolve pages/
   if (app.pages) {

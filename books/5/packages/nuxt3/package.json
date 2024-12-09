@@ -3,40 +3,15 @@
   "version": "0.1.0",
   "repository": "nuxt/framework",
   "license": "MIT",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.cjs",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "jiti ../../scripts/build .",
+    "build": "unbuild",
     "stub": "yarn build --stub",
     "prepublishOnly": "yarn build"
-  },
-  "build": {
-    "entries": {
-      "index": {},
-      "app/": {}
-    },
-    "dependencies": [
-      "@vue/compiler-sfc",
-      "postcss",
-      "postcss-loader",
-      "postcss-import-resolver",
-      "@vue/babel-preset-jsx",
-      "@vueuse/head",
-      "babel-loader",
-      "vue-loader",
-      "chalk",
-      "core-js",
-      "css-loader",
-      "file-loader",
-      "style-resources-loader",
-      "url-loader",
-      "vue",
-      "vue-router",
-      "vuex5",
-      "vue-style-loader"
-    ]
   },
   "dependencies": {
     "@nuxt/friendly-errors-webpack-plugin": "^2.5.0",
@@ -79,6 +54,7 @@
     "style-resources-loader": "^1.4.1",
     "time-fix-plugin": "^2.0.7",
     "ufo": "^0.6.10",
+    "unbuild": "^2.0.0",
     "url-loader": "^4.1.1",
     "vite": "^2.1.1",
     "vue": "^3.0.7",
