@@ -5,11 +5,11 @@ import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import alias from "@rollup/plugin-alias";
-import json from "../../../../../8/node_modules/.pnpm/@rollup+plugin-json@4.1.0_rollup@2.79.2/node_modules/@rollup/plugin-json/types";
+import json from "@rollup/plugin-json";
 import replace from "@rollup/plugin-replace";
-import virtual from "../../../../../8/node_modules/.pnpm/@rollup+plugin-virtual@2.1.0_rollup@2.79.2/node_modules/@rollup/plugin-virtual/types";
-import inject from "../../../../../8/node_modules/.pnpm/@rollup+plugin-inject@4.0.4_rollup@2.79.2/node_modules/@rollup/plugin-inject";
-import analyze from "../../../../../8/node_modules/.pnpm/rollup-plugin-analyzer@4.0.0/node_modules/rollup-plugin-analyzer";
+import virtual from "@rollup/plugin-virtual";
+import inject from "@rollup/plugin-inject";
+import analyze from "rollup-plugin-analyzer";
 import type { Preset } from "@nuxt/un";
 import * as un from "@nuxt/un";
 
@@ -18,7 +18,6 @@ import { resolvePath, MODULE_DIR } from "../utils";
 
 import { dynamicRequire } from "./plugins/dynamic-require";
 import { externals } from "./plugins/externals";
-import { timing } from "./plugins/timing";
 import { autoMock } from "./plugins/automock";
 import { staticAssets, dirnames } from "./plugins/static";
 import { middleware } from "./plugins/middleware";
@@ -107,10 +106,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
       }
     },
   };
-
-  if (nitroContext.timing) {
-    rollupConfig.plugins.push(timing());
-  }
 
   // https://github.com/rollup/plugins/tree/master/packages/replace
   rollupConfig.plugins.push(

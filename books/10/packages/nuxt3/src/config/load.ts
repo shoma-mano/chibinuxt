@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 import jiti from 'jiti'
 import _createRequire from 'create-require'
 import destr from 'destr'
-import * as rc from 'rc9'
+import * as rc from '../../../../node_modules/.pnpm/rc9@1.2.4/node_modules/rc9/dist/index.cjs'
 import { clearRequireCache, scanRequireTree } from '../utils'
 
 import { LoadOptions } from '../core/load'

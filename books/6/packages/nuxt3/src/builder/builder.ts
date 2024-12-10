@@ -1,71 +1,31 @@
-import { relative } from 'path'
-import fsExtra from 'fs-extra'
-import { Nuxt } from '../core'
-import { DeterminedGlobals, determineGlobals } from '../utils'
-import {
-  templateData,
-  compileTemplates,
-  NuxtTemplate
-} from './template'
-import { createApp, NuxtApp } from './app'
-import Ignore from './ignore'
-import * as defaultTemplates from './templates'
+import fsExtra from "fs-extra";
+import { Nuxt } from "../core";
+import { templateData, compileTemplates, NuxtTemplate } from "./template";
+import { createApp } from "./app";
+import * as defaultTemplates from "./templates";
 
-export class Builder {
-  nuxt: Nuxt
-  globals: DeterminedGlobals
-  ignore: Ignore
-  templates: NuxtTemplate[]
-  app: NuxtApp
+export async function build(nuxt: Nuxt) {
+  await fsExtra.emptyDir(nuxt.options.buildDir);
+  await generate(nuxt);
 
-  constructor (nuxt) {
-    this.nuxt = nuxt
-    this.globals = determineGlobals(nuxt.options.globalName, nuxt.options.globals)
-    console.log('globals', this.globals)
-    this.ignore = new Ignore({
-      rootDir: nuxt.options.srcDir,
-      ignoreArray: nuxt.options.ignore.concat(
-        relative(nuxt.options.rootDir, nuxt.options.buildDir)
-      )
-    })
-  }
+  await bundle(nuxt);
 
-  build () {
-    return build(this)
-  }
-
-  close () {
-    // TODO: close watchers
-  }
+  await nuxt.hooks.callHook("build:done");
 }
 
-// Extends VueRouter
-async function build (builder: Builder) {
-  const { nuxt } = builder
+export async function generate(nuxt: Nuxt) {
+  const app = await createApp(nuxt);
+  const data = templateData(nuxt, app);
+  const templates = Object.values(defaultTemplates).map((t) => ({
+    ...t,
+    data,
+  }));
 
-  await fsExtra.emptyDir(nuxt.options.buildDir)
-  await generate(builder)
-
-  await bundle(builder)
-
-  await nuxt.hooks.callHook('build:done')
+  await compileTemplates(templates, nuxt.options.buildDir);
 }
 
-export async function generate (builder: Builder) {
-  const { nuxt } = builder
-
-  builder.app = await createApp(builder)
-  // Todo: Call app:created hook
-
-  const data = templateData(builder)
-  const templates = Object.values(defaultTemplates).map(t => ({ ...t, data }))
-
-  await compileTemplates(templates, nuxt.options.buildDir)
-}
-
-async function bundle ({ nuxt }: Builder) {
+async function bundle(nuxt: Nuxt) {
   // @ts-ignore
-  const bundle = await import('./vite/vite')
-    .then(p => p.bundle)
-  return bundle(nuxt)
+  const bundle = await import("./vite/vite").then((p) => p.bundle);
+  return bundle(nuxt);
 }

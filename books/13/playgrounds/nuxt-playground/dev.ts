@@ -1,2 +1,2 @@
-import { main } from "../../packages/nuxt3/dist";
-main();
+import { main } from 'nuxt3'
+main()
