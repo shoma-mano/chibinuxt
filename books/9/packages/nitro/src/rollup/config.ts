@@ -3,12 +3,12 @@ import { InputOptions, OutputOptions } from "rollup";
 import defu from "defu";
 import { terser } from "rollup-plugin-terser";
 import commonjs from "@rollup/plugin-commonjs";
-import nodeResolve from "@rollup/plugin-node-resolve";
+import nodeResolve from "../../../../node_modules/.pnpm/@rollup+plugin-node-resolve@11.2.1_rollup@2.79.2/node_modules/@rollup/plugin-node-resolve/dist/cjs";
 import alias from "@rollup/plugin-alias";
-import json from "@rollup/plugin-json";
-import virtual from "@rollup/plugin-virtual";
-import inject from "@rollup/plugin-inject";
-import analyze from "rollup-plugin-analyzer";
+import json from "../../../../../8/node_modules/.pnpm/@rollup+plugin-json@4.1.0_rollup@2.79.2/node_modules/@rollup/plugin-json/types";
+import virtual from "../../../../../8/node_modules/.pnpm/@rollup+plugin-virtual@2.1.0_rollup@2.79.2/node_modules/@rollup/plugin-virtual/types";
+import inject from "../../../../../8/node_modules/.pnpm/@rollup+plugin-inject@4.0.4_rollup@2.79.2/node_modules/@rollup/plugin-inject";
+import analyze from "../../../../../8/node_modules/.pnpm/rollup-plugin-analyzer@4.0.0/node_modules/rollup-plugin-analyzer";
 import type { Preset } from "@nuxt/un";
 import * as un from "@nuxt/un";
 

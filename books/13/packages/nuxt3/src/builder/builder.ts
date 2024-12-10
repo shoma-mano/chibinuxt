@@ -48,7 +48,7 @@ async function build (builder: Builder) {
 
   await bundle(builder)
 
-  await nuxt.callHook('build:done')
+  await nuxt.hooks.callHook('build:done')
 }
 
 export async function generate (builder: Builder) {

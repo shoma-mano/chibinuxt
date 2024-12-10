@@ -1,7 +1,6 @@
 import { createRenderer } from "vue-bundle-renderer";
 import devalue from "@nuxt/devalue";
-// @ts-ignore
-import { renderToString } from "~renderer";
+import { renderToString } from "./vue3";
 // @ts-ignore
 import createApp from "~build/dist/server/server";
 // @ts-ignore

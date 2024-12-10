@@ -1,4 +1,4 @@
-import { createApp, useBase } from "h3";
+import { createApp, useBase } from "../../../../../node_modules/.pnpm/h3@0.2.12/node_modules/h3/dist/index.cjs";
 import destr from "destr";
 
 const app = createApp({

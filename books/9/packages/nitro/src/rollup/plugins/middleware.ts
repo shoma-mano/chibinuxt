@@ -1,6 +1,6 @@
-import hasha from 'hasha'
+import hasha from '../../../../../../8/node_modules/.pnpm/hasha@5.2.2/node_modules/hasha'
 import { relative } from 'upath'
-import { table, getBorderCharacters } from 'table'
+import { table, getBorderCharacters } from '../../../../../../8/node_modules/.pnpm/table@6.8.2/node_modules/table/dist/src'
 import isPrimitive from 'is-primitive'
 import stdenv from 'std-env'
 import type { ServerMiddleware } from '../../server/middleware'

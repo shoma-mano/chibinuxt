@@ -2,32 +2,15 @@
   "name": "@nuxt/nitro",
   "version": "0.1.11",
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "files": [
     "dist",
     "compat.js"
   ],
   "scripts": {
-    "build": "jiti ../../scripts/build .",
+    "build": "unbuild",
     "stub": "yarn build --stub",
     "prepublishOnly": "yarn build"
-  },
-  "build": {
-    "entries": {
-      "index": {},
-      "runtime/": {}
-    },
-    "dependencies": [
-      "@cloudflare/kv-asset-handler",
-      "@nuxt/devalue",
-      "connect",
-      "destr",
-      "ohmyfetch",
-      "ora",
-      "vue-bundle-renderer",
-      "vue-server-renderer",
-      "@vue/server-renderer"
-    ]
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.1.0",
@@ -79,6 +62,7 @@
     "std-env": "^2.3.0",
     "table": "^6.0.7",
     "ufo": "^0.6.10",
+    "unbuild": "^2.0.0",
     "upath": "^2.0.1",
     "vue": "^3.0.7",
     "vue-bundle-renderer": "^0.2.3",

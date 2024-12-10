@@ -511,63 +511,6 @@ importers:
         specifier: ^4.0.5
         version: 4.4.5(vue@3.5.13(typescript@4.9.5))
 
-  playgrounds/nitro-playground:
-    dependencies:
-      '@nuxt/nitro':
-        specifier: workspace:*
-        version: link:../../packages/nitro
-      vue:
-        specifier: ^3.0.7
-        version: 3.5.13(typescript@4.9.5)
-
-  playgrounds/nuxt-playground:
-    dependencies:
-      '@nuxt/devalue':
-        specifier: ^1.2.5
-        version: 1.2.5
-      '@nuxt/nitro':
-        specifier: workspace:*
-        version: link:../../packages/nitro
-      '@nuxt/un':
-        specifier: 0.1.1
-        version: 0.1.1(encoding@0.1.13)
-      '@vue/runtime-core':
-        specifier: ^3.5.13
-        version: 3.5.13
-      '@vue/server-renderer':
-        specifier: ^3.5.13
-        version: 3.5.13(vue@3.5.13(typescript@4.9.5))
-      '@vueuse/head':
-        specifier: ^0.5.1
-        version: 0.5.1(vue@3.5.13(typescript@4.9.5))
-      destr:
-        specifier: ^1.1.0
-        version: 1.2.2
-      h3:
-        specifier: ^0.2.5
-        version: 0.2.12
-      hookable:
-        specifier: 5.5.3
-        version: 5.5.3
-      nuxt3:
-        specifier: workspace:*
-        version: link:../../packages/nuxt3
-      ohmyfetch:
-        specifier: ^0.1.8
-        version: 0.1.8(encoding@0.1.13)
-      source-map-support:
-        specifier: ^0.5.21
-        version: 0.5.21
-      vue:
-        specifier: ^3.0.7
-        version: 3.5.13(typescript@4.9.5)
-      vue-bundle-renderer:
-        specifier: ^0.2.10
-        version: 0.2.10
-      vue-router:
-        specifier: ^4.0.5
-        version: 4.4.5(vue@3.5.13(typescript@4.9.5))
-
 packages:
 
   '@ampproject/remapping@2.3.0':

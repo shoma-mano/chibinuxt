@@ -9,7 +9,7 @@ import Hookable from 'hookable'
 import { TARGETS, MODES, Target, Mode } from '../../utils'
 
 import { APP_DIR } from '../../consts'
-import type { NormalizedConfiguration } from '../options'
+import type { NormalizedConfiguration } from '../../core/options'
 
 type IgnoreOptions = Parameters<typeof ignore>[0]
 type IgnoreInstance = ReturnType<typeof ignore>
