@@ -19,6 +19,8 @@ export async function bundle(nuxt: Nuxt) {
       logLevel: "warn",
       resolve: {
         alias: {
+          "#root": nuxt.options.rootDir,
+          "#app": nuxt.options.appDir,
           "nuxt/app": nuxt.options.appDir,
           "nuxt/build": nuxt.options.buildDir,
           "~": nuxt.options.srcDir,
