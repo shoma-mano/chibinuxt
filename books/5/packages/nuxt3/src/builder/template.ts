@@ -1,6 +1,5 @@
 import { join, dirname } from "path";
 import fsExtra from "fs-extra";
-import * as nxt from "./nxt";
 import { Nuxt } from "../core";
 import { NuxtApp } from "./app";
 
@@ -19,7 +18,6 @@ export function templateData(nuxt: Nuxt, app: NuxtApp) {
   return {
     app,
     nuxtOptions: nuxt.options,
-    nxt,
   };
 }
 

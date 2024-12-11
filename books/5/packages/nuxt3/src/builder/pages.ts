@@ -1,8 +1,8 @@
 import { resolve, extname, relative } from "path";
 import { encodePath } from "ufo";
 import { NuxtApp } from "./app";
-import { resolveFiles } from "./utils";
 import { Nuxt } from "../core";
+import { resolveFiles } from "../core/resolver";
 
 // Check if name has [slug]
 export interface NuxtRoute {

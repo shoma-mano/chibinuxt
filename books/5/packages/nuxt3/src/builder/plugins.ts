@@ -1,6 +1,6 @@
 import { Nuxt } from "../core";
+import { resolveFiles } from "../core/resolver";
 import { NuxtApp } from "./app";
-import { resolveFiles } from "./utils";
 
 export interface NuxtPlugin {
   src: string;

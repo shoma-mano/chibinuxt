@@ -1,3 +1,4 @@
+import { NuxtRoute } from "./pages";
 import { NuxtTemplate } from "./template";
 
 export const entryClientTemplate: NuxtTemplate = {
@@ -72,10 +73,22 @@ export const allPluginsTemplate: NuxtTemplate = {
   `,
 };
 
+const serialize = (data) =>
+  JSON.stringify(data, null, 2).replace(/"{(.+)}"/g, "$1");
+const serializeRoute = (route: NuxtRoute) => {
+  return {
+    name: route.name,
+    path: route.path,
+    children: route.children.map(serializeRoute),
+    // TODO: avoid exposing to prod, using process.env.NODE_ENV ?
+    __file: route.file,
+    component: `{() => import('${route.file}' /* webpackChunkName: '${route.name}' */)}`,
+  };
+};
 export const routesTemplate: NuxtTemplate = {
   fileName: "routes.js",
-  getContents: ({ app, nxt }) => `
-    export default ${nxt.serialize(app.routes.map(nxt.serializeRoute))}
+  getContents: ({ app }) => `
+    export default ${serialize(app.routes.map(serializeRoute))}
   `,
 };
 
