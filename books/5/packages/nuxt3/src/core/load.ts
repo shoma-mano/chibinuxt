@@ -36,13 +36,9 @@ export async function loadNuxt(loadOptions: LoadOptions | LoadOptions["for"]) {
     throw new Error("Unsupported for: " + _for);
   }
 
-  // Load Config
-  // const config = await loadNuxtConfig(loadOptions)
   const config = {
     rootDir: path.resolve("."),
   };
-  console.log("config", config);
-  // delete config._envConfig
 
   // Apply config overrides
   Object.assign(config, override);
@@ -50,7 +46,7 @@ export async function loadNuxt(loadOptions: LoadOptions | LoadOptions["for"]) {
   // Initiate Nuxt
   const nuxt = createNuxt(config);
   if (ready) {
-    await nuxt.ready();
+    await nuxt.init();
   }
 
   return nuxt;

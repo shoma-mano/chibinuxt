@@ -3,7 +3,6 @@ import {
   wpfs,
   getNitroContext,
   createDevServer,
-  resolveMiddleware,
   build,
   prepare,
   generate,
@@ -34,17 +33,6 @@ export function initNitro(nuxt: Nuxt) {
 
   // Expose process.env.NITRO_PRESET
   nuxt.options.env.NITRO_PRESET = nitroContext.preset;
-
-  // Resolve middleware
-  nuxt.hooks.hook("modules:done", () => {
-    const { middleware, legacyMiddleware } = resolveMiddleware(
-      nuxt.options.serverMiddleware,
-      nuxt.resolver.resolvePath
-    );
-    nuxt.server.setLegacyMiddleware(legacyMiddleware);
-    nitroContext.middleware.push(...middleware);
-    nitroDevContext.middleware.push(...middleware);
-  });
 
   // nuxt build/dev
   nuxt.hooks.hook("build:done", async () => {

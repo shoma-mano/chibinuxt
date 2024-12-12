@@ -669,12 +669,6 @@ function normalizeConfig(_options: CliConfiguration) {
     options.build.indicator = false;
   }
 
-  // Components Module
-  // TODO: Webpack5 support
-  // if (!options._start && getPKG('@nuxt/components')) {
-  //   options._modules.push('@nuxt/components')
-  // }
-
   // Nuxt Telemetry
   if (
     options.telemetry !== false &&
