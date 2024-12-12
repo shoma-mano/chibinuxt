@@ -1,16 +1,15 @@
 import { defineBuildConfig } from "unbuild";
 
 export default defineBuildConfig({
+  // declaration: true,
   entries: [
     {
       input: "src/runtime",
-      declaration: "node16",
       outDir: "dist/runtime",
       builder: "mkdist",
     },
     {
       input: "src/index",
-      declaration: "compatible",
       builder: "rollup",
     },
   ],

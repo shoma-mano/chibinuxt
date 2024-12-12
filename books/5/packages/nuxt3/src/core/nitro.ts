@@ -9,11 +9,15 @@ import {
   generate,
 } from "@nuxt/nitro";
 import type { Nuxt } from "./index";
+import { dynamicEventHandler } from "h3";
 
+const devMiddlewareHandler = dynamicEventHandler();
 export function initNitro(nuxt: Nuxt) {
   // Create contexts
   const nitroContext = getNitroContext(nuxt.options, nuxt.options.nitro || {});
   const nitroDevContext = getNitroContext(nuxt.options, { preset: "dev" });
+  // handler
+  nitroDevContext.viteDevHandler = devMiddlewareHandler;
 
   nuxt.server = createDevServer(nitroDevContext);
 
@@ -62,7 +66,7 @@ export function initNitro(nuxt: Nuxt) {
       compiler.outputFileSystem = wpfs;
     });
     nuxt.hooks.hook("server:devMiddleware", (m) => {
-      nuxt.server.setDevMiddleware(m);
+      devMiddlewareHandler.set(m);
     });
   }
 }

@@ -147,7 +147,6 @@ function startRollupWatcher(nitroContext: NitroContext) {
 async function _watch(nitroContext: NitroContext) {
   let watcher = startRollupWatcher(nitroContext);
 
-  console.log("nitroContext", nitroContext);
   const deletes = [];
   for (const key of deletes) {
     delete nitroContext[key];

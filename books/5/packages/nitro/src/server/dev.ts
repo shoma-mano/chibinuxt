@@ -1,16 +1,34 @@
 import { Worker } from "worker_threads";
-import { createApp } from "h3";
+import {
+  createApp,
+  defineEventHandler,
+  dynamicEventHandler,
+  toNodeListener,
+} from "h3";
 import { resolve } from "upath";
 import debounce from "debounce";
+// @ts-ignore
 import chokidar from "chokidar";
 import { listen, Listener } from "listhen";
-import serveStatic from "serve-static";
-import servePlaceholder from "serve-placeholder";
-import { createProxy } from "http-proxy";
 import { stat } from "fs-extra";
 import type { NitroContext } from "../context";
+import { createProxyServer } from "httpxy";
 
 export function createDevServer(nitroContext: NitroContext) {
+  // App
+  const app = createApp();
+
+  // Dynamic Middlwware
+  const legacyMiddleware = createDynamicMiddleware();
+  const devMiddleware = dynamicEventHandler();
+  // app.use(fromNodeMiddleware(legacyMiddleware.middleware));
+  app.use(nitroContext.viteDevHandler);
+  app.use(
+    defineEventHandler((event) => {
+      console.log("event", event.path);
+    })
+  );
+
   // Worker
   const workerEntry = resolve(
     nitroContext.output.dir,
@@ -46,6 +64,7 @@ export function createDevServer(nitroContext: NitroContext) {
       worker.on("message", (event) => {
         if (event && event.port) {
           workerAddress = "http://localhost:" + event.port;
+          console.log("[worker] ready at", workerAddress);
           activeWorker = worker;
           pendingWorker = null;
           resolve(workerAddress);
@@ -54,48 +73,28 @@ export function createDevServer(nitroContext: NitroContext) {
     });
   }
 
-  // App
-  const app = createApp();
-
-  // _nuxt and static
-  // app.use(
-  //   nitroContext._nuxt.publicPath,
-  //   serveStatic(resolve(nitroContext._nuxt.buildDir, "dist/client"))
-  // );
-  // app.use(
-  //   nitroContext._nuxt.routerBase,
-  //   serveStatic(resolve(nitroContext._nuxt.staticDir))
-  // );
-
-  // Dynamic Middlwware
-  const legacyMiddleware = createDynamicMiddleware();
-  const devMiddleware = createDynamicMiddleware();
-  app.use(legacyMiddleware.middleware);
-  app.use(devMiddleware.middleware);
-
-  // serve placeholder 404 assets instead of hitting SSR
-  // app.use(nitroContext._nuxt.publicPath, servePlaceholder());
-  // app.use(
-  //   nitroContext._nuxt.routerBase,
-  //   servePlaceholder({ skipUnknown: true })
-  // );
-
   // SSR Proxy
-  const proxy = createProxy();
-  app.use((req, res) => {
-    if (workerAddress) {
-      proxy.web(req, res, { target: workerAddress }, (_err) => {
-        // console.error('[proxy]', err)
-      });
-    } else {
-      res.end("Worker not ready!");
-    }
-  });
+  const proxy = createProxyServer({});
+  app.use(
+    defineEventHandler(async (event) => {
+      const { req, res } = event.node;
+      if (workerAddress) {
+        console.log("workerAddress", workerAddress, "req.url", req.url);
+        await proxy.web(req, res, { target: workerAddress }, (_err) => {
+          console.log("proxy error", _err);
+        });
+      } else {
+        res.end("Worker not ready!");
+      }
+    }),
+    { lazy: false }
+  );
 
   // Listen
   let listeners: Listener[] = [];
   const _listen = async (port, opts?) => {
-    const listener = await listen(app, { port, ...opts });
+    const handler = toNodeListener(app);
+    const listener = await listen(handler, { port, ...opts });
     listeners.push(listener);
     return listener;
   };
@@ -146,12 +145,12 @@ export function createDevServer(nitroContext: NitroContext) {
 function createDynamicMiddleware() {
   let middleware;
   return {
-    set: (input) => {
+    set: async (input) => {
       if (!Array.isArray(input)) {
         middleware = input;
         return;
       }
-      const app = require("connect")();
+      const app = await import("connect").then((c) => c.default());
       for (const m of input) {
         app.use(m.path || m.route || "/", m.handler || m.handle);
       }

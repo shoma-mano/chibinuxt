@@ -52,7 +52,7 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
         return join("chunks", "[name].js");
       },
       inlineDynamicImports: nitroContext.inlineDynamicImports,
-      format: "cjs",
+      format: "esm",
       exports: "auto",
       intro: "",
       outro: "",
@@ -111,7 +111,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
         base: nitroContext._nuxt.rootDir,
       },
     });
-    console.log("externals", external);
     rollupConfig.plugins.push(externals(external));
   }
 

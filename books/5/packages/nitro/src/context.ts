@@ -7,6 +7,7 @@ import { tryImport, resolvePath, detectTarget, extendPreset } from "./utils";
 import * as PRESETS from "./presets";
 import type { NodeExternalsOptions } from "./rollup/plugins/externals";
 import type { ServerMiddleware } from "./server/middleware";
+import { EventHandler } from "h3";
 
 export interface NitroContext {
   timing: boolean;
@@ -24,6 +25,7 @@ export interface NitroContext {
   middleware: ServerMiddleware[];
   scannedMiddleware: ServerMiddleware[];
   hooks: Hooks;
+  viteDevHandler?: EventHandler;
   nuxtHooks: Hooks;
   ignore: string[];
   env: Preset;
@@ -102,6 +104,7 @@ export function getNitroContext(
         nuxtOptions.srcDir,
         (nuxtOptions.dir as any).server || "server"
       ),
+      // @ts-ignore
       routerBase: nuxtOptions.router.base,
       publicPath: nuxtOptions.build.publicPath,
       isStatic: nuxtOptions.target === "static" && !nuxtOptions.dev,

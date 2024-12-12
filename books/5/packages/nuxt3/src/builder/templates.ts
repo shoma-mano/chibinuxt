@@ -34,7 +34,7 @@ initApp().catch((error) => {
 };
 
 export const entryServerTemplate: NuxtTemplate = {
-  fileName: "entry.server.js",
+  fileName: "entry.server.mjs",
   getContents: ({ app }) => `import { createApp } from 'vue'
 import { createNuxt, applyPlugins } from 'nuxt/app/nuxt'
 import plugins from './plugins'
