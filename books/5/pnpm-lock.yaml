@@ -34,7 +34,7 @@ importers:
         version: 1.21.6
       mkdist:
         specifier: ^0.1.2
-        version: 0.1.7(typescript@4.9.5)
+        version: 0.1.7(typescript@5.7.2)
       pretty-bytes:
         specifier: ^5.6.0
         version: 5.6.0
@@ -46,7 +46,7 @@ importers:
         version: 2.79.2
       rollup-plugin-dts:
         specifier: ^3.0.1
-        version: 3.0.2(rollup@2.79.2)(typescript@4.9.5)
+        version: 3.0.2(rollup@2.79.2)(typescript@5.7.2)
       rollup-plugin-esbuild:
         specifier: ^3.0.2
         version: 3.0.4(esbuild@0.9.7)(rollup@2.79.2)
@@ -89,12 +89,15 @@ importers:
       '@rollup/pluginutils':
         specifier: ^4.1.0
         version: 4.2.1
+      '@types/fs-extra':
+        specifier: ^9.0.8
+        version: 9.0.13
       '@vercel/nft':
         specifier: ^0.9.5
         version: 0.9.6
       '@vue/server-renderer':
         specifier: ^3.0.7
-        version: 3.5.13(vue@3.5.13(typescript@4.9.5))
+        version: 3.5.13(vue@3.5.13(typescript@5.7.2))
       archiver:
         specifier: ^5.2.0
         version: 5.3.2
@@ -173,6 +176,9 @@ importers:
       ora:
         specifier: ^5.3.0
         version: 5.4.1
+      perfect-debounce:
+        specifier: ^1.0.0
+        version: 1.0.0
       pretty-bytes:
         specifier: ^5.6.0
         version: 5.6.0
@@ -200,18 +206,21 @@ importers:
       table:
         specifier: ^6.0.7
         version: 6.8.2
+      typescript:
+        specifier: ^5.7.2
+        version: 5.7.2
       ufo:
         specifier: ^0.6.10
         version: 0.6.12
       unbuild:
-        specifier: ^2.0.0
-        version: 2.0.0(typescript@4.9.5)
+        specifier: 3.0.0-rc.11
+        version: 3.0.0-rc.11(typescript@5.7.2)
       upath:
         specifier: ^2.0.1
         version: 2.0.1
       vue:
         specifier: ^3.0.7
-        version: 3.5.13(typescript@4.9.5)
+        version: 3.5.13(typescript@5.7.2)
       vue-bundle-renderer:
         specifier: ^0.2.3
         version: 0.2.10
@@ -232,7 +241,7 @@ importers:
         version: 1.10.2(vite@6.0.3(@types/node@14.18.63)(jiti@1.21.6)(terser@5.36.0))
       '@vue/babel-preset-jsx':
         specifier: ^1.2.4
-        version: 1.4.0(@babel/core@7.26.0)(vue@3.5.13(typescript@4.9.5))
+        version: 1.4.0(@babel/core@7.26.0)(vue@3.5.13(typescript@5.7.2))
       '@vue/compiler-sfc':
         specifier: ^3.0.7
         version: 3.5.13
@@ -241,7 +250,7 @@ importers:
         version: 3.5.13
       '@vueuse/head':
         specifier: ^0.5.1
-        version: 0.5.1(vue@3.5.13(typescript@4.9.5))
+        version: 0.5.1(vue@3.5.13(typescript@5.7.2))
       babel-loader:
         specifier: ^8.2.2
         version: 8.4.1(@babel/core@7.26.0)(webpack@5.96.1(esbuild@0.9.7))
@@ -346,7 +355,7 @@ importers:
         version: 0.6.12
       unbuild:
         specifier: ^2.0.0
-        version: 2.0.0(typescript@4.9.5)
+        version: 2.0.0(typescript@5.7.2)
       url-loader:
         specifier: ^4.1.1
         version: 4.1.1(file-loader@6.2.0(webpack@5.96.1(esbuild@0.9.7)))(webpack@5.96.1(esbuild@0.9.7))
@@ -355,13 +364,13 @@ importers:
         version: 6.0.3(@types/node@14.18.63)(jiti@1.21.6)(terser@5.36.0)
       vue:
         specifier: ^3.0.7
-        version: 3.5.13(typescript@4.9.5)
+        version: 3.5.13(typescript@5.7.2)
       vue-loader:
         specifier: npm:@pi0/vue-loader@^16.1.2-patch.1
         version: '@pi0/vue-loader@16.1.2-patch.1'
       vue-router:
         specifier: ^4.0.5
-        version: 4.4.5(vue@3.5.13(typescript@4.9.5))
+        version: 4.4.5(vue@3.5.13(typescript@5.7.2))
       vue-style-loader:
         specifier: ^4.1.3
         version: 4.1.3
@@ -485,10 +494,10 @@ importers:
         version: 3.5.13
       '@vue/server-renderer':
         specifier: ^3.5.13
-        version: 3.5.13(vue@3.5.13(typescript@4.9.5))
+        version: 3.5.13(vue@3.5.13(typescript@5.7.2))
       '@vueuse/head':
         specifier: ^0.5.1
-        version: 0.5.1(vue@3.5.13(typescript@4.9.5))
+        version: 0.5.1(vue@3.5.13(typescript@5.7.2))
       destr:
         specifier: ^1.1.0
         version: 1.2.2
@@ -509,13 +518,13 @@ importers:
         version: 0.5.21
       vue:
         specifier: ^3.0.7
-        version: 3.5.13(typescript@4.9.5)
+        version: 3.5.13(typescript@5.7.2)
       vue-bundle-renderer:
         specifier: ^0.2.10
         version: 0.2.10
       vue-router:
         specifier: ^4.0.5
-        version: 4.4.5(vue@3.5.13(typescript@4.9.5))
+        version: 4.4.5(vue@3.5.13(typescript@5.7.2))
 
 packages:
 
@@ -1229,6 +1238,15 @@ packages:
       rollup:
         optional: true
 
+  '@rollup/plugin-commonjs@28.0.1':
+    resolution: {integrity: sha512-+tNWdlWKbpB3WgBN7ijjYkq9X5uhjmcvyjEght4NmH5fAU++zfQzAJ6wumLS+dNcvwEZhKx2Z+skY8m7v0wGSA==}
+    engines: {node: '>=16.0.0 || 14 >= 14.17'}
+    peerDependencies:
+      rollup: ^2.68.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+
   '@rollup/plugin-inject@4.0.4':
     resolution: {integrity: sha512-4pbcU4J/nS+zuHk+c+OL3WtmEQhqxlZ9uqfjQMQDOHOPld7PsCd8k5LWs8h5wjwJN7MgnAn768F2sDxEP4eNFQ==}
     peerDependencies:
@@ -1270,6 +1288,15 @@ packages:
 
   '@rollup/plugin-replace@5.0.7':
     resolution: {integrity: sha512-PqxSfuorkHz/SPpyngLyg5GCEkOcee9M1bkxiVDr41Pd61mqP1PLOoDPbpl44SB2mQGKwV/In74gqQmGITOhEQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+
+  '@rollup/plugin-replace@6.0.1':
+    resolution: {integrity: sha512-2sPh9b73dj5IxuMmDAsQWVFT7mR+yoHweBaXG2W/R8vQ+IWZlnaI7BR7J6EguVQUp1hd8Z7XuozpDjEKQAAC2Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
@@ -3788,6 +3815,9 @@ packages:
   pathe@1.1.2:
     resolution: {integrity: sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==}
 
+  perfect-debounce@1.0.0:
+    resolution: {integrity: sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==}
+
   picocolors@0.2.1:
     resolution: {integrity: sha512-cMlDqaLEqfSaW8Z7N5Jw+lyIW869EzT73/F5lhtY9cLGoVxSXznfgfXMO0Z5K0o0Q2TkTXq+0KFsdnSe3jDViA==}
 
@@ -4740,9 +4770,9 @@ packages:
     resolution: {integrity: sha512-3KS2b+kL7fsuk/eJZ7EQdnEmQoaho/r6KUef7hxvltNA5DR8NAUM+8wJMbJyZ4G9/7i3v5zPBIMN5aybAh2/Jg==}
     engines: {node: '>= 0.4'}
 
-  typescript@4.9.5:
-    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
-    engines: {node: '>=4.2.0'}
+  typescript@5.7.2:
+    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
+    engines: {node: '>=14.17'}
     hasBin: true
 
   ufo@0.6.12:
@@ -4759,6 +4789,15 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: ^5.1.6
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  unbuild@3.0.0-rc.11:
+    resolution: {integrity: sha512-faBmtdo73jSSoghmf7CuscmAMOr34eri9j674pQP+KKjxvwTKaRol6f2DVhKhNCfceeHdfm2BfDwRxo2L/w0fg==}
+    hasBin: true
+    peerDependencies:
+      typescript: ^5.6.2
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -5565,6 +5604,10 @@ snapshots:
     optionalDependencies:
       rollup: 3.29.5
 
+  '@rollup/plugin-alias@5.1.1(rollup@4.28.1)':
+    optionalDependencies:
+      rollup: 4.28.1
+
   '@rollup/plugin-commonjs@17.1.0(rollup@2.79.2)':
     dependencies:
       '@rollup/pluginutils': 3.1.0(rollup@2.79.2)
@@ -5587,6 +5630,18 @@ snapshots:
     optionalDependencies:
       rollup: 3.29.5
 
+  '@rollup/plugin-commonjs@28.0.1(rollup@4.28.1)':
+    dependencies:
+      '@rollup/pluginutils': 5.1.3(rollup@4.28.1)
+      commondir: 1.0.1
+      estree-walker: 2.0.2
+      fdir: 6.4.2(picomatch@4.0.2)
+      is-reference: 1.2.1
+      magic-string: 0.30.13
+      picomatch: 4.0.2
+    optionalDependencies:
+      rollup: 4.28.1
+
   '@rollup/plugin-inject@4.0.4(rollup@2.79.2)':
     dependencies:
       '@rollup/pluginutils': 3.1.0(rollup@2.79.2)
@@ -5604,6 +5659,12 @@ snapshots:
       '@rollup/pluginutils': 5.1.3(rollup@3.29.5)
     optionalDependencies:
       rollup: 3.29.5
+
+  '@rollup/plugin-json@6.1.0(rollup@4.28.1)':
+    dependencies:
+      '@rollup/pluginutils': 5.1.3(rollup@4.28.1)
+    optionalDependencies:
+      rollup: 4.28.1
 
   '@rollup/plugin-node-resolve@11.2.1(rollup@2.79.2)':
     dependencies:
@@ -5625,6 +5686,16 @@ snapshots:
     optionalDependencies:
       rollup: 3.29.5
 
+  '@rollup/plugin-node-resolve@15.3.0(rollup@4.28.1)':
+    dependencies:
+      '@rollup/pluginutils': 5.1.3(rollup@4.28.1)
+      '@types/resolve': 1.20.2
+      deepmerge: 4.3.1
+      is-module: 1.0.0
+      resolve: 1.22.8
+    optionalDependencies:
+      rollup: 4.28.1
+
   '@rollup/plugin-replace@2.4.2(rollup@2.79.2)':
     dependencies:
       '@rollup/pluginutils': 3.1.0(rollup@2.79.2)
@@ -5637,6 +5708,13 @@ snapshots:
       magic-string: 0.30.13
     optionalDependencies:
       rollup: 3.29.5
+
+  '@rollup/plugin-replace@6.0.1(rollup@4.28.1)':
+    dependencies:
+      '@rollup/pluginutils': 5.1.3(rollup@4.28.1)
+      magic-string: 0.30.13
+    optionalDependencies:
+      rollup: 4.28.1
 
   '@rollup/plugin-virtual@2.1.0(rollup@2.79.2)':
     dependencies:
@@ -5661,6 +5739,14 @@ snapshots:
       picomatch: 4.0.2
     optionalDependencies:
       rollup: 3.29.5
+
+  '@rollup/pluginutils@5.1.3(rollup@4.28.1)':
+    dependencies:
+      '@types/estree': 1.0.6
+      estree-walker: 2.0.2
+      picomatch: 4.0.2
+    optionalDependencies:
+      rollup: 4.28.1
 
   '@rollup/rollup-android-arm-eabi@4.28.1':
     optional: true
@@ -6046,7 +6132,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vue/babel-preset-jsx@1.4.0(@babel/core@7.26.0)(vue@3.5.13(typescript@4.9.5))':
+  '@vue/babel-preset-jsx@1.4.0(@babel/core@7.26.0)(vue@3.5.13(typescript@5.7.2))':
     dependencies:
       '@babel/core': 7.26.0
       '@vue/babel-helper-vue-jsx-merge-props': 1.4.0
@@ -6058,7 +6144,7 @@ snapshots:
       '@vue/babel-sugar-v-model': 1.4.0(@babel/core@7.26.0)
       '@vue/babel-sugar-v-on': 1.4.0(@babel/core@7.26.0)
     optionalDependencies:
-      vue: 3.5.13(typescript@4.9.5)
+      vue: 3.5.13(typescript@5.7.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -6151,17 +6237,17 @@ snapshots:
       '@vue/shared': 3.5.13
       csstype: 3.1.3
 
-  '@vue/server-renderer@3.5.13(vue@3.5.13(typescript@4.9.5))':
+  '@vue/server-renderer@3.5.13(vue@3.5.13(typescript@5.7.2))':
     dependencies:
       '@vue/compiler-ssr': 3.5.13
       '@vue/shared': 3.5.13
-      vue: 3.5.13(typescript@4.9.5)
+      vue: 3.5.13(typescript@5.7.2)
 
   '@vue/shared@3.5.13': {}
 
-  '@vueuse/head@0.5.1(vue@3.5.13(typescript@4.9.5))':
+  '@vueuse/head@0.5.1(vue@3.5.13(typescript@5.7.2))':
     dependencies:
-      vue: 3.5.13(typescript@4.9.5)
+      vue: 3.5.13(typescript@5.7.2)
 
   '@webassemblyjs/ast@1.14.1':
     dependencies:
@@ -8159,7 +8245,7 @@ snapshots:
 
   mkdirp@1.0.4: {}
 
-  mkdist@0.1.7(typescript@4.9.5):
+  mkdist@0.1.7(typescript@5.7.2):
     dependencies:
       defu: 3.2.2
       esbuild: 0.11.23
@@ -8170,9 +8256,9 @@ snapshots:
       upath: 2.0.1
       vue-template-compiler: 2.7.16
     optionalDependencies:
-      typescript: 4.9.5
+      typescript: 5.7.2
 
-  mkdist@1.6.0(typescript@4.9.5):
+  mkdist@1.6.0(typescript@5.7.2):
     dependencies:
       autoprefixer: 10.4.20(postcss@8.4.49)
       citty: 0.1.6
@@ -8188,7 +8274,7 @@ snapshots:
       semver: 7.6.3
       tinyglobby: 0.2.10
     optionalDependencies:
-      typescript: 4.9.5
+      typescript: 5.7.2
 
   mlly@1.7.3:
     dependencies:
@@ -8434,6 +8520,8 @@ snapshots:
   path-type@4.0.0: {}
 
   pathe@1.1.2: {}
+
+  perfect-debounce@1.0.0: {}
 
   picocolors@0.2.1: {}
 
@@ -8974,19 +9062,27 @@ snapshots:
 
   rollup-plugin-analyzer@4.0.0: {}
 
-  rollup-plugin-dts@3.0.2(rollup@2.79.2)(typescript@4.9.5):
+  rollup-plugin-dts@3.0.2(rollup@2.79.2)(typescript@5.7.2):
     dependencies:
       magic-string: 0.25.9
       rollup: 2.79.2
-      typescript: 4.9.5
+      typescript: 5.7.2
     optionalDependencies:
       '@babel/code-frame': 7.26.2
 
-  rollup-plugin-dts@6.1.1(rollup@3.29.5)(typescript@4.9.5):
+  rollup-plugin-dts@6.1.1(rollup@3.29.5)(typescript@5.7.2):
     dependencies:
       magic-string: 0.30.13
       rollup: 3.29.5
-      typescript: 4.9.5
+      typescript: 5.7.2
+    optionalDependencies:
+      '@babel/code-frame': 7.26.2
+
+  rollup-plugin-dts@6.1.1(rollup@4.28.1)(typescript@5.7.2):
+    dependencies:
+      magic-string: 0.30.13
+      rollup: 4.28.1
+      typescript: 5.7.2
     optionalDependencies:
       '@babel/code-frame': 7.26.2
 
@@ -9480,7 +9576,7 @@ snapshots:
       possible-typed-array-names: 1.0.0
       reflect.getprototypeof: 1.0.7
 
-  typescript@4.9.5: {}
+  typescript@5.7.2: {}
 
   ufo@0.6.12: {}
 
@@ -9493,7 +9589,7 @@ snapshots:
       has-symbols: 1.0.3
       which-boxed-primitive: 1.0.2
 
-  unbuild@2.0.0(typescript@4.9.5):
+  unbuild@2.0.0(typescript@5.7.2):
     dependencies:
       '@rollup/plugin-alias': 5.1.1(rollup@3.29.5)
       '@rollup/plugin-commonjs': 25.0.8(rollup@3.29.5)
@@ -9510,17 +9606,50 @@ snapshots:
       hookable: 5.5.3
       jiti: 1.21.6
       magic-string: 0.30.13
-      mkdist: 1.6.0(typescript@4.9.5)
+      mkdist: 1.6.0(typescript@5.7.2)
       mlly: 1.7.3
       pathe: 1.1.2
       pkg-types: 1.2.1
       pretty-bytes: 6.1.1
       rollup: 3.29.5
-      rollup-plugin-dts: 6.1.1(rollup@3.29.5)(typescript@4.9.5)
+      rollup-plugin-dts: 6.1.1(rollup@3.29.5)(typescript@5.7.2)
       scule: 1.3.0
       untyped: 1.5.1
     optionalDependencies:
-      typescript: 4.9.5
+      typescript: 5.7.2
+    transitivePeerDependencies:
+      - sass
+      - supports-color
+      - vue-tsc
+
+  unbuild@3.0.0-rc.11(typescript@5.7.2):
+    dependencies:
+      '@rollup/plugin-alias': 5.1.1(rollup@4.28.1)
+      '@rollup/plugin-commonjs': 28.0.1(rollup@4.28.1)
+      '@rollup/plugin-json': 6.1.0(rollup@4.28.1)
+      '@rollup/plugin-node-resolve': 15.3.0(rollup@4.28.1)
+      '@rollup/plugin-replace': 6.0.1(rollup@4.28.1)
+      '@rollup/pluginutils': 5.1.3(rollup@4.28.1)
+      citty: 0.1.6
+      consola: 3.2.3
+      defu: 6.1.4
+      esbuild: 0.24.0
+      hookable: 5.5.3
+      jiti: 2.4.1
+      magic-string: 0.30.13
+      mkdist: 1.6.0(typescript@5.7.2)
+      mlly: 1.7.3
+      pathe: 1.1.2
+      pkg-types: 1.2.1
+      pretty-bytes: 6.1.1
+      rollup: 4.28.1
+      rollup-plugin-dts: 6.1.1(rollup@4.28.1)(typescript@5.7.2)
+      scule: 1.3.0
+      tinyglobby: 0.2.10
+      ufo: 1.5.4
+      untyped: 1.5.1
+    optionalDependencies:
+      typescript: 5.7.2
     transitivePeerDependencies:
       - sass
       - supports-color
@@ -9633,10 +9762,10 @@ snapshots:
     dependencies:
       bundle-runner: 0.0.1
 
-  vue-router@4.4.5(vue@3.5.13(typescript@4.9.5)):
+  vue-router@4.4.5(vue@3.5.13(typescript@5.7.2)):
     dependencies:
       '@vue/devtools-api': 6.6.4
-      vue: 3.5.13(typescript@4.9.5)
+      vue: 3.5.13(typescript@5.7.2)
 
   vue-server-renderer@2.7.16:
     dependencies:
@@ -9659,15 +9788,15 @@ snapshots:
       de-indent: 1.0.2
       he: 1.2.0
 
-  vue@3.5.13(typescript@4.9.5):
+  vue@3.5.13(typescript@5.7.2):
     dependencies:
       '@vue/compiler-dom': 3.5.13
       '@vue/compiler-sfc': 3.5.13
       '@vue/runtime-dom': 3.5.13
-      '@vue/server-renderer': 3.5.13(vue@3.5.13(typescript@4.9.5))
+      '@vue/server-renderer': 3.5.13(vue@3.5.13(typescript@5.7.2))
       '@vue/shared': 3.5.13
     optionalDependencies:
-      typescript: 4.9.5
+      typescript: 5.7.2
 
   vuex5@0.5.0-testing.3: {}
 

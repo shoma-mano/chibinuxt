@@ -1,27 +1,28 @@
 import { resolve } from "upath";
 import defu from "defu";
 import type { NuxtOptions } from "@nuxt/types";
-import { createHooks, Hookable, Hooks } from "hookable";
+import { createHooks, Hookable } from "hookable";
+import type { Hooks } from "hookable";
 import type { Preset } from "@nuxt/un";
 import { tryImport, resolvePath, detectTarget, extendPreset } from "./utils";
 import * as PRESETS from "./presets";
 import type { NodeExternalsOptions } from "./rollup/plugins/externals";
 import type { ServerMiddleware } from "./server/middleware";
-import { EventHandler } from "h3";
+import type { EventHandler } from "h3";
 
 export interface NitroContext {
-  timing: boolean;
-  inlineDynamicImports: boolean;
-  minify: boolean;
-  sourceMap: boolean;
-  externals: boolean | NodeExternalsOptions;
-  analyze: boolean;
-  entry: string;
-  node: boolean;
-  preset: string;
+  timing?: boolean;
+  inlineDynamicImports?: boolean;
+  minify?: boolean;
+  sourceMap?: boolean;
+  externals?: boolean | NodeExternalsOptions;
+  analyze?: boolean;
+  entry?: string;
+  node?: boolean;
+  preset?: string;
   rollupConfig?: any;
-  renderer: string;
-  serveStatic: boolean;
+  renderer?: string;
+  serveStatic?: boolean;
   middleware: ServerMiddleware[];
   scannedMiddleware: ServerMiddleware[];
   hooks: Hooks;
@@ -98,15 +99,15 @@ export function getNitroContext(
       rootDir: nuxtOptions.rootDir,
       srcDir: nuxtOptions.srcDir,
       buildDir: nuxtOptions.buildDir,
-      generateDir: nuxtOptions.generate.dir,
-      staticDir: nuxtOptions.dir.static,
+      generateDir: nuxtOptions.generate.dir!,
+      staticDir: nuxtOptions.dir.static!,
       serverDir: resolve(
         nuxtOptions.srcDir,
         (nuxtOptions.dir as any).server || "server"
       ),
       // @ts-ignore
       routerBase: nuxtOptions.router.base,
-      publicPath: nuxtOptions.build.publicPath,
+      publicPath: nuxtOptions.build.publicPath!,
       isStatic: nuxtOptions.target === "static" && !nuxtOptions.dev,
       fullStatic:
         nuxtOptions.target === "static" && !nuxtOptions._legacyGenerate,
@@ -126,11 +127,12 @@ export function getNitroContext(
   defaults.preset =
     input.preset || process.env.NITRO_PRESET || detectTarget() || "server";
   let presetDefaults =
-    PRESETS[defaults.preset] || tryImport(nuxtOptions.rootDir, defaults.preset);
+    PRESETS[defaults.preset as keyof typeof PRESETS] ||
+    tryImport(nuxtOptions.rootDir, defaults.preset);
   if (!presetDefaults) {
     throw new Error("Cannot resolve preset: " + defaults.preset);
   }
-  presetDefaults = presetDefaults.default || presetDefaults;
+  presetDefaults = (presetDefaults as any).default || presetDefaults;
 
   const _presetInput = defu(input, defaults);
   // @ts-ignore
@@ -153,60 +155,60 @@ export function getNitroContext(
   return nitroContext;
 }
 
-export const createNitroContext = () => {
-  const defaults = {
-    preset: "dev",
-    timing: undefined,
-    inlineDynamicImports: undefined,
-    minify: undefined,
-    sourceMap: undefined,
-    externals: undefined,
-    analyze: undefined,
-    entry: undefined,
-    node: undefined,
-    rollupConfig: undefined,
-    renderer: undefined,
-    serveStatic: undefined,
-    middleware: [],
-    scannedMiddleware: [],
-    ignore: [],
-    env: {},
-    hooks: {},
-    nuxtHooks: {},
-    templatePath: resolve(".", ".nuxt/views/app.template.html"),
-    output: {
-      dir: "{{ _nuxt.rootDir }}/.output",
-      serverDir: "{{ output.dir }}/server",
-      publicDir: "{{ output.dir }}/public",
-    },
-    _internal: {
-      hooks: createHooks(),
-      runtimeDir: resolve(__dirname, "./runtime"),
-    },
-  } as NitroContext;
+// export const createNitroContext = () => {
+//   const defaults = {
+//     preset: "dev",
+//     timing: undefined,
+//     inlineDynamicImports: undefined,
+//     minify: undefined,
+//     sourceMap: undefined,
+//     externals: undefined,
+//     analyze: undefined,
+//     entry: undefined,
+//     node: undefined,
+//     rollupConfig: undefined,
+//     renderer: undefined,
+//     serveStatic: undefined,
+//     middleware: [],
+//     scannedMiddleware: [],
+//     ignore: [],
+//     env: {},
+//     hooks: {},
+//     nuxtHooks: {},
+//     templatePath: resolve(".", ".nuxt/views/app.template.html"),
+//     output: {
+//       dir: "{{ _nuxt.rootDir }}/.output",
+//       serverDir: "{{ output.dir }}/server",
+//       publicDir: "{{ output.dir }}/public",
+//     },
+//     _internal: {
+//       hooks: createHooks(),
+//       runtimeDir: resolve(__dirname, "./runtime"),
+//     },
+//   } as NitroContext;
 
-  let presetDefaults = PRESETS[defaults.preset];
-  if (!presetDefaults) {
-    throw new Error("Cannot resolve preset: " + defaults.preset);
-  }
-  presetDefaults = presetDefaults.default || presetDefaults;
+//   let presetDefaults = PRESETS[defaults.preset];
+//   if (!presetDefaults) {
+//     throw new Error("Cannot resolve preset: " + defaults.preset);
+//   }
+//   presetDefaults = presetDefaults.default || presetDefaults;
 
-  // @ts-ignore
-  const _preset = extendPreset({}, presetDefaults)(defaults);
-  const nitroContext: NitroContext = defu(_preset, defaults) as any;
+//   // @ts-ignore
+//   const _preset = extendPreset({}, presetDefaults)(defaults);
+//   const nitroContext: NitroContext = defu(_preset, defaults) as any;
 
-  nitroContext.output.dir = resolvePath(nitroContext, nitroContext.output.dir);
-  nitroContext.output.publicDir = resolvePath(
-    nitroContext,
-    nitroContext.output.publicDir
-  );
-  nitroContext.output.serverDir = resolvePath(
-    nitroContext,
-    nitroContext.output.serverDir
-  );
-  console.log("nitroContext.output.serverDir", nitroContext.output.serverDir);
+//   nitroContext.output.dir = resolvePath(nitroContext, nitroContext.output.dir);
+//   nitroContext.output.publicDir = resolvePath(
+//     nitroContext,
+//     nitroContext.output.publicDir
+//   );
+//   nitroContext.output.serverDir = resolvePath(
+//     nitroContext,
+//     nitroContext.output.serverDir
+//   );
+//   console.log("nitroContext.output.serverDir", nitroContext.output.serverDir);
 
-  nitroContext._internal.hooks.addHooks(nitroContext.hooks);
+//   nitroContext._internal.hooks.addHooks(nitroContext.hooks);
 
-  return nitroContext;
-};
+//   return nitroContext;
+// };

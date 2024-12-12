@@ -1,7 +1,7 @@
 import { defineBuildConfig } from "unbuild";
 
 export default defineBuildConfig({
-  // declaration: true,
+  declaration: true,
   entries: [
     {
       input: "src/runtime",
@@ -9,8 +9,7 @@ export default defineBuildConfig({
       builder: "mkdist",
     },
     {
-      input: "src/index",
-      builder: "rollup",
+      input: "src/index.ts",
     },
   ],
   rollup: {

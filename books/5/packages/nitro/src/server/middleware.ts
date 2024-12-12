@@ -68,7 +68,7 @@ export function scanMiddleware(
 
 export function resolveMiddleware(
   serverMiddleware: any[],
-  resolvePath: (string) => string
+  resolvePath: (string: string) => string
 ) {
   const middleware: ServerMiddleware[] = [];
   const legacyMiddleware: ServerMiddleware[] = [];

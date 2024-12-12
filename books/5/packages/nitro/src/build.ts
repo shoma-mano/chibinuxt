@@ -11,12 +11,10 @@ import {
   writeFile,
   isDirectory,
 } from "./utils";
-import { NitroContext } from "./context";
+import type { NitroContext } from "./context";
 import { scanMiddleware } from "./server/middleware";
 
 export async function prepare(nitroContext: NitroContext) {
-  consola.info(`Nitro preset is ${hl(nitroContext.preset)}`);
-
   await cleanupDir(nitroContext.output.dir);
 
   if (!nitroContext.output.publicDir.startsWith(nitroContext.output.dir)) {
@@ -66,9 +64,9 @@ export async function build(nitroContext: NitroContext) {
     compiled: "",
   };
   htmlTemplate.dst = htmlTemplate.src
-    .replace(/.html$/, ".js")
-    .replace("app.", "document.");
-  htmlTemplate.contents = await readFile(htmlTemplate.src, "utf-8");
+    ?.replace(/.html$/, ".js")
+    .replace("app.", "document.")!;
+  htmlTemplate.contents = await readFile(htmlTemplate.src!, "utf-8");
   htmlTemplate.compiled =
     "module.exports = " + serializeTemplate(htmlTemplate.contents);
   await nitroContext._internal.hooks.callHook(
@@ -113,7 +111,7 @@ async function _build(nitroContext: NitroContext) {
 
 function startRollupWatcher(nitroContext: NitroContext) {
   const watcher = rollupWatch(nitroContext.rollupConfig);
-  let start;
+  let start: any;
 
   watcher.on("event", (event) => {
     switch (event.code) {
@@ -147,9 +145,9 @@ function startRollupWatcher(nitroContext: NitroContext) {
 async function _watch(nitroContext: NitroContext) {
   let watcher = startRollupWatcher(nitroContext);
 
-  const deletes = [];
+  const deletes: string[] = [];
   for (const key of deletes) {
-    delete nitroContext[key];
+    delete nitroContext[key as keyof typeof nitroContext];
   }
 
   // buildで使われている

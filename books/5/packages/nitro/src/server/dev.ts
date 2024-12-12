@@ -6,10 +6,11 @@ import {
   toNodeListener,
 } from "h3";
 import { resolve } from "upath";
-import debounce from "debounce";
+import { debounce } from "perfect-debounce";
 // @ts-ignore
 import chokidar from "chokidar";
-import { listen, Listener } from "listhen";
+import { listen } from "listhen";
+import type { Listener } from "listhen";
 import { stat } from "fs-extra";
 import type { NitroContext } from "../context";
 import { createProxyServer } from "httpxy";
@@ -22,7 +23,7 @@ export function createDevServer(nitroContext: NitroContext) {
   const legacyMiddleware = createDynamicMiddleware();
   const devMiddleware = dynamicEventHandler();
   // app.use(fromNodeMiddleware(legacyMiddleware.middleware));
-  app.use(nitroContext.viteDevHandler);
+  app.use(nitroContext.viteDevHandler!);
   app.use(
     defineEventHandler((event) => {
       console.log("event", event.path);
@@ -37,9 +38,9 @@ export function createDevServer(nitroContext: NitroContext) {
   );
   console.log("serverDir", nitroContext.output.serverDir);
   console.log("[worker] entry:", workerEntry);
-  let pendingWorker: Worker;
+  let pendingWorker: Worker | null;
   let activeWorker: Worker;
-  let workerAddress: string;
+  let workerAddress: string | null;
   async function reload() {
     if (pendingWorker) {
       await pendingWorker.terminate();
@@ -80,7 +81,7 @@ export function createDevServer(nitroContext: NitroContext) {
       const { req, res } = event.node;
       if (workerAddress) {
         console.log("workerAddress", workerAddress, "req.url", req.url);
-        await proxy.web(req, res, { target: workerAddress }, (_err) => {
+        await proxy.web(req, res, { target: workerAddress }, (_err: any) => {
           console.log("proxy error", _err);
         });
       } else {
@@ -92,7 +93,7 @@ export function createDevServer(nitroContext: NitroContext) {
 
   // Listen
   let listeners: Listener[] = [];
-  const _listen = async (port, opts?) => {
+  const _listen = async (port: number, opts?: any) => {
     const handler = toNodeListener(app);
     const listener = await listen(handler, { port, ...opts });
     listeners.push(listener);
@@ -102,12 +103,12 @@ export function createDevServer(nitroContext: NitroContext) {
   // Watch for dist and reload worker
   const pattern = "**/*.{js,json}";
   const events = ["add", "change"];
-  let watcher;
+  let watcher: any;
   function watch() {
     if (watcher) {
       return;
     }
-    const dReload = debounce(() => reload().catch(console.warn), 200, true);
+    const dReload = debounce(() => reload().catch(console.warn), 200);
     watcher = chokidar
       .watch([
         resolve(nitroContext.output.serverDir, pattern),
@@ -143,20 +144,20 @@ export function createDevServer(nitroContext: NitroContext) {
 }
 
 function createDynamicMiddleware() {
-  let middleware;
+  let middleware: any;
   return {
-    set: async (input) => {
+    set: async (input: any) => {
       if (!Array.isArray(input)) {
         middleware = input;
         return;
       }
-      const app = await import("connect").then((c) => c.default());
-      for (const m of input) {
-        app.use(m.path || m.route || "/", m.handler || m.handle);
-      }
-      middleware = app;
+      // const app = await import("connect").then((c) => c.default());
+      // for (const m of input) {
+      //   app.use(m.path || m.route || "/", m.handler || m.handle);
+      // }
+      // middleware = app;
     },
-    middleware: (req, res, next) =>
+    middleware: (req: any, res: any, next: any) =>
       middleware ? middleware(req, res, next) : next(),
   };
 }

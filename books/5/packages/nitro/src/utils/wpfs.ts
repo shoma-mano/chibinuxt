@@ -1,9 +1,10 @@
-// @ts-ignore
 import { join } from "upath";
-// @ts-ignore
 import fsExtra from "fs-extra";
 
+// @ts-ignore
 export const wpfs = {
-  ...fsExtra,
-  join,
+  // @ts-ignore
+  ...(fsExtra as any),
+  // @ts-ignore
+  join: join as any,
 };
