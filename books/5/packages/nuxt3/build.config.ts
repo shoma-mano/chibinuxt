@@ -1,6 +1,7 @@
 import { defineBuildConfig } from "unbuild";
 
 export default defineBuildConfig({
+  declaration: true,
   entries: [
     {
       input: "src/app",
@@ -11,6 +12,7 @@ export default defineBuildConfig({
     {
       input: "src/index.ts",
       builder: "rollup",
+      declaration: true,
     },
   ],
   rollup: {

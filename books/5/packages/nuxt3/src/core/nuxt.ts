@@ -3,11 +3,8 @@ import type { IncomingHttpHeaders } from "http";
 import isPlainObject from "lodash/isPlainObject";
 import { Hookable, createHooks } from "hookable";
 
-import {
-  getNuxtConfig,
-  Configuration,
-  NormalizedConfiguration,
-} from "../config";
+import { getNuxtConfig } from "../config";
+import type { Configuration, NormalizedConfiguration } from "../config";
 
 import { version } from "../../package.json";
 
@@ -23,7 +20,7 @@ declare global {
 }
 
 export interface Nuxt {
-  _ready?: Promise<this>;
+  _ready?: Promise<this | undefined>;
   _initCalled?: boolean;
 
   error?: Error & { statusCode?: number; headers?: IncomingHttpHeaders };
@@ -35,8 +32,8 @@ export interface Nuxt {
   render?: any["app"];
   hooks: Hookable<any>;
   showReady?: () => void;
-  init: () => Promise<Nuxt>;
-  ready: () => Promise<Nuxt>;
+  init: () => Promise<Nuxt | undefined>;
+  ready: () => Promise<Nuxt | undefined>;
   close: (callback?: () => any | Promise<any>) => Promise<void>;
 }
 
@@ -56,10 +53,11 @@ export const createNuxt = (options: Configuration = {}) => {
     render: undefined,
     showReady: undefined,
     ready: () => {
-      if (!nuxt._ready) {
-        nuxt._ready = initNuxt(nuxt);
+      const init = initNuxt(nuxt);
+      if (!nuxt._ready && init) {
+        nuxt._ready = init;
       }
-      return nuxt._ready;
+      return nuxt._ready!;
     },
     init: () => initNuxt(nuxt),
     get version() {

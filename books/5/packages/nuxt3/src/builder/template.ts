@@ -1,7 +1,7 @@
 import { join, dirname } from "path";
 import fsExtra from "fs-extra";
-import { Nuxt } from "../core";
-import { NuxtApp } from "./app";
+import type { Nuxt } from "../core";
+import type { NuxtApp } from "./app";
 
 export interface NuxtTemplate {
   fileName: string; // Relative path of destination
@@ -18,7 +18,7 @@ export function templateData(nuxt: Nuxt, app: NuxtApp) {
   return {
     app,
     nuxtOptions: nuxt.options,
-  };
+  } as any;
 }
 
 async function compileTemplate(

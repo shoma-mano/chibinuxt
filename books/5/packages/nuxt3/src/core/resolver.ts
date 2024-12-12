@@ -8,7 +8,7 @@ import {
   isExternalDependency,
   clearRequireCache,
 } from "../utils";
-import { Nuxt } from ".";
+import type { Nuxt } from ".";
 import globby from "globby";
 
 interface ResolvePathOptions {
@@ -30,7 +30,7 @@ export default class Resolver {
   options: Nuxt["options"];
 
   constructor(nuxt?: Nuxt) {
-    this.nuxt = nuxt;
+    this.nuxt = nuxt!;
     this.options = this.nuxt.options;
 
     // Binds
@@ -48,7 +48,7 @@ export default class Resolver {
       return this._resolve(path, {
         paths: this.options.modulesDir,
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error.code !== "MODULE_NOT_FOUND") {
         // TODO: remove after https://github.com/facebook/jest/pull/8487 released
         if (
@@ -83,11 +83,11 @@ export default class Resolver {
       return path;
     }
 
-    let resolvedPath: string;
+    let resolvedPath: string = "";
 
     // Try to resolve it as a regular module
     if (isModule !== false) {
-      resolvedPath = this.resolveModule(path);
+      resolvedPath = this.resolveModule(path)!;
     }
 
     // Try to resolve alias
@@ -100,7 +100,7 @@ export default class Resolver {
       resolvedPath = path;
     }
 
-    let isDirectory: boolean;
+    let isDirectory: boolean = false;
 
     // Check if resolvedPath exits and is not a directory
     if (fs.existsSync(resolvedPath)) {

@@ -1,6 +1,6 @@
 import fsExtra from "fs-extra";
-import { Nuxt } from "../core";
-import { templateData, compileTemplates, NuxtTemplate } from "./template";
+import type { Nuxt } from "../core";
+import { templateData, compileTemplates } from "./template";
 import { createApp } from "./app";
 import * as defaultTemplates from "./templates";
 
