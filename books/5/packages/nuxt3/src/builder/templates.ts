@@ -63,19 +63,23 @@ export const allPluginsTemplate: NuxtTemplate = {
   getContents: () => `
     import head from 'nuxt/app/plugins/head'
     import router from 'nuxt/app/plugins/router'
-    import legacy from 'nuxt/app/plugins/legacy'
 
     export default [
       head,
       router,
-      legacy,
     ]
   `,
 };
 
-const serialize = (data) =>
+const serialize = (data: any) =>
   JSON.stringify(data, null, 2).replace(/"{(.+)}"/g, "$1");
-const serializeRoute = (route: NuxtRoute) => {
+
+type SerializdRoute = Omit<NuxtRoute, "file" | "children"> & {
+  component: string;
+  __file: string;
+  children: SerializdRoute[];
+};
+const serializeRoute = (route: NuxtRoute): SerializdRoute => {
   return {
     name: route.name,
     path: route.path,
