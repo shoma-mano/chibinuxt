@@ -1,5 +1,5 @@
 import {
-  RouteRecordRaw,
+  type RouteRecordRaw,
   createRouter as _createRouter,
   createMemoryHistory,
   createWebHistory,

@@ -1,4 +1,4 @@
-import { createApp, toNodeListener, fromNodeMiddleware } from "h3";
+import { createApp, toNodeListener } from "h3";
 import { createServer } from "http";
 import { renderMiddleware } from "./render";
 

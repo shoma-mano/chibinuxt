@@ -34,7 +34,14 @@ const setupRenderer = async () => {
   });
 };
 
-function renderHTML(rendered) {
+type Rendered = {
+  html: string;
+  renderResourceHeaders: () => Record<string, string>;
+  renderResourceHints: () => string;
+  renderStyles: () => string;
+  renderScripts: () => string;
+};
+function renderHTML(rendered: Rendered): string {
   const _html = rendered.html;
 
   const { htmlAttrs = "", bodyAttrs = "", headTags = "", headAttrs = "" } = {};

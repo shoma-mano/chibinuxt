@@ -9,7 +9,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Home", link: "/" },
-      { text: "Play", link: "/markdown-examples" },
+      { text: "Play", link: "/part-1/min-ssr" },
     ],
 
     logo: "/image.png",
@@ -17,10 +17,7 @@ export default defineConfig({
     sidebar: [
       {
         text: "Part 1",
-        items: [
-          { text: "Chapter 1", link: "/part-1/markdown-examples" },
-          { text: "Chapter 2", link: "/part-1/api-examples" },
-        ],
+        items: [{ text: "Chapter 1", link: "/part-1/min-ssr" }],
       },
     ],
 

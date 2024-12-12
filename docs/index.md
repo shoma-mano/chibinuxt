@@ -9,10 +9,10 @@ hero:
   actions:
     - theme: brand
       text: Continue..?
-      link: /part-1/markdown-examples
+      link: /part-1/min-ssr
     - theme: alt
       text: Nuxt Official
-      link: /markdown-examples
+      link: https://nuxt.com
   image:
     src: /image.png
 
@@ -60,7 +60,6 @@ features:
 .VPHero{
   margin-bottom: 15px;
 }
-
 
 @media (min-width: 640px) {
   :root {

@@ -1,6 +1,7 @@
 {
   "name": "nuxt-framework",
   "private": "true",
+  "type": "module",
   "license": "MIT",
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
