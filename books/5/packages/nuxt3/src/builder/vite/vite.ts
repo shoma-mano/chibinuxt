@@ -1,10 +1,10 @@
 import { resolve } from "path";
-import { mkdirp, writeFile } from "fs-extra";
+import { mkdir, writeFile } from "node:fs/promises";
 import vue from "@vitejs/plugin-vue";
 import consola from "consola";
 import * as vite from "vite";
 import { defineEventHandler } from "h3";
-import { Nuxt } from "../../core/nuxt";
+import type { Nuxt } from "../../core/nuxt";
 
 interface ViteBuildContext {
   nuxt: Nuxt;
@@ -37,8 +37,10 @@ export async function bundle(nuxt: Nuxt) {
     },
   };
 
-  await mkdirp(nuxt.options.buildDir);
-  await mkdirp(resolve(nuxt.options.buildDir, ".vite/temp"));
+  await mkdir(nuxt.options.buildDir, { recursive: true });
+  await mkdir(resolve(nuxt.options.buildDir, ".vite/temp"), {
+    recursive: true,
+  });
 
   const callBuild = async (fn, name) => {
     try {
@@ -117,17 +119,22 @@ async function buildServer(ctx: ViteBuildContext) {
       ssr: true,
       rollupOptions: {
         input: resolve(ctx.nuxt.options.buildDir, "./entry.server.mjs"),
+        output: {
+          format: "esm",
+          entryFileNames: "[name].mjs",
+        },
       },
     },
   } as vite.InlineConfig);
 
   const serverDist = resolve(ctx.nuxt.options.buildDir, "dist/server");
-  await mkdirp(serverDist);
+  await mkdir(serverDist, { recursive: true });
   await writeFile(resolve(serverDist, "client.manifest.json"), "false");
   await writeFile(
     resolve(serverDist, "server.js"),
     `const entry = import('${ctx.nuxt.options.buildDir}/dist/server/entry.server.mjs').then((m) => m.default);export default entry;`
   );
+  console.log("server entry created");
 
   await vite.build(serverConfig);
 

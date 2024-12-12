@@ -1,5 +1,5 @@
 import { resolve, join } from "path";
-import fs from "fs-extra";
+import fs from "fs";
 
 import jiti from "jiti";
 import {
@@ -39,7 +39,7 @@ export default class Resolver {
     this.resolveModule = this.resolveModule.bind(this);
     this.requireModule = this.requireModule.bind(this);
 
-    this._require = jiti(__filename);
+    this._require = jiti(import.meta.filename);
     this._resolve = this._require.resolve;
   }
 

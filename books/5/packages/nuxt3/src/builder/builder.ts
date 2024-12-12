@@ -1,11 +1,11 @@
-import fsExtra from "fs-extra";
 import type { Nuxt } from "../core";
 import { templateData, compileTemplates } from "./template";
 import { createApp } from "./app";
 import * as defaultTemplates from "./templates";
+import { clearDirectory } from "../utils/fs-utils";
 
 export async function build(nuxt: Nuxt) {
-  await fsExtra.emptyDir(nuxt.options.buildDir);
+  await clearDirectory(nuxt.options.buildDir);
   await generate(nuxt);
 
   await bundle(nuxt);

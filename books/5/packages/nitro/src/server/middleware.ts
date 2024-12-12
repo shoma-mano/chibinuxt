@@ -1,4 +1,5 @@
-import { resolve, join, extname } from "upath";
+import { resolve, join } from "path";
+import { extname } from "path";
 import { joinURL } from "ufo";
 // @ts-ignore
 import globby from "globby";

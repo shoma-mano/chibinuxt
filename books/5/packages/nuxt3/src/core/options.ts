@@ -251,8 +251,8 @@ function normalizeConfig(_options: CliConfiguration) {
   // TODO: switch to export by default for nuxt3
   if (options.export) {
     options.generate = defu(options.export, options.generate!);
+    // exports.export = options.generate;
   }
-  exports.export = options.generate;
 
   // Check srcDir and generate.dir existence
   const hasSrcDir = isNonEmptyString(options.srcDir);
@@ -330,13 +330,7 @@ function normalizeConfig(_options: CliConfiguration) {
   }
 
   // Populate modulesDir
-  options.modulesDir = uniq(
-    getMainModule().paths.concat(
-      []
-        .concat(options.modulesDir as any)
-        .map((dir) => path.resolve(options.rootDir, dir))
-    )
-  );
+  options.modulesDir = [];
 
   const mandatoryExtensions = ["js", "mjs", "ts", "tsx", "vue", "jsx"];
 
@@ -654,8 +648,8 @@ function normalizeConfig(_options: CliConfiguration) {
 
   // createRequire factory
   if (options.createRequire === undefined) {
-    const createRequire = require("create-require");
-    options.createRequire = (module: any) => createRequire(module.filename);
+    options.createRequire = async (module: any) =>
+      import("create-require").then((mod) => mod.default(module));
   }
 
   // ----- Builtin modules -----

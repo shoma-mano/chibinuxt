@@ -2,7 +2,7 @@
   "name": "@nuxt/nitro",
   "version": "0.1.11",
   "license": "MIT",
-  "main": "dist/index.cjs",
+  "main": "dist/index.mjs",
   "type": "module",
   "files": [
     "dist",
@@ -27,6 +27,7 @@
     "@rollup/plugin-virtual": "^2.0.3",
     "@rollup/pluginutils": "^4.1.0",
     "@types/fs-extra": "^9.0.8",
+    "@types/node": "22.10.2",
     "@vercel/nft": "^0.9.5",
     "@vue/server-renderer": "^3.0.7",
     "archiver": "^5.2.0",

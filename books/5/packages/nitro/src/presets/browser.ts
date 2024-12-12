@@ -1,23 +1,25 @@
-import { writeFile } from 'fs-extra'
-import { resolve } from 'upath'
-import consola from 'consola'
-import { extendPreset, prettyPath } from '../utils'
-import { NitroPreset, NitroContext, NitroInput } from '../context'
-import { worker } from './worker'
+import { writeFile } from "fs";
+import { resolve } from "path";
+import consola from "consola";
+import { extendPreset, prettyPath } from "../utils";
+import { NitroPreset, NitroContext, NitroInput } from "../context";
+import { worker } from "./worker";
 
-export const browser: NitroPreset = extendPreset(worker, (input: NitroInput) => {
-  const routerBase = input._nuxt.routerBase
+export const browser: NitroPreset = extendPreset(
+  worker,
+  (input: NitroInput) => {
+    const routerBase = input._nuxt.routerBase;
 
-  const script = `<script>
+    const script = `<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('${routerBase}sw.js');
   });
 }
-</script>`
+</script>`;
 
-  // TEMP FIX
-  const html = `<!DOCTYPE html>
+    // TEMP FIX
+    const html = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -45,35 +47,42 @@ if ('serviceWorker' in navigator) {
   Loading...
 </body>
 
-</html>`
+</html>`;
 
-  return <NitroInput> {
-    entry: '{{ _internal.runtimeDir }}/entries/service-worker',
-    output: {
-      serverDir: '{{ output.dir }}/public/_server'
-    },
-    nuxtHooks: {
-      'vue-renderer:ssr:templateParams' (params) {
-        params.APP += script
+    return <NitroInput>{
+      entry: "{{ _internal.runtimeDir }}/entries/service-worker",
+      output: {
+        serverDir: "{{ output.dir }}/public/_server",
       },
-      'vue-renderer:spa:templateParams' (params) {
-        params.APP += script
-      }
-    },
-    hooks: {
-      'nitro:template:document' (tmpl) {
-        tmpl.compiled = tmpl.compiled.replace('</body>', script + '</body>')
+      nuxtHooks: {
+        "vue-renderer:ssr:templateParams"(params) {
+          params.APP += script;
+        },
+        "vue-renderer:spa:templateParams"(params) {
+          params.APP += script;
+        },
       },
-      async 'nitro:compiled' ({ output }: NitroContext) {
-        await writeFile(resolve(output.publicDir, 'sw.js'), `self.importScripts('${input._nuxt.routerBase}_server/index.js');`)
+      hooks: {
+        "nitro:template:document"(tmpl) {
+          tmpl.compiled = tmpl.compiled.replace("</body>", script + "</body>");
+        },
+        async "nitro:compiled"({ output }: NitroContext) {
+          await writeFile(
+            resolve(output.publicDir, "sw.js"),
+            `self.importScripts('${input._nuxt.routerBase}_server/index.js');`
+          );
 
-        // Temp fix
-        await writeFile(resolve(output.publicDir, 'index.html'), html)
-        await writeFile(resolve(output.publicDir, '200.html'), html)
-        await writeFile(resolve(output.publicDir, '404.html'), html)
+          // Temp fix
+          await writeFile(resolve(output.publicDir, "index.html"), html);
+          await writeFile(resolve(output.publicDir, "200.html"), html);
+          await writeFile(resolve(output.publicDir, "404.html"), html);
 
-        consola.info('Ready to deploy to static hosting:', prettyPath(output.publicDir as string))
-      }
-    }
+          consola.info(
+            "Ready to deploy to static hosting:",
+            prettyPath(output.publicDir as string)
+          );
+        },
+      },
+    };
   }
-})
+);

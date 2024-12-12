@@ -61,7 +61,9 @@ export const createNuxt = (options: Configuration = {}) => {
     },
     init: () => initNuxt(nuxt),
     get version() {
-      return `v${version}` + (global.__NUXT_DEV__ ? "-development" : "");
+      return (
+        `v${version}` + ((global as any).__NUXT_DEV__ ? "-development" : "")
+      );
     },
     async close(callback?: () => any | Promise<any>) {
       await hooks.callHook("close", this);

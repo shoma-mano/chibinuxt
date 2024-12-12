@@ -1,10 +1,4 @@
-import {
-  createApp,
-  defineEventHandler,
-  fromNodeMiddleware,
-  toNodeListener,
-  useBase,
-} from "h3";
+import { createApp, defineEventHandler, toNodeListener } from "h3";
 import { renderMiddleware } from "../app/render";
 
 const app = createApp({

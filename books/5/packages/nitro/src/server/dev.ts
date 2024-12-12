@@ -5,13 +5,13 @@ import {
   dynamicEventHandler,
   toNodeListener,
 } from "h3";
-import { resolve } from "upath";
+import { resolve } from "path";
 import { debounce } from "perfect-debounce";
 // @ts-ignore
 import chokidar from "chokidar";
 import { listen } from "listhen";
 import type { Listener } from "listhen";
-import { stat } from "fs-extra";
+import { stat, statSync } from "fs";
 import type { NitroContext } from "../context";
 import { createProxyServer } from "httpxy";
 
@@ -48,7 +48,7 @@ export function createDevServer(nitroContext: NitroContext) {
       pendingWorker = null;
     }
     console.log("entry file", workerEntry);
-    if (!(await stat(workerEntry)).isFile) {
+    if (!statSync(workerEntry).isFile) {
       throw new Error("Entry not found: " + workerEntry);
     }
     return new Promise((resolve, reject) => {
@@ -108,7 +108,7 @@ export function createDevServer(nitroContext: NitroContext) {
     if (watcher) {
       return;
     }
-    const dReload = debounce(() => reload().catch(console.warn), 200);
+    const dReload = debounce(() => reload().catch(console.warn), 500);
     watcher = chokidar
       .watch([
         resolve(nitroContext.output.serverDir, pattern),

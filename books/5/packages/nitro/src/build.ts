@@ -1,18 +1,13 @@
-import { resolve, join } from "upath";
+import { resolve, join } from "path";
 import consola from "consola";
 import { rollup, watch as rollupWatch } from "rollup";
-import { readFile, emptyDir, copy } from "fs-extra";
+import { cpSync, readFileSync } from "fs";
 import { printFSTree } from "./utils/tree";
 import { getRollupConfig } from "./rollup/config";
-import {
-  hl,
-  prettyPath,
-  serializeTemplate,
-  writeFile,
-  isDirectory,
-} from "./utils";
+import { prettyPath, serializeTemplate, writeFile, isDirectory } from "./utils";
 import type { NitroContext } from "./context";
 import { scanMiddleware } from "./server/middleware";
+import { clearDirectory } from "./utils/fs-utils";
 
 export async function prepare(nitroContext: NitroContext) {
   await cleanupDir(nitroContext.output.dir);
@@ -28,7 +23,7 @@ export async function prepare(nitroContext: NitroContext) {
 
 async function cleanupDir(dir: string) {
   consola.info("Cleaning up", prettyPath(dir));
-  await emptyDir(dir);
+  await clearDirectory(dir);
 }
 
 export async function generate(nitroContext: NitroContext) {
@@ -36,7 +31,7 @@ export async function generate(nitroContext: NitroContext) {
 
   const clientDist = resolve(nitroContext._nuxt.buildDir, "dist/client");
   if (await isDirectory(clientDist)) {
-    await copy(
+    await cpSync(
       clientDist,
       join(nitroContext.output.publicDir, nitroContext._nuxt.publicPath)
     );
@@ -47,7 +42,7 @@ export async function generate(nitroContext: NitroContext) {
     nitroContext._nuxt.staticDir
   );
   if (await isDirectory(staticDir)) {
-    await copy(staticDir, nitroContext.output.publicDir);
+    cpSync(staticDir, nitroContext.output.publicDir);
   }
 
   consola.success(
@@ -66,9 +61,9 @@ export async function build(nitroContext: NitroContext) {
   htmlTemplate.dst = htmlTemplate.src
     ?.replace(/.html$/, ".js")
     .replace("app.", "document.")!;
-  htmlTemplate.contents = await readFile(htmlTemplate.src!, "utf-8");
+  htmlTemplate.contents = readFileSync(htmlTemplate.src!, "utf-8");
   htmlTemplate.compiled =
-    "module.exports = " + serializeTemplate(htmlTemplate.contents);
+    "export default " + serializeTemplate(htmlTemplate.contents);
   await nitroContext._internal.hooks.callHook(
     "nitro:template:document",
     htmlTemplate

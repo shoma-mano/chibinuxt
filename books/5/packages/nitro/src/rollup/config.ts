@@ -1,4 +1,5 @@
-import { dirname, join, resolve } from "upath";
+import { join, resolve } from "path";
+import { dirname } from "path";
 import { InputOptions, OutputOptions } from "rollup";
 import defu from "defu";
 import nodeResolve from "@rollup/plugin-node-resolve";

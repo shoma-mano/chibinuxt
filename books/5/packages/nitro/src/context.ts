@@ -1,4 +1,4 @@
-import { resolve } from "upath";
+import { resolve } from "path";
 import defu from "defu";
 import type { NuxtOptions } from "@nuxt/types";
 import { createHooks, Hookable } from "hookable";
@@ -119,7 +119,7 @@ export function getNitroContext(
       },
     },
     _internal: {
-      runtimeDir: resolve(__dirname, "./runtime"),
+      runtimeDir: resolve(import.meta.dirname, "./runtime"),
       hooks: createHooks(),
     },
   };

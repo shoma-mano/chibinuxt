@@ -1,79 +1,79 @@
-import path from 'path'
-import fs from 'fs-extra'
-import ignore from 'ignore'
+import path from "path";
+import ignore from "ignore";
+import { existsSync, readFileSync, statSync } from "fs";
 
-type IgnoreInstance = ReturnType<typeof ignore>
-type IgnoreOptions = Parameters<typeof ignore>[0]
+type IgnoreInstance = ReturnType<typeof ignore>;
+type IgnoreOptions = Parameters<typeof ignore>[0];
 
 interface Options {
-  rootDir: string
-  ignore?: IgnoreInstance
-  ignoreArray?: Array<string | IgnoreInstance>
-  ignoreOptions?: IgnoreOptions
+  rootDir: string;
+  ignore?: IgnoreInstance;
+  ignoreArray?: Array<string | IgnoreInstance>;
+  ignoreOptions?: IgnoreOptions;
 }
 
 export default class Ignore {
-  rootDir: string
-  ignore?: IgnoreInstance
-  ignoreArray?: Array<string | IgnoreInstance>
-  ignoreFile?: string
-  ignoreOptions?: IgnoreOptions
+  rootDir: string;
+  ignore?: IgnoreInstance;
+  ignoreArray?: Array<string | IgnoreInstance>;
+  ignoreFile?: string;
+  ignoreOptions?: IgnoreOptions;
 
-  constructor ({ ignoreArray, ignoreOptions, rootDir }: Options) {
-    this.rootDir = rootDir
-    this.ignoreOptions = ignoreOptions
-    this.ignoreArray = ignoreArray
-    this.addIgnoresRules()
+  constructor({ ignoreArray, ignoreOptions, rootDir }: Options) {
+    this.rootDir = rootDir;
+    this.ignoreOptions = ignoreOptions;
+    this.ignoreArray = ignoreArray;
+    this.addIgnoresRules();
   }
 
-  static get IGNORE_FILENAME () {
-    return '.nuxtignore'
+  static get IGNORE_FILENAME() {
+    return ".nuxtignore";
   }
 
-  findIgnoreFile () {
+  findIgnoreFile() {
     if (!this.ignoreFile) {
-      const ignoreFile = path.resolve(this.rootDir, Ignore.IGNORE_FILENAME)
-      if (fs.existsSync(ignoreFile) && fs.statSync(ignoreFile).isFile()) {
-        this.ignoreFile = ignoreFile
-        this.ignore = ignore(this.ignoreOptions)
+      const ignoreFile = path.resolve(this.rootDir, Ignore.IGNORE_FILENAME);
+      if (existsSync(ignoreFile) && statSync(ignoreFile).isFile()) {
+        this.ignoreFile = ignoreFile;
+        this.ignore = ignore(this.ignoreOptions);
       }
     }
-    return this.ignoreFile
+    return this.ignoreFile;
   }
 
-  readIgnoreFile () {
+  readIgnoreFile() {
     if (this.findIgnoreFile()) {
-      return fs.readFileSync(this.ignoreFile, 'utf8')
+      return readFileSync(this.ignoreFile!, "utf8");
     }
   }
 
-  addIgnoresRules () {
-    const content = this.readIgnoreFile()
+  addIgnoresRules() {
+    const content = this.readIgnoreFile();
     if (content) {
-      this.ignore.add(content)
+      this.ignore.add(content);
     }
     if (this.ignoreArray && this.ignoreArray.length > 0) {
       if (!this.ignore) {
-        this.ignore = ignore(this.ignoreOptions)
+        this.ignore = ignore(this.ignoreOptions);
       }
-      this.ignore.add(this.ignoreArray)
+      this.ignore.add(this.ignoreArray);
     }
   }
 
-  filter (paths: string[]) {
+  filter(paths: string[]) {
     if (this.ignore) {
-      return this.ignore.filter([].concat(paths || []))
+      return this.ignore.filter([].concat(paths || []));
     }
-    return paths
+    return paths;
   }
 
-  ignores (pathname: string) {
-    return this.ignore && this.ignore.ignores(pathname)
+  ignores(pathname: string) {
+    return this.ignore && this.ignore.ignores(pathname);
   }
 
-  reload () {
-    delete this.ignore
-    delete this.ignoreFile
-    this.addIgnoresRules()
+  reload() {
+    delete this.ignore;
+    delete this.ignoreFile;
+    this.addIgnoresRules();
   }
 }
