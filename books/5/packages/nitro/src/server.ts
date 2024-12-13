@@ -8,8 +8,4 @@ export const getServer = () => {
 
   const server = createServer(toNodeListener(app));
   return server;
-
-  //   server.listen(3030, () => {
-  //     console.log("Server listening on http://localhost:3030");
-  //   });
 };

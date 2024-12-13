@@ -7,8 +7,6 @@ import {
 import Hello from "./pages/hello.vue";
 import World from "./pages/world.vue";
 
-export const routes = [] satisfies RouteRecordRaw[];
-
 export const createRouter = (isServer?: boolean) => {
   const routes = [
     {
