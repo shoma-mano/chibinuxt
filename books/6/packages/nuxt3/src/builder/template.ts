@@ -1,8 +1,8 @@
 import { join, dirname } from "path";
-import fsExtra from "fs-extra";
-import * as nxt from "./nxt";
-import { Nuxt } from "../core";
-import { NuxtApp } from "./app";
+import { writeFile } from "fs/promises";
+import type { Nuxt } from "../core";
+import type { NuxtApp } from "./app";
+import { existsSync, mkdirSync } from "fs";
 
 export interface NuxtTemplate {
   fileName: string; // Relative path of destination
@@ -19,8 +19,7 @@ export function templateData(nuxt: Nuxt, app: NuxtApp) {
   return {
     app,
     nuxtOptions: nuxt.options,
-    nxt,
-  };
+  } as any;
 }
 
 async function compileTemplate(
@@ -29,16 +28,23 @@ async function compileTemplate(
 ) {
   const compiledSrc = getContents ? getContents(data) : "";
   const dest = join(destDir, fileName);
-  await fsExtra.mkdirp(dirname(dest));
-  await fsExtra.writeFile(dest, compiledSrc);
+  const isDirectoryExist = existsSync(dirname(dest));
+  if (!isDirectoryExist) {
+    console.log("Creating directory", dirname(dest));
+    mkdirSync(dirname(dest), { recursive: true });
+  }
+  console.log("dest", dest, "destDir", dirname(dest));
+  await writeFile(dest, compiledSrc).catch();
 }
 
-export function compileTemplates(templates: NuxtTemplate[], destDir: string) {
-  return Promise.all(
-    templates.map((t) => {
-      return compileTemplate(t, destDir);
-    })
-  );
+export async function compileTemplates(
+  templates: NuxtTemplate[],
+  destDir: string
+) {
+  // chain promises
+  await templates.reduce(async (ac, cu) => {
+    return ac.then(() => compileTemplate(cu, destDir));
+  }, Promise.resolve());
 }
 
 export function watchTemplate(

@@ -10,10 +10,7 @@
       "path": "./packages/nitro"
     },
     {
-      "path": "./packages/nuxt3"
-    },
-    {
-      "path": "./playground"
+      "path": "./packages/nuxt"
     }
   ],
   "settings": {}

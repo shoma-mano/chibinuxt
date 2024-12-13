@@ -18,18 +18,15 @@ import {
   getPKG,
 } from "../utils";
 import type { EnvConfig } from "../config/load";
-import {
-  DefaultConfiguration,
-  defaultNuxtConfigFile,
-  getDefaultNuxtConfig,
-} from "../config/config";
+import { defaultNuxtConfigFile, getDefaultNuxtConfig } from "../config/config";
+import type { DefaultConfiguration } from "../config/config";
 import {
   deleteProp,
   mergeConfigs,
   setProp,
   overrideProp,
-  Optional,
 } from "../config/transformers";
+import type { Optional } from "../config/transformers";
 
 interface InputConfiguration {
   documentPath?: string;
@@ -225,7 +222,7 @@ function normalizeConfig(_options: CliConfiguration) {
   const options = mergeConfigs(_config, getDefaultNuxtConfig());
 
   // Target
-  if (!Object.values(TARGETS).includes(options.target)) {
+  if (!Object.values(TARGETS).includes(options.target!)) {
     consola.warn(`Unknown target: ${options.target}. Falling back to server`);
     options.target = "server";
   }
@@ -236,43 +233,43 @@ function normalizeConfig(_options: CliConfiguration) {
   }
 
   // Apply mode preset
-  const modePreset = options.modes[options.mode || MODES.universal];
+  const modePreset = options.modes!![options.mode || MODES.universal];
 
   if (!modePreset) {
     consola.warn(
       `Unknown mode: ${options.mode}. Falling back to ${MODES.universal}`
     );
   }
-  defaultsDeep(options, modePreset || options.modes[MODES.universal]);
+  defaultsDeep(options, modePreset || options.modes![MODES.universal]);
 
   // Sanitize router.base
-  if (!/\/$/.test(options.router.base)) {
-    options.router.base += "/";
+  if (!/\/$/.test(options.router!.base!)) {
+    options.router!.base += "/";
   }
 
   // Alias export to generate
   // TODO: switch to export by default for nuxt3
   if (options.export) {
-    options.generate = defu(options.export, options.generate);
+    options.generate = defu(options.export, options.generate!);
+    // exports.export = options.generate;
   }
-  exports.export = options.generate;
 
   // Check srcDir and generate.dir existence
   const hasSrcDir = isNonEmptyString(options.srcDir);
-  const hasGenerateDir = isNonEmptyString(options.generate.dir);
+  const hasGenerateDir = isNonEmptyString(options.generate!.dir);
 
   // Resolve srcDir
   overrideProp(
     options,
     "srcDir",
-    hasSrcDir ? path.resolve(options.rootDir, options.srcDir) : options.rootDir
+    hasSrcDir ? path.resolve(options.rootDir, options.srcDir!) : options.rootDir
   );
 
   // Resolve buildDir
   overrideProp(
     options,
     "buildDir",
-    path.resolve(options.rootDir, options.buildDir)
+    path.resolve(options.rootDir, options.buildDir!)
   );
 
   // Aliases
@@ -280,7 +277,7 @@ function normalizeConfig(_options: CliConfiguration) {
     rootDir,
     srcDir,
     dir: { assets: assetsDir, static: staticDir },
-  } = options;
+  } = options as any;
   overrideProp(options, "alias", {
     "~~": rootDir,
     "@@": rootDir,
@@ -306,14 +303,17 @@ function normalizeConfig(_options: CliConfiguration) {
   );
 
   // Watch for config file changes
-  options.watch.push(...options._nuxtConfigFiles);
+  options.watch!.push(...options._nuxtConfigFiles);
 
   // Protect rootDir against buildDir
   guardDir(options, "rootDir", "buildDir");
 
   if (hasGenerateDir) {
     // Resolve generate.dir
-    options.generate.dir = path.resolve(options.rootDir, options.generate.dir);
+    options.generate!.dir = path.resolve(
+      options.rootDir,
+      options.generate!.dir!
+    );
 
     // Protect rootDir against buildDir
     guardDir(options, "rootDir", "generate.dir");
@@ -330,13 +330,7 @@ function normalizeConfig(_options: CliConfiguration) {
   }
 
   // Populate modulesDir
-  options.modulesDir = uniq(
-    getMainModule().paths.concat(
-      []
-        .concat(options.modulesDir)
-        .map((dir) => path.resolve(options.rootDir, dir))
-    )
-  );
+  options.modulesDir = [];
 
   const mandatoryExtensions = ["js", "mjs", "ts", "tsx", "vue", "jsx"];
 
@@ -344,8 +338,8 @@ function normalizeConfig(_options: CliConfiguration) {
     options,
     "extensions",
     mandatoryExtensions
-      .filter((ext) => !options.extensions.includes(ext))
-      .concat(options.extensions)
+      .filter((ext) => !options.extensions!.includes(ext))
+      .concat(options.extensions!)
   );
 
   // If app.html is defined, set the template path to the user template
@@ -358,21 +352,21 @@ function normalizeConfig(_options: CliConfiguration) {
     if (fs.existsSync(userDocumentPath)) {
       options.documentPath = userDocumentPath;
     } else {
-      options.watch.push(userDocumentPath);
+      options.watch!.push(userDocumentPath);
     }
   } else {
     options.documentPath = path.resolve(options.srcDir, options.documentPath);
   }
 
   overrideProp(
-    options.build,
+    options.build!,
     "publicPath",
-    options.build.publicPath.replace(/([^/])$/, "$1/")
+    options.build!.publicPath!.replace(/([^/])$/, "$1/")
   );
   overrideProp(
     options.build,
     "_publicPath",
-    options.build._publicPath.replace(/([^/])$/, "$1/")
+    options.build!._publicPath!.replace(/([^/])$/, "$1/")
   );
 
   // Ignore publicPath on dev
@@ -383,9 +377,9 @@ function normalizeConfig(_options: CliConfiguration) {
   // If store defined, update store options to true unless explicitly disabled
   if (
     options.store !== false &&
-    fs.existsSync(path.join(options.srcDir, options.dir.store)) &&
+    fs.existsSync(path.join(options.srcDir, options.dir!.store!)) &&
     fs
-      .readdirSync(path.join(options.srcDir, options.dir.store))
+      .readdirSync(path.join(options.srcDir, options.dir!.store!))
       .find((filename) => filename !== "README.md" && filename[0] !== ".")
   ) {
     options.store = true;
@@ -412,7 +406,7 @@ function normalizeConfig(_options: CliConfiguration) {
         background:
           (options.manifest && options.manifest.theme_color) || "white",
         dev: options.dev,
-        loading: options.messages.loading,
+        loading: options.messages!.loading,
       },
       options.loadingIndicator
     );
@@ -422,12 +416,12 @@ function normalizeConfig(_options: CliConfiguration) {
   overrideProp(options, "debug", options.debug ?? options.dev);
 
   // Validate that etag.hash is a function, if not unset it
-  if (options.render.etag) {
-    const { hash } = options.render.etag;
+  if (options.render!.etag) {
+    const { hash } = options.render!.etag;
     if (hash) {
       const isFn = hash instanceof Function;
       if (!isFn) {
-        options.render.etag.hash = undefined;
+        options.render!.etag.hash = undefined;
 
         if (options.dev) {
           consola.warn(
@@ -439,8 +433,8 @@ function normalizeConfig(_options: CliConfiguration) {
   }
 
   // Apply default hash to CSP option
-  if (options.render.csp) {
-    options.render.csp = defu(options.render.csp, {
+  if (options.render!.csp) {
+    options.render!.csp = defu(options.render!.csp as any, {
       hashAlgorithm: "sha256",
       allowedSources: undefined,
       policies: undefined,
@@ -460,18 +454,18 @@ function normalizeConfig(_options: CliConfiguration) {
   // babel cacheDirectory
   const babelConfig = options.build.babel;
   overrideProp(
-    options.build.babel,
+    options.build.babel!,
     "cacheDirectory",
-    babelConfig.cacheDirectory ?? options.dev
+    babelConfig!.cacheDirectory ?? options.dev
   );
 
   // Vue config
-  const vueConfig = options.vue.config;
+  const vueConfig = options.vue!.config;
 
   overrideProp(
-    options.vue.config,
+    options.vue!.config!,
     "performance",
-    vueConfig.performance !== undefined ? vueConfig.performance : options.dev
+    vueConfig!.performance !== undefined ? vueConfig!.performance : options.dev
   );
 
   // merge custom env with variables
@@ -482,7 +476,7 @@ function normalizeConfig(_options: CliConfiguration) {
   overrideProp(
     options,
     "env",
-    Object.assign(options.env, eligibleEnvVariables)
+    Object.assign(options.env!, eligibleEnvVariables)
   );
 
   // Normalize ignore
@@ -498,32 +492,34 @@ function normalizeConfig(_options: CliConfiguration) {
   }
 
   // Compression middleware legacy
-  if (options.render.gzip) {
+  if (options.render!.gzip) {
     consola.warn(
       "render.gzip is deprecated and will be removed in a future version! Please switch to render.compressor"
     );
-    options.render.compressor = options.render.gzip;
-    delete options.render.gzip;
+    options!.render!.compressor = options.render!!.gzip;
+    delete options.render!.gzip;
   }
 
   // If no server-side rendering, add appear true transition
-  if (options.render.ssr === false && options.pageTransition) {
+  if (options.render!.ssr === false && options.pageTransition) {
     options.pageTransition.appear = true;
   }
 
   overrideProp(
-    options.render,
+    options.render!,
     "ssrLog",
     options.dev
-      ? options.render.ssrLog === undefined || options.render.ssrLog
+      ? options.render!.ssrLog === undefined || options.render!.ssrLog
       : false
   );
 
   // We assume the SPA fallback path is 404.html (for GitHub Pages, Surge, etc.)
   overrideProp(
-    options.generate,
+    options.generate!,
     "fallback",
-    options.generate.fallback === true ? "404.html" : options.generate.fallback
+    options.generate!.fallback === true
+      ? "404.html"
+      : options.generate!.fallback
   );
 
   if (options.build.stats === "none" || options.build.quiet === true) {
@@ -548,7 +544,7 @@ function normalizeConfig(_options: CliConfiguration) {
   // build.extractCSS.allChunks has no effect
   if (
     typeof options.build.extractCSS !== "boolean" &&
-    typeof options.build.extractCSS.allChunks !== "undefined"
+    typeof options.build.extractCSS!.allChunks !== "undefined"
   ) {
     consola.warn(
       "build.extractCSS.allChunks has no effect from v2.0.0. Please use build.optimization.splitChunks settings instead."
@@ -556,8 +552,8 @@ function normalizeConfig(_options: CliConfiguration) {
   }
 
   // Enable minimize for production builds
-  if (options.build.optimization.minimize === undefined) {
-    options.build.optimization.minimize = !options.dev;
+  if (options.build.optimization!.minimize === undefined) {
+    options.build.optimization!.minimize = !options.dev;
   }
 
   if (options.build.optimizeCSS === undefined) {
@@ -569,7 +565,7 @@ function normalizeConfig(_options: CliConfiguration) {
   // if (vueLoader.productionMode === undefined) {
   //   vueLoader.productionMode = !options.dev
   // }
-  const styleLoaders: Array<keyof typeof loaders> = [
+  const styleLoaders: Array<string> = [
     "css",
     "cssModules",
     "less",
@@ -579,9 +575,9 @@ function normalizeConfig(_options: CliConfiguration) {
     "vueStyle",
   ];
   for (const name of styleLoaders) {
-    const loader = loaders[name];
-    if (loader && loader.sourceMap === undefined) {
-      loader.sourceMap = Boolean(options.build.cssSourceMap);
+    const loader = loaders![name as keyof typeof loaders];
+    if (loader && (loader as any).sourceMap === undefined) {
+      (loader as any).sourceMap = Boolean(options.build.cssSourceMap);
     }
   }
 
@@ -590,7 +586,7 @@ function normalizeConfig(_options: CliConfiguration) {
     "transpile",
     Array.from(options.build.transpile || [])
   );
-  options.build.transpile = [].concat(options.build.transpile || []);
+  options.build.transpile = [].concat((options.build.transpile as any) || []);
   options.build.transpile.push("app");
 
   if (options.build.quiet === true) {
@@ -600,9 +596,9 @@ function normalizeConfig(_options: CliConfiguration) {
   // Use runInNewContext for dev mode by default
   const { bundleRenderer } = options.render;
   overrideProp(
-    options.render.bundleRenderer,
+    options.render.bundleRenderer!,
     "runInNewContext",
-    bundleRenderer.runInNewContext ?? options.dev
+    bundleRenderer!.runInNewContext ?? options.dev
   );
 
   // const { timing } = options.server
@@ -631,26 +627,29 @@ function normalizeConfig(_options: CliConfiguration) {
   // Generate staticAssets
   const { staticAssets } = options.generate;
   overrideProp(
-    options.generate.staticAssets,
+    options.generate.staticAssets!,
     "version",
-    options.generate.staticAssets.version ||
+    options.generate.staticAssets!.version ||
       String(Math.round(Date.now() / 1000))
   );
 
-  if (!staticAssets.base) {
+  if (!staticAssets!.base) {
     const publicPath = isUrl(options.build.publicPath)
       ? ""
       : options.build.publicPath; // "/_nuxt" or custom CDN URL
-    staticAssets.base = urlJoin(publicPath, staticAssets.dir);
+    staticAssets!.base = urlJoin(publicPath, staticAssets!.dir!);
   }
-  if (!staticAssets.versionBase) {
-    staticAssets.versionBase = urlJoin(staticAssets.base, staticAssets.version);
+  if (!!staticAssets!.versionBase) {
+    staticAssets!.versionBase = urlJoin(
+      staticAssets!.base,
+      staticAssets!.version!
+    );
   }
 
   // createRequire factory
   if (options.createRequire === undefined) {
-    const createRequire = require("create-require");
-    options.createRequire = (module) => createRequire(module.filename);
+    options.createRequire = async (module: any) =>
+      import("create-require").then((mod) => mod.default(module));
   }
 
   // ----- Builtin modules -----
@@ -661,7 +660,7 @@ function normalizeConfig(_options: CliConfiguration) {
     options.build.loadingScreen = false;
   }
   if (options.build.loadingScreen) {
-    options._modules.push([
+    options._modules!.push([
       "@nuxt/loading-screen",
       options.build.loadingScreen,
     ]);
@@ -670,12 +669,6 @@ function normalizeConfig(_options: CliConfiguration) {
     options.build.indicator = false;
   }
 
-  // Components Module
-  // TODO: Webpack5 support
-  // if (!options._start && getPKG('@nuxt/components')) {
-  //   options._modules.push('@nuxt/components')
-  // }
-
   // Nuxt Telemetry
   if (
     options.telemetry !== false &&
@@ -683,7 +676,7 @@ function normalizeConfig(_options: CliConfiguration) {
     !destr(process.env.NUXT_TELEMETRY_DISABLED) &&
     getPKG("@nuxt/telemetry")
   ) {
-    options._modules.push("@nuxt/telemetry");
+    options._modules!.push("@nuxt/telemetry");
   }
 
   options._majorVersion = 3;

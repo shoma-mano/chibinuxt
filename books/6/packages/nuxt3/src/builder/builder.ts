@@ -1,11 +1,12 @@
-import fsExtra from "fs-extra";
-import { Nuxt } from "../core";
-import { templateData, compileTemplates, NuxtTemplate } from "./template";
+import type { Nuxt } from "../core";
+import { templateData, compileTemplates } from "./template";
 import { createApp } from "./app";
 import * as defaultTemplates from "./templates";
+import { clearDirectory } from "../utils/fs-utils";
+import { bundle } from "./vite/vite";
 
 export async function build(nuxt: Nuxt) {
-  await fsExtra.emptyDir(nuxt.options.buildDir);
+  await clearDirectory(nuxt.options.buildDir);
   await generate(nuxt);
 
   await bundle(nuxt);
@@ -22,10 +23,4 @@ export async function generate(nuxt: Nuxt) {
   }));
 
   await compileTemplates(templates, nuxt.options.buildDir);
-}
-
-async function bundle(nuxt: Nuxt) {
-  // @ts-ignore
-  const bundle = await import("./vite/vite").then((p) => p.bundle);
-  return bundle(nuxt);
 }

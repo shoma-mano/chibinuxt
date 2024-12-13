@@ -1,8 +1,8 @@
 import { resolve } from "path";
 import defu from "defu";
-import { Builder } from "./builder";
 import { NuxtRoute, resolvePagesRoutes } from "./pages";
 import { NuxtPlugin, resolvePlugins } from "./plugins";
+import { Nuxt } from "../core";
 export interface NuxtApp {
   main?: string;
   routes: NuxtRoute[];
@@ -17,11 +17,9 @@ export interface NuxtApp {
 
 // Scan project structure
 export async function createApp(
-  builder: Builder,
+  nuxt: Nuxt,
   options: Partial<NuxtApp> = {}
 ): Promise<NuxtApp> {
-  const { nuxt } = builder;
-
   // Create base app object
   const app: NuxtApp = defu(options, {
     dir: nuxt.options.srcDir,
@@ -43,7 +41,7 @@ export async function createApp(
 
   // Resolve pages/
   if (app.pages) {
-    app.routes.push(...(await resolvePagesRoutes(builder, app)));
+    app.routes.push(...(await resolvePagesRoutes(nuxt, app)));
   }
   if (app.routes.length) {
     // Add 404 page is not added
@@ -66,7 +64,7 @@ export async function createApp(
   }
 
   // Resolve plugins/
-  app.plugins = await resolvePlugins(builder, app);
+  app.plugins = await resolvePlugins(nuxt, app);
 
   return app;
 }
