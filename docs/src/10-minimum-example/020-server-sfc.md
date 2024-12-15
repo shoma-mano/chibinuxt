@@ -1,13 +1,13 @@
 # 1-2 Minimum Server SFC
 
-In this section, we'll look at how to render by .vue file.
-Nuxt uses `vite` to transform .vue file to js file that browser can execute.
+In this section, we'll look at how to render HTML using SFC (files with a .vue extension).
+Nuxt uses `vite` to transform SFC into JavaScript file that the browser can execute.  
 Full Code is available at [2-server-sfc](https://github.com/shoma-mano/chibinuxt/tree/main/books/2-server-sfc)
 
 ## First, rewrite createApp that is passed to createRenderer
 
-In last section, we created `createApp` that uses `h` function to create a Vue App.
-But, in this section, we'll use SFC to create a Vue App.
+In last section, we used `h` function to create a Vue App.  
+In this section, we'll use SFC to create a Vue App instead of `h` function.
 
 `App.vue`
 

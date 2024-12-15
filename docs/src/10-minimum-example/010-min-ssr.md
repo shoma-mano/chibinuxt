@@ -5,7 +5,7 @@ Full code is available at [1-min-ssr](https://github.com/shoma-mano/chibinuxt/tr
 
 ## Create Vue SSR Renderer
 
-SSR can be used with only `vue`, but Nuxt uses `vue-bundle-renderer/runtime` to create a renderer.
+SSR can be achieved with just `vue`, but Nuxt uses `vue-bundle-renderer/runtime` to create a SSR Renderer.
 So, let's create a renderer using `vue-bundle-renderer/runtime`.
 
 `render.ts`
@@ -49,13 +49,15 @@ type Rendered = {
   renderStyles: () => string;
   renderScripts: () => string;
 };
-
-function renderHTML(rendered: Rendered): string {
-  const _html = rendered.html;
-
+function renderHTML({
+  html,
+  renderResourceHints,
+  renderStyles,
+  renderScripts,
+}: Rendered) {
   return htmlTemplate({
-    HEAD: rendered.renderResourceHints() + rendered.renderStyles(),
-    APP: _html + rendered.renderScripts(),
+    HEAD: renderResourceHints() + renderStyles(),
+    APP: html + renderScripts(),
   });
 }
 
@@ -63,7 +65,6 @@ interface HtmlTemplateParams {
   HEAD: string;
   APP: string;
 }
-
 function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
   return `
 <!DOCTYPE html>

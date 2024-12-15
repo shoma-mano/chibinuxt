@@ -1,4 +1,4 @@
-# 1-3 Minimum Client SFC
+# 1-4 Minimum Client SFC
 
 In this section, we'll look at how to mount Vue App in client side.  
 Full Code is available at [3-client-sfc](https://github.com/shoma-mano/chibinuxt/tree/main/books/3-client-sfc)

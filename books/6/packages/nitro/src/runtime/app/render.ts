@@ -4,8 +4,6 @@ import devalue from "@nuxt/devalue";
 import { renderToString } from "./vue3";
 // @ts-ignore
 import createApp from "~build/dist/server/server.js";
-// // @ts-ignore
-// import clientManifest from "~build/dist/server/client.manifest.json";
 // @ts-ignore
 import htmlTemplate from "~build/views/document.template.js";
 import { defineEventHandler } from "h3";
@@ -36,7 +34,6 @@ export const renderMiddleware = defineEventHandler(async (event) => {
 
   const ssrContext = {
     url,
-    ...(req.context || {}),
   };
   const rendered = await renderer.renderToString(ssrContext);
   // TODO: nuxt3 should not reuse `nuxt` property for different purpose!
