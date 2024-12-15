@@ -5,6 +5,7 @@
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "h3": "^1.13.0",
+    "typescript": "^5.7.2",
     "vite": "^6.0.3",
     "vue": "^3.5.13",
     "vue-bundle-renderer": "^2.1.1"

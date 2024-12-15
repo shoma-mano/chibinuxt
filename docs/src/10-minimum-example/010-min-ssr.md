@@ -1,7 +1,7 @@
 # 1-1 Minimum SSR
 
-In this section, we'll look at how to render HTML with Vue App created by `createApp`.
-Full code is available at [1](https://github.com/shoma-mano/chibinuxt/tree/main/books/1)
+In this section, we'll look at how to render HTML with Vue App created by `createApp`.  
+Full code is available at [1-min-ssr](https://github.com/shoma-mano/chibinuxt/tree/main/books/1-min-ssr)
 
 ## Create Vue SSR Renderer
 

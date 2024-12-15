@@ -21,8 +21,12 @@ export default defineConfig({
         items: [
           { text: "010-min-ssr", link: "010-min-ssr" },
           {
-            text: "020-min-server-sfc",
-            link: "020-min-server-sfc",
+            text: "020-server-sfc",
+            link: "020-server-sfc",
+          },
+          {
+            text: "030-client-sfc",
+            link: "030-client-sfc",
           },
         ],
       },

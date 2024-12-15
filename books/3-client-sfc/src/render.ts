@@ -5,6 +5,16 @@ import { join } from "path";
 import { readFileSync } from "fs";
 
 let renderer: ReturnType<typeof createRenderer>;
+const setupRenderer = async () => {
+  const createApp = await import(
+    join(import.meta.dirname, "dist/entry.server.js")
+  ).then((m) => m.default);
+  renderer = createRenderer(createApp, {
+    renderToString,
+    manifest: {},
+  });
+};
+
 export const renderMiddleware = defineEventHandler(async (event) => {
   if (!renderer) await setupRenderer();
 
@@ -24,52 +34,38 @@ export const renderMiddleware = defineEventHandler(async (event) => {
   res.end(data, "utf-8");
 });
 
-const setupRenderer = async () => {
-  const createApp = await import(
-    join(import.meta.dirname, "dist/entry.server.js")
-  ).then((m) => m.default);
-  renderer = createRenderer(createApp, {
-    renderToString,
-    manifest: {},
-  });
+type Rendered = {
+  html: string;
+  renderResourceHeaders: () => Record<string, string>;
+  renderResourceHints: () => string;
+  renderStyles: () => string;
+  renderScripts: () => string;
 };
-
-function renderHTML(rendered) {
-  const _html = rendered.html;
-
-  const { htmlAttrs = "", bodyAttrs = "", headTags = "", headAttrs = "" } = {};
-
+function renderHTML({
+  html,
+  renderResourceHints,
+  renderStyles,
+  renderScripts,
+}: Rendered) {
   return htmlTemplate({
-    HTML_ATTRS: htmlAttrs,
-    HEAD_ATTRS: headAttrs,
-    BODY_ATTRS: bodyAttrs,
-    HEAD: headTags + rendered.renderResourceHints() + rendered.renderStyles(),
-    APP: _html + rendered.renderScripts(),
+    HEAD: renderResourceHints() + renderStyles(),
+    APP: html + renderScripts(),
   });
 }
 
 interface HtmlTemplateParams {
-  HTML_ATTRS: string;
-  HEAD_ATTRS: string;
-  BODY_ATTRS: string;
   HEAD: string;
   APP: string;
 }
 
-function htmlTemplate({
-  HTML_ATTRS,
-  HEAD_ATTRS,
-  BODY_ATTRS,
-  HEAD,
-  APP,
-}: HtmlTemplateParams): string {
+function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
   return `
 <!DOCTYPE html>
-<html ${HTML_ATTRS}>
-<head ${HEAD_ATTRS}>
+<html>
+<head>
   ${HEAD}
 </head>
-<body ${BODY_ATTRS}>
+<body>
   <div id="__nuxt">${APP}</div>
   <script type="module" src="/entry.client.js"></script>
 </body>

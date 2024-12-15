@@ -1,7 +1,8 @@
-# 1-2 Minimum Component
+# 1-2 Minimum Server SFC
 
 In this section, we'll look at how to render by .vue file.
 Nuxt uses `vite` to transform .vue file to js file that browser can execute.
+Full Code is available at [2-server-sfc](https://github.com/shoma-mano/chibinuxt/tree/main/books/2-server-sfc)
 
 ## First, rewrite createApp that is passed to createRenderer
 
