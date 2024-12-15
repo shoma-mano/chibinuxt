@@ -4,16 +4,17 @@ import { defineEventHandler } from "h3";
 import { join } from "path";
 
 let renderer: ReturnType<typeof createRenderer>;
+const setupRenderer = async () => {
+  const createApp = await import(
+    join(import.meta.dirname, "dist/entry.server.js")
+  ).then((m) => m.default);
+  renderer = createRenderer(createApp, {
+    renderToString,
+    manifest: {},
+  });
+};
 export const renderMiddleware = defineEventHandler(async (event) => {
-  if (!renderer) {
-    const createApp = await import(
-      join(import.meta.dirname, "dist/entry.server.js")
-    ).then((m) => m.default);
-    renderer = createRenderer(createApp, {
-      renderToString,
-      manifest: {},
-    });
-  }
+  if (!renderer) await setupRenderer();
   const { res } = event.node;
   const rendered = await renderer.renderToString({});
   const data = renderHTML(rendered);
@@ -28,42 +29,30 @@ type Rendered = {
   renderStyles: () => string;
   renderScripts: () => string;
 };
-function renderHTML(rendered: Rendered) {
-  const _html = rendered.html;
-
-  const { htmlAttrs = "", bodyAttrs = "", headTags = "", headAttrs = "" } = {};
-
+function renderHTML({
+  html,
+  renderResourceHints,
+  renderStyles,
+  renderScripts,
+}: Rendered) {
   return htmlTemplate({
-    HTML_ATTRS: htmlAttrs,
-    HEAD_ATTRS: headAttrs,
-    BODY_ATTRS: bodyAttrs,
-    HEAD: headTags + rendered.renderResourceHints() + rendered.renderStyles(),
-    APP: _html + rendered.renderScripts(),
+    HEAD: renderResourceHints() + renderStyles(),
+    APP: html + renderScripts(),
   });
 }
 
 interface HtmlTemplateParams {
-  HTML_ATTRS: string;
-  HEAD_ATTRS: string;
-  BODY_ATTRS: string;
   HEAD: string;
   APP: string;
 }
-
-function htmlTemplate({
-  HTML_ATTRS,
-  HEAD_ATTRS,
-  BODY_ATTRS,
-  HEAD,
-  APP,
-}: HtmlTemplateParams): string {
+function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
   return `
 <!DOCTYPE html>
-<html ${HTML_ATTRS}>
-<head ${HEAD_ATTRS}>
+<html>
+<head>
   ${HEAD}
 </head>
-<body ${BODY_ATTRS}>
+<body>
   ${APP}
 </body>
 </html>
