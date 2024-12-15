@@ -1,4 +1,4 @@
-# Chibi Nuxt
+# chibinuxt
 
 ## Getting Started
 
