@@ -5,6 +5,7 @@ export default defineConfig({
   title: "chibinuxt",
   description: "A VitePress Site",
   srcDir: "src",
+  head: [["link", { rel: "icon", type: "image/png", href: "/image.png" }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
