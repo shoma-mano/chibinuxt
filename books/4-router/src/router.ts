@@ -7,7 +7,7 @@ import {
 import Hello from "./pages/hello.vue";
 import World from "./pages/world.vue";
 
-export const createRouter = (isServer?: boolean) => {
+export const createRouter = () => {
   const routes = [
     {
       path: "/hello",
@@ -18,7 +18,9 @@ export const createRouter = (isServer?: boolean) => {
       component: World,
     },
   ] satisfies RouteRecordRaw[];
-  const history = isServer ? createMemoryHistory() : createWebHistory();
+  const history = import.meta.server
+    ? createMemoryHistory()
+    : createWebHistory();
   const router = _createRouter({
     history,
     routes,

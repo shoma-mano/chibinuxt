@@ -1,36 +1,51 @@
-import { build as _build } from "vite";
+import { build as _build, mergeConfig, type InlineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { join } from "path";
 
-const build = async (target: string) => {
+export const build = async () => {
   try {
-    await _build({
+    const defaultConfig = {
       plugins: [vue()],
       build: {
         rollupOptions: {
-          input: join(import.meta.dirname, `${target}.ts`),
           output: {
             format: "esm",
             dir: join(import.meta.dirname, "dist"),
-            entryFileNames: `${target}.js`,
           },
           preserveEntrySignatures: "exports-only",
           treeshake: false,
         },
         emptyOutDir: false,
       },
-    });
+    } satisfies InlineConfig;
+
+    const clientConfig = mergeConfig(defaultConfig, {
+      build: {
+        rollupOptions: {
+          input: join(import.meta.dirname, "entry.client.ts"),
+          output: {
+            entryFileNames: "entry.client.js",
+          },
+        },
+      },
+    } satisfies InlineConfig);
+    await _build(clientConfig);
+
+    const severConfig = mergeConfig(defaultConfig, {
+      build: {
+        rollupOptions: {
+          input: join(import.meta.dirname, "entry.server.ts"),
+          output: {
+            entryFileNames: "entry.server.js",
+          },
+        },
+      },
+    } satisfies InlineConfig);
+    await _build(severConfig);
+
     console.log("Build completed successfully!");
   } catch (error) {
     console.error("Build failed:", error);
     process.exit(1);
   }
-};
-
-export const buildServerEntry = async () => {
-  await build("entry.server");
-};
-
-export const buildClientEntry = async () => {
-  await build("entry.client");
 };

@@ -28,7 +28,7 @@ export const renderMiddleware = defineEventHandler(async (event) => {
     res.end(code);
   }
 
-  const rendered = await renderer.renderToString({});
+  const rendered = await renderer.renderToString({ url: req.url });
   const data = renderHTML(rendered);
   res.setHeader("Content-Type", "text/html;charset=UTF-8");
   res.end(data, "utf-8");

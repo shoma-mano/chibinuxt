@@ -1,11 +1,10 @@
 import { createApp, toNodeListener } from "h3";
 import { createServer } from "http";
 import { renderMiddleware } from "./render";
-import { buildClientEntry, buildServerEntry } from "./vite";
+import { build } from "./vite";
 
 const main = async () => {
-  await buildServerEntry();
-  await buildClientEntry();
+  await build();
 
   const app = createApp();
   app.use(renderMiddleware);

@@ -29,6 +29,10 @@ export default defineConfig({
             text: "030-client-sfc",
             link: "030-client-sfc",
           },
+          {
+            text: "040-router",
+            link: "040-router",
+          },
         ],
       },
     ],
