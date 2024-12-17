@@ -2,7 +2,8 @@ import { getServer } from "nitro";
 import { buildClientEntry, buildServerEntry } from "./vite";
 import { join } from "path";
 
-const main = async () => {
+export const main = async () => {
+  console.log("Building server entry...");
   await buildServerEntry();
   await buildClientEntry();
 

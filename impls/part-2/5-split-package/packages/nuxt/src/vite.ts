@@ -3,6 +3,7 @@ import vue from "@vitejs/plugin-vue";
 import { join } from "path";
 
 const build = async (target: string) => {
+  console.log("path", join(import.meta.dirname, `${target}.ts`));
   try {
     await _build({
       plugins: [vue()],
