@@ -40,7 +40,8 @@ import { RouterView, RouterLink } from "vue-router";
 
 ## Next, create a router.ts
 
-We created routes in pages directory, but we need to define routes manually for now.
+We will make feature to automatically make routes from pages directory in the future, but we need to define routes manually for now.
+In Sever Side, we can not use createWebHistory, so we need switch history based on `import.meta.server`.
 
 `router.ts`
 
@@ -76,7 +77,7 @@ export const createRouter = () => {
 };
 ```
 
-## Next, add build config to rewrite import.meta.server
+## Add build config to enable to use import.meta.server
 
 `vite.ts`
 
@@ -112,7 +113,7 @@ const severConfig = mergeConfig(defaultConfig, {
 
 `type.d.ts`
 
-This is necessary to avoid type error.
+This is necessary to avoid type error, because `import.meta.server` is not defined in default.
 
 ```ts
 interface ImportMeta {
@@ -120,6 +121,67 @@ interface ImportMeta {
 }
 ```
 
+## Install router in entry.server.ts and entry.client.ts
+
+`entry.server.ts`
+
+We need to push initial URL manually in server side.
+And router.isReady is necessary to avoid hydration error.
+Will explain about ctx later.
+
+```ts
+export default async (ctx: { url: string }) => {
+  const app = createApp(App);
+  const router = createRouter();
+  router.push(ctx.url);
+  await router.isReady();
+  app.use(router);
+  return app;
+};
+```
+
+`entry.client.ts`
+
+On client side, the router automatically picks up initial location from the URL, so we don't need to push the URL manually.
+
+```ts
+const initApp = async () => {
+  const router = createRouter();
+  await router.isReady();
+  const app = createSSRApp(App);
+  app.use(router);
+  app.mount("#__nuxt");
+};
+```
+
+## Pass SSR Context when renderToString is called
+
+The `renderToString` function receives the SSR context as the first argument and passes that context to the `createApp` function we provided to `createRenderer`. ([source code](https://github.com/nuxt-contrib/vue-bundle-renderer/blob/801bf02375155ec111b78148157f10435f71c972/src/runtime.ts#L259))
+This is the context we received in `entry.server.ts`. So let's modify `render.ts` to pass the context.
+
+`render.ts`
+
+```ts{14}
+export const renderMiddleware = defineEventHandler(async (event) => {
+  if (!renderer) await setupRenderer();
+
+  const { req, res } = event.node;
+  if (req.url === "/entry.client.js") {
+    const code = readFileSync(
+      join(import.meta.dirname, "dist/entry.client.js"),
+      "utf-8"
+    );
+    res.setHeader("Content-Type", "application/javascript");
+    res.end(code);
+  }
+
+  const rendered = await renderer.renderToString({ url: req.url });
+  const data = renderHTML(rendered);
+  res.setHeader("Content-Type", "text/html;charset=UTF-8");
+  res.end(data, "utf-8");
+});
+```
+
 ## Run the server
 
-If you run the server, you can see Count button works because we have mounted the app in client side.
+If you run the server, you can see client side routing works and server returns HTML based on requested URL.
