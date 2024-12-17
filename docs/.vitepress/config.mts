@@ -17,7 +17,7 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: "Part 1",
+        text: "Part I",
         base: "/10-minimum-example/",
         items: [
           { text: "010-min-ssr", link: "010-min-ssr" },

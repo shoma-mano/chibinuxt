@@ -40,7 +40,7 @@ export default () => {
 
 ## Next, implement function to build this entry.server.ts with vite
 
-`@vitejs/plugin-vue` compile .vue file to js file that browser can execute.
+`@vitejs/plugin-vue` compile SFC to js file that browser can execute.
 If you want to know more about How SFC is complied, [chibivue](https://book.chibivue.land/10-minimum-example/090-prerequisite-knowledge-for-the-sfc.html) is good resource.
 
 `vite.ts`
@@ -122,6 +122,6 @@ main();
 
 ## Run the server
 
-If you run the server, you can see the rendered page by .vue file.
+If you run the server, you can see the rendered page by SFC.
 But Count button doesn't work because we haven't mounted the app in client side yet.
 We'll see how to mount the app in client side in next section.
