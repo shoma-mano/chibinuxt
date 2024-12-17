@@ -1,7 +1,7 @@
 # 1-4 Router
 
 In this section, we'll integrate Vue Router to enable SSR based on the URL and client-side routing.  
-Full Code is available at [4-router](https://github.com/shoma-mano/chibinuxt/tree/main/books/4-router)
+Full Code is available at [4-router](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/4-router)
 
 ## First, create routes in pages directory and add links in App.vue
 

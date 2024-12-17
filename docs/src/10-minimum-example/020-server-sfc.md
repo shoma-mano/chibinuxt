@@ -2,7 +2,7 @@
 
 In this section, we'll look at how to render HTML using SFC (files with a .vue extension).
 Nuxt uses `vite` to transform SFC into JavaScript file that the browser can execute.  
-Full Code is available at [2-server-sfc](https://github.com/shoma-mano/chibinuxt/tree/main/books/2-server-sfc)
+Full Code is available at [2-server-sfc](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/2-server-sfc)
 
 ## First, rewrite createApp that is passed to createRenderer
 
