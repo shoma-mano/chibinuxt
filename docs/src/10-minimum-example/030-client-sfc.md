@@ -18,7 +18,9 @@ const initApp = async () => {
 initApp().catch(console.error);
 ```
 
-## Next, rewrite build function to build not only server enty but also client entry
+## Next, rewrite build function to build also entry.client.ts
+
+We will use `mergeConfig` to merge defaultConfig and config specific to client and server as it is used in Nuxt.
 
 `vite.ts`
 
