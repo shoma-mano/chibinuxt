@@ -91,13 +91,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     })
   );
 
-  const moduleDirectories = [
-    resolve(nitroContext._nuxt.rootDir, "node_modules"),
-    resolve(MODULE_DIR, "node_modules"),
-    resolve(MODULE_DIR, "../node_modules"),
-    "node_modules",
-  ];
-
   // Externals Plugin
   if (nitroContext.externals) {
     const external = defu(nitroContext.externals as any, {
@@ -121,7 +114,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
       extensions,
       preferBuiltins: true,
       rootDir: nitroContext._nuxt.rootDir,
-      moduleDirectories,
       mainFields: ["main"], // Force resolve CJS (@vue/runtime-core ssrUtils)
     })
   );
