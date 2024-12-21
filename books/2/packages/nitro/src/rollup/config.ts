@@ -1,13 +1,12 @@
-import { join, resolve } from "path";
-import { dirname } from "path";
-import type { InputOptions, OutputOptions } from "rollup";
+import { dirname, join, resolve } from "upath";
+import { InputOptions, OutputOptions } from "rollup";
 import defu from "defu";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import alias from "@rollup/plugin-alias";
 import type { Preset } from "@nuxt/un";
 import * as un from "@nuxt/un";
 
-import type { NitroContext } from "../context";
+import { NitroContext } from "../context";
 import { resolvePath, MODULE_DIR } from "../utils";
 
 import { externals } from "./plugins/externals";
@@ -53,7 +52,7 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
         return join("chunks", "[name].js");
       },
       inlineDynamicImports: nitroContext.inlineDynamicImports,
-      format: "esm",
+      format: "cjs",
       exports: "auto",
       intro: "",
       outro: "",
@@ -112,6 +111,7 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
         base: nitroContext._nuxt.rootDir,
       },
     });
+    console.log("externals", external);
     rollupConfig.plugins.push(externals(external));
   }
 
