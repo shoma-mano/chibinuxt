@@ -16,7 +16,7 @@ export async function bundle(nuxt: Nuxt) {
     nuxt,
     config: {
       root: nuxt.options.buildDir,
-      mode: nuxt.options.dev ? "development" : "production",
+      mode: "development",
       logLevel: "warn",
       resolve: {
         alias: {
@@ -33,6 +33,9 @@ export async function bundle(nuxt: Nuxt) {
       plugins: [vue({})],
       build: {
         emptyOutDir: false,
+      },
+      define: {
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
       },
     },
   };

@@ -19,6 +19,8 @@ export const renderMiddleware = defineEventHandler(async (event) => {
   if (!renderer) await setupRenderer();
 
   const { req, res } = event.node;
+  if (req.url === "/favicon.ico") return;
+
   if (req.url === "/entry.client.js") {
     const code = readFileSync(
       join(import.meta.dirname, "dist/entry.client.js"),
@@ -26,11 +28,11 @@ export const renderMiddleware = defineEventHandler(async (event) => {
     );
     res.setHeader("Content-Type", "application/javascript");
     res.end(code);
+    return;
   }
 
   const rendered = await renderer.renderToString({ url: req.url });
   const data = renderHTML(rendered);
-  console.log("rendered", data);
   res.setHeader("Content-Type", "text/html;charset=UTF-8");
   res.end(data, "utf-8");
 });

@@ -10,4 +10,4 @@ export const main = async () => {
     console.log("Server listening on http://localhost:3030");
   });
 };
-// main();
+main();

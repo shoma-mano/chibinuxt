@@ -17,6 +17,9 @@ export const build = async () => {
         },
         emptyOutDir: false,
       },
+      define: {
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: "true",
+      },
     } satisfies InlineConfig;
 
     const clientConfig = mergeConfig(defaultConfig, {
@@ -42,6 +45,7 @@ export const build = async () => {
             entryFileNames: "entry.server.js",
           },
         },
+        ssr: true,
       },
       define: {
         "import.meta.server": true,
