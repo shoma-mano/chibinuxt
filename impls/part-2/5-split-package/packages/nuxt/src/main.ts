@@ -1,9 +1,8 @@
-import { getServer } from "nitro";
 import { build } from "./vite";
 import { join } from "path";
+import { getServer } from "nitro";
 
 export const main = async () => {
-  console.log("Building server entry...");
   await build();
   process.env.DIST_DIR = join(import.meta.dirname, "dist");
   const server = getServer();
@@ -11,3 +10,4 @@ export const main = async () => {
     console.log("Server listening on http://localhost:3030");
   });
 };
+main();

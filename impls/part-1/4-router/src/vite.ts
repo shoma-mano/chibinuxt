@@ -31,6 +31,7 @@ export const build = async () => {
           },
         },
       },
+      appType: "custom",
       define: {
         "import.meta.server": false,
       },

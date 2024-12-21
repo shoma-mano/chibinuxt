@@ -3,7 +3,7 @@ import globby from "globby";
 import { dirname } from "path";
 import prettyBytes from "pretty-bytes";
 import gzipSize from "gzip-size";
-import { readFile } from "fs";
+import { readFile } from "fs/promises";
 import chalk from "chalk";
 import stdenv from "std-env";
 
@@ -13,7 +13,6 @@ export async function printFSTree(dir) {
   }
 
   const files = await globby("**/*.*", { cwd: dir });
-
   const items = (
     await Promise.all(
       files.map(async (file) => {

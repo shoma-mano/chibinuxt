@@ -1,9 +1,0 @@
-{
-  "name": "chibinuxt-root",
-  "private": "true",
-  "type": "module",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^22.10.1"
-  }
-}

@@ -16,7 +16,7 @@ export async function bundle(nuxt: Nuxt) {
     nuxt,
     config: {
       root: nuxt.options.buildDir,
-      mode: "development",
+      mode: nuxt.options.dev ? "development" : "production",
       logLevel: "warn",
       resolve: {
         alias: {

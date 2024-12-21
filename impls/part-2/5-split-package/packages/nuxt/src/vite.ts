@@ -10,6 +10,7 @@ export const build = async () => {
         rollupOptions: {
           output: {
             format: "esm",
+            preserveModules: true,
             dir: join(import.meta.dirname, "dist"),
           },
           preserveEntrySignatures: "exports-only",

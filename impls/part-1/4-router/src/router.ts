@@ -18,6 +18,7 @@ export const createRouter = () => {
       component: World,
     },
   ] satisfies RouteRecordRaw[];
+  console.log(import.meta.server);
   const history = import.meta.server
     ? createMemoryHistory()
     : createWebHistory();

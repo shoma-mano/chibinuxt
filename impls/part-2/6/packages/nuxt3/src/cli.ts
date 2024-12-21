@@ -19,6 +19,7 @@ async function _main() {
     await nuxt.server.listen(3000, { name: "Nuxt" });
   }
 
+  // console.log("Building...");
   await build(nuxt);
 }
 
