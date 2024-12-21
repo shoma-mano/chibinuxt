@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,7 +18,7 @@
     "@vue/server-renderer": "^3.5.13",
     "@vueuse/head": "^0.5.1",
     "destr": "^1.1.0",
-    "h3": "^0.2.5",
+    "h3": "latest",
     "hookable": "5.5.3",
     "nuxt3": "workspace:*",
     "ohmyfetch": "^0.1.8",

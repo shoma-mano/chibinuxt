@@ -7,7 +7,6 @@ export const entryClientTemplate: NuxtTemplate = {
 import { createSSRApp, nextTick } from 'vue'
 import { createNuxt, applyPlugins } from 'nuxt/app/nuxt'
 import plugins from './plugins'
-import clientPlugins from './plugins.client'
 import App from '${app.main}'
   
 async function initApp () {
@@ -15,8 +14,8 @@ async function initApp () {
   
   const nuxt = createNuxt({ app })
   
+  console.log('plugins', plugins)
   await applyPlugins(nuxt, plugins)
-  await applyPlugins(nuxt, clientPlugins)
   
   await app.$nuxt.hooks.callHook('app:created', app)
   await app.$nuxt.hooks.callHook('app:beforeMount', app)
@@ -38,7 +37,6 @@ export const entryServerTemplate: NuxtTemplate = {
   getContents: ({ app }) => `import { createApp } from 'vue'
 import { createNuxt, applyPlugins } from 'nuxt/app/nuxt'
 import plugins from './plugins'
-import serverPlugins from './plugins.server'
 import App from '${app.main}'
 
 export default async function createNuxtAppServer (ssrContext = {}) {
@@ -46,8 +44,8 @@ export default async function createNuxtAppServer (ssrContext = {}) {
    
    const nuxt = createNuxt({ app, ssrContext })
    
+   console.log('plugins', plugins)  
    await applyPlugins(nuxt, plugins)
-   await applyPlugins(nuxt, serverPlugins)
    
    await app.$nuxt.hooks.callHook('app:created', app)
    
@@ -59,56 +57,17 @@ export default async function createNuxtAppServer (ssrContext = {}) {
 }`,
 };
 
-export const clientPluginsTemplate: NuxtTemplate = {
-  fileName: "plugins.client.js",
-  getContents: ({ app, nxt }) => `
-    import { $fetch } from 'ohmyfetch'
-    import _global from '@nuxt/un/runtime/global'
-    import logs from 'nuxt/app/plugins/logs.client.dev'
-    import progress from 'nuxt/app/plugins/progress.client'
-    ${app.plugins
-      .filter((p) => p.mode === "client")
-      .map((p) => `import ${nxt.importName(p.src)} from '${p.src}'`)
-      .join("\n")}
-
-    _global.$fetch = $fetch
-
-    const plugins = [
-      progress,
-      ${app.plugins
-        .filter((p) => p.mode === "client")
-        .map((p) => nxt.importName(p.src))
-        .join(",\n\t")}
-    ]
-
-    if (process.dev) {
-      plugins.push(logs)
-    }
-
-    export default plugins
-  `,
-};
-
 export const allPluginsTemplate: NuxtTemplate = {
   fileName: "plugins.js",
-  getContents: ({ app, nxt }) => `
+  getContents: () => `
     import head from 'nuxt/app/plugins/head'
     import router from 'nuxt/app/plugins/router'
     import legacy from 'nuxt/app/plugins/legacy'
-
-    ${app.plugins
-      .filter((p) => p.mode === "all")
-      .map((p) => `import ${nxt.importName(p.src)} from '${p.src}'`)
-      .join("\n")}
 
     export default [
       head,
       router,
       legacy,
-      ${app.plugins
-        .filter((p) => p.mode === "all")
-        .map((p) => nxt.importName(p.src))
-        .join(",\n\t")}
     ]
   `,
 };
@@ -120,28 +79,9 @@ export const routesTemplate: NuxtTemplate = {
   `,
 };
 
-export const serverPluginsTemplate: NuxtTemplate = {
-  fileName: "plugins.server.js",
-  getContents: ({ app, nxt }) => `
-    import preload from 'nuxt/app/plugins/preload.server'
-    ${app.plugins
-      .filter((p) => p.mode === "server")
-      .map((p) => `import ${nxt.importName(p.src)} from '${p.src}'`)
-      .join("\n")}
-
-    export default [
-      preload,
-      ${app.plugins
-        .filter((p) => p.mode === "server")
-        .map((p) => nxt.importName(p.src))
-        .join(",\n\t")}
-    ]
-  `,
-};
-
 export const htmlTemplate: NuxtTemplate = {
   fileName: "views/app.template.html",
-  getContents: ({ nuxtOptions }) => `
+  getContents: () => `
     <!DOCTYPE html>
     <html {{ HTML_ATTRS }}>
       <head {{ HEAD_ATTRS }}>

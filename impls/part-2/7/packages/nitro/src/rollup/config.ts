@@ -1,4 +1,5 @@
-import { dirname, join, resolve } from "upath";
+import { join, resolve } from "path";
+import { dirname } from "path";
 import { InputOptions, OutputOptions } from "rollup";
 import defu from "defu";
 import nodeResolve from "@rollup/plugin-node-resolve";
@@ -52,7 +53,7 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
         return join("chunks", "[name].js");
       },
       inlineDynamicImports: nitroContext.inlineDynamicImports,
-      format: "cjs",
+      format: "esm",
       exports: "auto",
       intro: "",
       outro: "",
@@ -111,7 +112,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
         base: nitroContext._nuxt.rootDir,
       },
     });
-    console.log("externals", external);
     rollupConfig.plugins.push(externals(external));
   }
 

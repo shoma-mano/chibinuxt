@@ -1,12 +1,12 @@
+// @ts-ignore
 import { createRenderer } from "vue-bundle-renderer";
 import devalue from "@nuxt/devalue";
 import { renderToString } from "./vue3";
 // @ts-ignore
-import createApp from "~build/dist/server/server";
-// @ts-ignore
-import clientManifest from "~build/dist/server/client.manifest.json";
+import createApp from "~build/dist/server/server.js";
 // @ts-ignore
 import htmlTemplate from "~build/views/document.template.js";
+import { defineEventHandler } from "h3";
 
 function _interopDefault(e) {
   return e && typeof e === "object" && "default" in e ? e.default : e;
@@ -17,12 +17,10 @@ const renderer = createRenderer(_interopDefault(createApp), {
   renderToString,
 });
 
-const STATIC_ASSETS_BASE =
-  process.env.NUXT_STATIC_BASE + "/" + process.env.NUXT_STATIC_VERSION;
-const PAYLOAD_JS = "/payload.js";
-
-export async function renderMiddleware(req, res) {
+export const renderMiddleware = defineEventHandler(async (event) => {
+  const { req, res } = event.node;
   let url = req.url;
+  if (!url) return;
 
   // payload.json request detection
   let isPayloadReq = false;
@@ -34,10 +32,8 @@ export async function renderMiddleware(req, res) {
     );
   }
 
-  console.log("req.context", req.context);
   const ssrContext = {
     url,
-    ...(req.context || {}),
   };
   const rendered = await renderer.renderToString(ssrContext);
   // TODO: nuxt3 should not reuse `nuxt` property for different purpose!
@@ -57,10 +53,8 @@ export async function renderMiddleware(req, res) {
     res.setHeader("Content-Type", "text/html;charset=UTF-8");
   }
 
-  const error = ssrContext.nuxt && ssrContext.nuxt.error;
-  res.statusCode = error ? error.statusCode : 200;
   res.end(data, "utf-8");
-}
+});
 
 function renderHTML(payload, rendered, ssrContext) {
   const state = `<script>window.__NUXT__=${devalue(payload)}</script>`;
@@ -89,3 +83,7 @@ function renderHTML(payload, rendered, ssrContext) {
 function renderPayload(payload, url) {
   return `__NUXT_JSONP__("${url}", ${devalue(payload)})`;
 }
+
+const STATIC_ASSETS_BASE =
+  process.env.NUXT_STATIC_BASE + "/" + process.env.NUXT_STATIC_VERSION;
+const PAYLOAD_JS = "/payload.js";
