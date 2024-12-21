@@ -11,6 +11,9 @@
     },
     {
       "path": "./packages/nuxt"
+    },
+    {
+      "path": "./playground"
     }
   ],
   "settings": {}

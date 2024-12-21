@@ -7,7 +7,7 @@ import { readFileSync } from "fs";
 let renderer: ReturnType<typeof createRenderer>;
 const setupRenderer = async () => {
   const createApp = await import(
-    join(import.meta.dirname, "dist/entry.server.js")
+    join(process.env.DIST_DIR!, "entry.server.js")
   ).then((m) => m.default);
   renderer = createRenderer(createApp, {
     renderToString,
@@ -21,7 +21,7 @@ export const renderMiddleware = defineEventHandler(async (event) => {
   const { req, res } = event.node;
   if (req.url === "/entry.client.js") {
     const code = readFileSync(
-      join(import.meta.dirname, "dist/entry.client.js"),
+      join(process.env.DIST_DIR!, "entry.client.js"),
       "utf-8"
     );
     res.setHeader("Content-Type", "application/javascript");

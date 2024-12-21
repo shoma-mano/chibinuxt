@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Continue..?
-      link: /10-minimum-example/010-min-ssr
+      link: /part-1/010-min-ssr
     - theme: alt
       text: Nuxt Official
       link: https://nuxt.com

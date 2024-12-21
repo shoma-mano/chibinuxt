@@ -10,7 +10,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Home", link: "/" },
-      { text: "Play", link: "/10-minimum-example/010-min-ssr" },
+      { text: "Play", link: "/part-1/010-min-ssr" },
     ],
 
     logo: "/image.png",
@@ -18,7 +18,7 @@ export default defineConfig({
     sidebar: [
       {
         text: "Part I",
-        base: "/10-minimum-example/",
+        base: "/part-1/",
         items: [
           { text: "010-min-ssr", link: "010-min-ssr" },
           {
@@ -34,6 +34,11 @@ export default defineConfig({
             link: "040-router",
           },
         ],
+      },
+      {
+        text: "Part Ⅱ",
+        base: "/part-2/",
+        items: [{ text: "050-split-package", link: "050-split-package" }],
       },
     ],
 

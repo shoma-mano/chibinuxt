@@ -1,10 +1,12 @@
 import { createApp } from "vue";
-import App from "./App.vue";
-import { createRouter } from "./router.js";
+import App from "./root-component";
+import { createRouter } from "./router";
 
-export default () => {
+export default async (ctx: { url: string }) => {
   const app = createApp(App);
-  const router = createRouter(true);
+  const router = createRouter();
+  router.push(ctx.url);
+  await router.isReady();
   app.use(router);
   return app;
 };
