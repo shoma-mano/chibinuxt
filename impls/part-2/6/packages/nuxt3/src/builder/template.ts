@@ -33,7 +33,6 @@ async function compileTemplate(
     console.log("Creating directory", dirname(dest));
     mkdirSync(dirname(dest), { recursive: true });
   }
-  console.log("dest", dest, "destDir", dirname(dest));
   await writeFile(dest, compiledSrc).catch();
 }
 

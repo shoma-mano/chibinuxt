@@ -1,13 +1,15 @@
 // Based on https://github.com/egoist/rollup-plugin-esbuild (MIT)
 
-import { extname, relative } from 'path'
-import { Plugin, PluginContext } from 'rollup'
-import { Loader, TransformResult, transform } from 'esbuild'
-import { createFilter, FilterPattern } from '@rollup/pluginutils'
+import { extname, relative } from 'node:path'
+import type { Plugin, PluginContext } from 'rollup'
+import type { Loader, TransformResult } from 'esbuild'
+import { transform } from 'esbuild'
+import type { FilterPattern } from '@rollup/pluginutils'
+import { createFilter } from '@rollup/pluginutils'
 
 const defaultLoaders: { [ext: string]: Loader } = {
   '.ts': 'ts',
-  '.js': 'js'
+  '.js': 'js',
 }
 
 export type Options = {
@@ -35,11 +37,11 @@ export type Options = {
   }
 }
 
-export function esbuild (options: Options = {}): Plugin {
+export function esbuild(options: Options = {}): Plugin {
   let target: string | string[]
 
   const loaders = {
-    ...defaultLoaders
+    ...defaultLoaders,
   }
 
   if (options.loaders) {
@@ -47,7 +49,8 @@ export function esbuild (options: Options = {}): Plugin {
       const value = options.loaders[key]
       if (typeof value === 'string') {
         loaders[key] = value
-      } else if (value === false) {
+      }
+      else if (value === false) {
         delete loaders[key]
       }
     }
@@ -55,19 +58,18 @@ export function esbuild (options: Options = {}): Plugin {
 
   const extensions: string[] = Object.keys(loaders)
   const INCLUDE_REGEXP = new RegExp(
-    `\\.(${extensions.map(ext => ext.slice(1)).join('|')})$`
+    `\\.(${extensions.map(ext => ext.slice(1)).join('|')})$`,
   )
   const EXCLUDE_REGEXP = /node_modules/
 
   const filter = createFilter(
     options.include || INCLUDE_REGEXP,
-    options.exclude || EXCLUDE_REGEXP
+    options.exclude || EXCLUDE_REGEXP,
   )
 
   return {
     name: 'esbuild',
-
-    async transform (code, id) {
+    async transform(code, id) {
       if (!filter(id)) {
         return null
       }
@@ -86,7 +88,7 @@ export function esbuild (options: Options = {}): Plugin {
         target,
         define: options.define,
         sourcemap: options.sourceMap !== false,
-        sourcefile: id
+        sourcefile: id,
       })
 
       printWarnings(id, result, this)
@@ -94,41 +96,42 @@ export function esbuild (options: Options = {}): Plugin {
       return (
         result.code && {
           code: result.code,
-          map: result.map || null
+          map: result.map || null,
         }
       )
     },
 
-    async renderChunk (code) {
+    async renderChunk(code) {
       if (options.minify) {
         const result = await transform(code, {
           loader: 'js',
           minify: true,
-          target
+          target,
         })
         if (result.code) {
           return {
             code: result.code,
-            map: result.map || null
+            map: result.map || null,
           }
         }
       }
       return null
-    }
+    },
   }
 }
 
-function printWarnings (
+function printWarnings(
   id: string,
   result: TransformResult,
-  plugin: PluginContext
+  plugin: PluginContext,
 ) {
   if (result.warnings) {
     for (const warning of result.warnings) {
       let message = '[esbuild]'
       if (warning.location) {
-        message += ` (${relative(process.cwd(), id)}:${warning.location.line}:${warning.location.column
-          })`
+        message += ` (${relative(process.cwd(), id)}:${warning.location.line}:${
+          warning.location.column
+        })`
       }
       message += ` ${warning.text}`
       plugin.warn(message)
