@@ -1,1 +1,1 @@
-export { getServer } from "./server";
+export { getServer } from './server'

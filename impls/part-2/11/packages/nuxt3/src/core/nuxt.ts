@@ -1,49 +1,51 @@
-import type { IncomingHttpHeaders } from "http";
+import type { IncomingHttpHeaders } from 'node:http'
 
-import isPlainObject from "lodash/isPlainObject";
-import { Hookable, createHooks } from "hookable";
+import isPlainObject from 'lodash/isPlainObject'
+import type { Hookable } from 'hookable'
+import { createHooks } from 'hookable'
 
+import type {
+  Configuration,
+  NormalizedConfiguration } from '../config'
 import {
   getNuxtConfig,
-  Configuration,
-  NormalizedConfiguration,
-} from "../config";
+} from '../config'
 
-import { version } from "../../package.json";
+import { version } from '../../package.json'
 
-import Resolver from "./resolver";
-import { initNitro } from "./nitro";
+import Resolver from './resolver'
+import { initNitro } from './nitro'
 
 declare global {
   namespace NodeJS {
     interface Global {
-      __NUXT_DEV__: boolean;
+      __NUXT_DEV__: boolean
     }
   }
 }
 
 export interface Nuxt {
-  _ready?: Promise<this>;
-  _initCalled?: boolean;
+  _ready?: Promise<this>
+  _initCalled?: boolean
 
-  error?: Error & { statusCode?: number; headers?: IncomingHttpHeaders };
-  options: NormalizedConfiguration;
-  resolver?: Resolver;
-  version: string;
-  server?: any;
-  renderer?: any;
-  render?: any["app"];
-  hooks: Hookable<any>;
-  showReady?: () => void;
-  init: () => Promise<Nuxt>;
-  ready: () => Promise<Nuxt>;
-  close: (callback?: () => any | Promise<any>) => Promise<void>;
+  error?: Error & { statusCode?: number, headers?: IncomingHttpHeaders }
+  options: NormalizedConfiguration
+  resolver?: Resolver
+  version: string
+  server?: any
+  renderer?: any
+  render?: any['app']
+  hooks: Hookable<any>
+  showReady?: () => void
+  init: () => Promise<Nuxt>
+  ready: () => Promise<Nuxt>
+  close: (callback?: () => any | Promise<any>) => Promise<void>
 }
 
 export const createNuxt = (options: Configuration = {}) => {
-  const hooks = createHooks<any>();
+  const hooks = createHooks<any>()
 
-  const normalizedOptions = getNuxtConfig(options);
+  const normalizedOptions = getNuxtConfig(options)
 
   const nuxt: Nuxt = {
     hooks,
@@ -57,48 +59,49 @@ export const createNuxt = (options: Configuration = {}) => {
     showReady: undefined,
     ready: () => {
       if (!nuxt._ready) {
-        nuxt._ready = initNuxt(nuxt);
+        nuxt._ready = initNuxt(nuxt)
       }
-      return nuxt._ready;
+      return nuxt._ready
     },
     init: () => initNuxt(nuxt),
     get version() {
-      return `v${version}` + (global.__NUXT_DEV__ ? "-development" : "");
+      return `v${version}` + (global.__NUXT_DEV__ ? '-development' : '')
     },
     async close(callback?: () => any | Promise<any>) {
-      await hooks.callHook("close", this);
+      await hooks.callHook('close', this)
 
-      if (typeof callback === "function") {
-        await callback();
+      if (typeof callback === 'function') {
+        await callback()
       }
     },
-  };
-  nuxt.resolver = new Resolver(nuxt);
+  }
+  nuxt.resolver = new Resolver(nuxt)
 
-  return nuxt;
-};
+  return nuxt
+}
 
 const initNuxt = async (nuxt: Nuxt) => {
   if (nuxt._initCalled) {
-    return this;
+    return this
   }
-  nuxt._initCalled = true;
+  nuxt._initCalled = true
 
   // Add hooks
   if (nuxt.options.hooks instanceof Function) {
-    nuxt.options.hooks(nuxt.hooks);
-  } else if (isPlainObject(nuxt.options.hooks)) {
-    nuxt.hooks.addHooks(nuxt.options.hooks);
+    nuxt.options.hooks(nuxt.hooks)
+  }
+  else if (isPlainObject(nuxt.options.hooks)) {
+    nuxt.hooks.addHooks(nuxt.options.hooks)
   }
 
   // Await for server
-  await initNitro(nuxt);
+  await initNitro(nuxt)
 
   // Await for modules
   // await this.moduleContainer.ready()
 
   // Call ready hook
-  await nuxt.hooks.callHook("ready", this);
+  await nuxt.hooks.callHook('ready', this)
 
-  return nuxt;
-};
+  return nuxt
+}

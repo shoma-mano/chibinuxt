@@ -1,16 +1,16 @@
-import { createApp, defineEventHandler, toNodeListener } from "h3";
-import { renderMiddleware } from "../app/render";
+import { createApp, defineEventHandler, toNodeListener } from 'h3'
+import { renderMiddleware } from '../app/render'
 
 const app = createApp({
-  onError: () => "error",
-});
+  onError: () => 'error',
+})
 
 app.use(
   defineEventHandler((event) => {
-    console.log("event!!!");
-  })
-);
+    console.log('event!!!')
+  }),
+)
 
-app.use(renderMiddleware);
+app.use(renderMiddleware)
 
-export const handle = toNodeListener(app);
+export const handle = toNodeListener(app)

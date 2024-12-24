@@ -1,11 +1,11 @@
-import { getCurrentInstance } from "vue";
-import type { Nuxt } from ".";
+import { getCurrentInstance } from 'vue'
+import type { Nuxt } from '.'
 
-let currentNuxtInstance: Nuxt | null;
+let currentNuxtInstance: Nuxt | null
 
 export const setNuxtInstance = (nuxt: Nuxt | null) => {
-  currentNuxtInstance = nuxt;
-};
+  currentNuxtInstance = nuxt
+}
 
 /**
  * Ensures that the setup function passed in has access to the Nuxt instance via `useNuxt`.
@@ -13,24 +13,24 @@ export const setNuxtInstance = (nuxt: Nuxt | null) => {
  * @param setup The function to call
  */
 export async function callWithNuxt(nuxt: Nuxt, setup: () => any) {
-  setNuxtInstance(nuxt);
-  const p = setup();
-  setNuxtInstance(null);
-  await p;
+  setNuxtInstance(nuxt)
+  const p = setup()
+  setNuxtInstance(null)
+  await p
 }
 
 /**
  * Returns the current Nuxt instance.
  */
 export function useNuxt(): Nuxt {
-  const vm = getCurrentInstance();
+  const vm = getCurrentInstance()
 
   if (!vm) {
     if (!currentNuxtInstance) {
-      throw new Error("nuxt instance unavailable");
+      throw new Error('nuxt instance unavailable')
     }
-    return currentNuxtInstance;
+    return currentNuxtInstance
   }
 
-  return vm.appContext.app.$nuxt;
+  return vm.appContext.app.$nuxt
 }

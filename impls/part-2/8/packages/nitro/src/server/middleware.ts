@@ -10,20 +10,20 @@ export interface ServerMiddleware {
   promisify?: boolean // Default is true
 }
 
-function filesToMiddleware (files: string[], baseDir: string, basePath: string, overrides?: Partial<ServerMiddleware>): ServerMiddleware[] {
+function filesToMiddleware(files: string[], baseDir: string, basePath: string, overrides?: Partial<ServerMiddleware>): ServerMiddleware[] {
   return files.map((file) => {
     const route = joinURL(basePath, file.substr(0, file.length - extname(file).length))
     const handle = resolve(baseDir, file)
     return {
       route,
-      handle
+      handle,
     }
   })
     .sort((a, b) => a.route.localeCompare(b.route))
     .map(m => ({ ...m, ...overrides }))
 }
 
-export function scanMiddleware (serverDir: string, onChange?: (results: ServerMiddleware[], event: 'add' | 'addDir' | 'change' | 'unlink' | 'unlinkDir', file: string) => void): Promise<ServerMiddleware[]> {
+export function scanMiddleware(serverDir: string, onChange?: (results: ServerMiddleware[], event: 'add' | 'addDir' | 'change' | 'unlink' | 'unlinkDir', file: string) => void): Promise<ServerMiddleware[]> {
   const pattern = '**/*.{js,ts}'
   const globalDir = resolve(serverDir, 'middleware')
   const apiDir = resolve(serverDir, 'api')
@@ -33,14 +33,14 @@ export function scanMiddleware (serverDir: string, onChange?: (results: ServerMi
     const apiFiles = await globby(pattern, { cwd: apiDir })
     return [
       ...filesToMiddleware(globalFiles, globalDir, '/', { route: '/' }),
-      ...filesToMiddleware(apiFiles, apiDir, '/api', { lazy: true })
+      ...filesToMiddleware(apiFiles, apiDir, '/api', { lazy: true }),
     ]
   }
 
   if (typeof onChange === 'function') {
     const watcher = watch([
       join(globalDir, pattern),
-      join(apiDir, pattern)
+      join(apiDir, pattern),
     ], { ignoreInitial: true })
     watcher.on('all', async (event, file) => {
       onChange(await scan(), event, file)
@@ -50,7 +50,7 @@ export function scanMiddleware (serverDir: string, onChange?: (results: ServerMi
   return scan()
 }
 
-export function resolveMiddleware (serverMiddleware: any[], resolvePath: (string) => string) {
+export function resolveMiddleware(serverMiddleware: any[], resolvePath: (string) => string) {
   const middleware: ServerMiddleware[] = []
   const legacyMiddleware: ServerMiddleware[] = []
 
@@ -60,19 +60,20 @@ export function resolveMiddleware (serverMiddleware: any[], resolvePath: (string
     const handle = m.handler || m.handle
     if (typeof handle !== 'string' || typeof route !== 'string') {
       legacyMiddleware.push(m)
-    } else {
+    }
+    else {
       delete m.handler
       delete m.path
       middleware.push({
         ...m,
         handle: resolvePath(handle),
-        route
+        route,
       })
     }
   }
 
   return {
     middleware,
-    legacyMiddleware
+    legacyMiddleware,
   }
 }

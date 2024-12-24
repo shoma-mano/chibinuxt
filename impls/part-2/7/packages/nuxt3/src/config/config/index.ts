@@ -1,16 +1,16 @@
-import _app from "./_app";
-import _common from "./_common";
+import _app from './_app'
+import _common from './_common'
 
-import build from "./build";
-import messages from "./messages";
-import modes from "./modes";
-import render from "./render";
-import router from "./router";
-import server from "./server";
-import cli from "./cli";
-import generate from "./generate";
+import build from './build'
+import messages from './messages'
+import modes from './modes'
+import render from './render'
+import router from './router'
+import server from './server'
+import cli from './cli'
+import generate from './generate'
 
-export const defaultNuxtConfigFile = "nuxt.config";
+export const defaultNuxtConfigFile = 'nuxt.config'
 
 export const getDefaultNuxtConfig = () =>
   ({
@@ -26,6 +26,6 @@ export const getDefaultNuxtConfig = () =>
     generate: generate(),
     export: undefined as undefined | any,
     telemetry: undefined as undefined | boolean,
-  } as any);
+  } as any)
 
-export type DefaultConfiguration = ReturnType<typeof getDefaultNuxtConfig>;
+export type DefaultConfiguration = ReturnType<typeof getDefaultNuxtConfig>

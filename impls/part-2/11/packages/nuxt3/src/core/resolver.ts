@@ -1,4 +1,4 @@
-import { resolve, join } from 'path'
+import { resolve, join } from 'node:path'
 import fs from 'fs-extra'
 
 import jiti from 'jiti'
@@ -6,9 +6,9 @@ import {
   startsWithRootAlias,
   startsWithSrcAlias,
   isExternalDependency,
-  clearRequireCache
+  clearRequireCache,
 } from '../utils'
-import { Nuxt } from '.'
+import type { Nuxt } from '.'
 
 interface ResolvePathOptions {
   isAlias?: boolean
@@ -28,7 +28,7 @@ export default class Resolver {
   nuxt: Nuxt
   options: Nuxt['options']
 
-  constructor (nuxt?: Nuxt) {
+  constructor(nuxt?: Nuxt) {
     this.nuxt = nuxt
     this.options = this.nuxt.options
 
@@ -42,12 +42,13 @@ export default class Resolver {
     this._resolve = this._require.resolve
   }
 
-  resolveModule (path: string) {
+  resolveModule(path: string) {
     try {
       return this._resolve(path, {
-        paths: this.options.modulesDir
+        paths: this.options.modulesDir,
       })
-    } catch (error) {
+    }
+    catch (error) {
       if (error.code !== 'MODULE_NOT_FOUND') {
         // TODO: remove after https://github.com/facebook/jest/pull/8487 released
         if (process.env.NODE_ENV === 'test' && error.message.startsWith('Cannot resolve module')) {
@@ -58,7 +59,7 @@ export default class Resolver {
     }
   }
 
-  resolveAlias (path: string) {
+  resolveAlias(path: string) {
     if (startsWithRootAlias(path)) {
       return join(this.options.rootDir, path.substr(2))
     }
@@ -70,7 +71,7 @@ export default class Resolver {
     return resolve(this.options.srcDir, path)
   }
 
-  resolvePath (path: string, { isAlias, isModule, isStyle }: ResolvePathOptions = {}) {
+  resolvePath(path: string, { isAlias, isModule, isStyle }: ResolvePathOptions = {}) {
     // Fast return in case of path exists
     if (fs.existsSync(path)) {
       return path
@@ -127,14 +128,15 @@ export default class Resolver {
     throw new Error(`Cannot resolve "${path}" from "${resolvedPath}"`)
   }
 
-  tryResolvePath (path: string, options?: ResolvePathOptions) {
+  tryResolvePath(path: string, options?: ResolvePathOptions) {
     try {
       return this.resolvePath(path, options)
-    } catch (e) {
+    }
+    catch (e) {
     }
   }
 
-  requireModule <T> (path: string, { useESM, isAlias, interopDefault }: RequireModuleOptions = {}): T {
+  requireModule <T>(path: string, { useESM, isAlias, interopDefault }: RequireModuleOptions = {}): T {
     let resolvedPath = path
     let requiredModule: any
 
@@ -143,7 +145,8 @@ export default class Resolver {
     // Try to resolve path
     try {
       resolvedPath = this.resolvePath(path, { isAlias })
-    } catch (e) {
+    }
+    catch (e) {
       lastError = e
     }
 
@@ -164,10 +167,12 @@ export default class Resolver {
     try {
       if (useESM) {
         requiredModule = this._require(resolvedPath)
-      } else {
+      }
+      else {
         requiredModule = require(resolvedPath)
       }
-    } catch (e) {
+    }
+    catch (e) {
       lastError = e
     }
 

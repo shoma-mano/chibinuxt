@@ -1,21 +1,21 @@
-export const sequence = function sequence<T, R> (
+export const sequence = function sequence<T, R>(
   tasks: T[],
-  fn: (task: T) => R
+  fn: (task: T) => R,
 ) {
   return tasks.reduce(
     (promise, task): any => promise.then(() => fn(task)),
-    Promise.resolve()
+    Promise.resolve(),
   )
 }
 
-export const parallel = function parallel<T, R> (
+export const parallel = function parallel<T, R>(
   tasks: T[],
-  fn: (task: T) => R
+  fn: (task: T) => R,
 ) {
   return Promise.all(tasks.map(fn))
 }
 
-export const chainFn = function chainFn (base, fn) {
+export const chainFn = function chainFn(base, fn) {
   if (typeof fn !== 'function') {
     return base
   }
@@ -31,7 +31,7 @@ export const chainFn = function chainFn (base, fn) {
     const fnResult = fn.call(
       this,
       baseResult,
-      ...Array.prototype.slice.call(args, 1)
+      ...Array.prototype.slice.call(args, 1),
     )
     // Return mutated argument if no result was returned
     if (fnResult === undefined) {

@@ -1,26 +1,29 @@
-import { resolve } from "path";
-import defu from "defu";
-import { Builder } from "./builder";
-import { NuxtRoute, resolvePagesRoutes } from "./pages";
-import { NuxtPlugin, resolvePlugins } from "./plugins";
+import { resolve } from 'node:path'
+import defu from 'defu'
+import type { Builder } from './builder'
+import type { NuxtRoute } from './pages'
+import { resolvePagesRoutes } from './pages'
+import type { NuxtPlugin } from './plugins'
+import { resolvePlugins } from './plugins'
+
 export interface NuxtApp {
-  main?: string;
-  routes: NuxtRoute[];
-  dir: string;
-  extensions: string[];
-  plugins: NuxtPlugin[];
-  templates: Record<string, string>;
+  main?: string
+  routes: NuxtRoute[]
+  dir: string
+  extensions: string[]
+  plugins: NuxtPlugin[]
+  templates: Record<string, string>
   pages?: {
-    dir: string;
-  };
+    dir: string
+  }
 }
 
 // Scan project structure
 export async function createApp(
   builder: Builder,
-  options: Partial<NuxtApp> = {}
+  options: Partial<NuxtApp> = {},
 ): Promise<NuxtApp> {
-  const { nuxt } = builder;
+  const { nuxt } = builder
 
   // Create base app object
   const app: NuxtApp = defu(options, {
@@ -30,43 +33,44 @@ export async function createApp(
     plugins: [],
     templates: {},
     pages: {
-      dir: "pages",
+      dir: 'pages',
     },
-  });
+  })
 
   // Resolve app.main
   if (!app.main) {
-    app.main =
-      nuxt.resolver.tryResolvePath("~/App") ||
-      nuxt.resolver.tryResolvePath("~/app");
+    app.main
+      = nuxt.resolver.tryResolvePath('~/App')
+      || nuxt.resolver.tryResolvePath('~/app')
   }
 
   // Resolve pages/
   if (app.pages) {
-    app.routes.push(...(await resolvePagesRoutes(builder, app)));
+    app.routes.push(...(await resolvePagesRoutes(builder, app)))
   }
   if (app.routes.length) {
     // Add 404 page is not added
-    const page404 = app.routes.find((route) => route.name === "404");
+    const page404 = app.routes.find(route => route.name === '404')
     if (!page404) {
       app.routes.push({
-        name: "404",
-        path: "/:catchAll(.*)*",
-        file: resolve(nuxt.options.appDir, "pages/404.vue"),
+        name: '404',
+        path: '/:catchAll(.*)*',
+        file: resolve(nuxt.options.appDir, 'pages/404.vue'),
         children: [],
-      });
+      })
     }
   }
 
   // Fallback app.main
   if (!app.main && app.routes.length) {
-    app.main = resolve(nuxt.options.appDir, "app.pages.vue");
-  } else if (!app.main) {
-    app.main = resolve(nuxt.options.appDir, "app.tutorial.vue");
+    app.main = resolve(nuxt.options.appDir, 'app.pages.vue')
+  }
+  else if (!app.main) {
+    app.main = resolve(nuxt.options.appDir, 'app.tutorial.vue')
   }
 
   // Resolve plugins/
-  app.plugins = await resolvePlugins(builder, app);
+  app.plugins = await resolvePlugins(builder, app)
 
-  return app;
+  return app
 }

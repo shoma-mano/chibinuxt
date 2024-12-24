@@ -1,7 +1,6 @@
-/* eslint-disable no-console */
 import type { Plugin } from 'nuxt/app'
 
-export default <Plugin> function logs ({ app }) {
+export default <Plugin> function logs({ app }) {
   // Only activate in development
   const logs = app.$nuxt.payload.logs || []
   if (logs.length > 0) {

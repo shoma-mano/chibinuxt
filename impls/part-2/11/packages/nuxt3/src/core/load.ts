@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 
 import { createNuxt } from './nuxt'
 
@@ -6,7 +6,7 @@ const OVERRIDES = {
   dry: { dev: false, server: false },
   dev: { dev: true, _build: true },
   build: { dev: false, server: false, _build: true },
-  start: { dev: false, _start: true }
+  start: { dev: false, _start: true },
 }
 
 export interface LoadOptions {
@@ -15,12 +15,12 @@ export interface LoadOptions {
 
   rootDir?: string
   configFile?: string
-  configContext?: Record<string, any>,
-  configOverrides?: Record<string, any>,
+  configContext?: Record<string, any>
+  configOverrides?: Record<string, any>
   createRequire?: (module: NodeJS.Module) => NodeJS.Require
 }
 
-export async function loadNuxt (loadOptions: LoadOptions | LoadOptions['for']) {
+export async function loadNuxt(loadOptions: LoadOptions | LoadOptions['for']) {
   // Normalize loadOptions
   if (typeof loadOptions === 'string') {
     loadOptions = { for: loadOptions }
@@ -39,7 +39,7 @@ export async function loadNuxt (loadOptions: LoadOptions | LoadOptions['for']) {
   // Load Config
   // const config = await loadNuxtConfig(loadOptions)
   const config = {
-    rootDir: path.resolve('.')
+    rootDir: path.resolve('.'),
   }
   console.log('config', config)
   // delete config._envConfig

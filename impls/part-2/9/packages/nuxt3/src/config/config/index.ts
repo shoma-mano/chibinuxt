@@ -1,4 +1,3 @@
-
 import _app from './_app'
 import _common from './_common'
 
@@ -9,7 +8,8 @@ import render from './render'
 import router from './router'
 import server from './server'
 import cli from './cli'
-import generate, { GenerateOptions } from './generate'
+import type { GenerateOptions } from './generate'
+import generate from './generate'
 
 export const defaultNuxtConfigFile = 'nuxt.config'
 
@@ -26,7 +26,7 @@ export const getDefaultNuxtConfig = () =>
     cli: cli(),
     generate: generate(),
     export: undefined as undefined | GenerateOptions,
-    telemetry: undefined as undefined | boolean
+    telemetry: undefined as undefined | boolean,
   })
 
 export type DefaultConfiguration = ReturnType<typeof getDefaultNuxtConfig>

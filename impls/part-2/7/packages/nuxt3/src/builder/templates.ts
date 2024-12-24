@@ -1,8 +1,8 @@
-import type { NuxtRoute } from "./pages";
-import type { NuxtTemplate } from "./template";
+import type { NuxtRoute } from './pages'
+import type { NuxtTemplate } from './template'
 
 export const entryClientTemplate: NuxtTemplate = {
-  fileName: "entry.client.js",
+  fileName: 'entry.client.js',
   getContents: ({ app, globals, nuxtOptions }) =>
     `
 import { createSSRApp, nextTick } from 'vue'
@@ -31,10 +31,10 @@ async function initApp () {
 initApp().catch((error) => {
   console.error('Error while mounting app:', error) // eslint-disable-line no-console
 })`,
-};
+}
 
 export const entryServerTemplate: NuxtTemplate = {
-  fileName: "entry.server.mjs",
+  fileName: 'entry.server.mjs',
   getContents: ({ app }) => `import { createApp } from 'vue'
 import { createNuxt, applyPlugins } from 'nuxt/app/nuxt'
 import plugins from './plugins'
@@ -56,10 +56,10 @@ export default async function createNuxtAppServer (ssrContext = {}) {
    
    return app
 }`,
-};
+}
 
 export const allPluginsTemplate: NuxtTemplate = {
-  fileName: "plugins.js",
+  fileName: 'plugins.js',
   getContents: () => `
     import head from 'nuxt/app/plugins/head'
     import router from 'nuxt/app/plugins/router'
@@ -69,16 +69,16 @@ export const allPluginsTemplate: NuxtTemplate = {
       router,
     ]
   `,
-};
+}
 
 const serialize = (data: any) =>
-  JSON.stringify(data, null, 2).replace(/"{(.+)}"/g, "$1");
+  JSON.stringify(data, null, 2).replace(/"\{(.+)\}"/g, '$1')
 
-type SerializdRoute = Omit<NuxtRoute, "file" | "children"> & {
-  component: string;
-  __file: string;
-  children: SerializdRoute[];
-};
+type SerializdRoute = Omit<NuxtRoute, 'file' | 'children'> & {
+  component: string
+  __file: string
+  children: SerializdRoute[]
+}
 const serializeRoute = (route: NuxtRoute): SerializdRoute => {
   return {
     name: route.name,
@@ -87,17 +87,17 @@ const serializeRoute = (route: NuxtRoute): SerializdRoute => {
     // TODO: avoid exposing to prod, using process.env.NODE_ENV ?
     __file: route.file,
     component: `{() => import('${route.file}' /* webpackChunkName: '${route.name}' */)}`,
-  };
-};
+  }
+}
 export const routesTemplate: NuxtTemplate = {
-  fileName: "routes.js",
+  fileName: 'routes.js',
   getContents: ({ app }) => `
     export default ${serialize(app.routes.map(serializeRoute))}
   `,
-};
+}
 
 export const htmlTemplate: NuxtTemplate = {
-  fileName: "views/app.template.html",
+  fileName: 'views/app.template.html',
   getContents: () => `
     <!DOCTYPE html>
     <html {{ HTML_ATTRS }}>
@@ -111,7 +111,7 @@ export const htmlTemplate: NuxtTemplate = {
       </body>
     </html>
   `,
-};
+}
 
 // export const errorTemplate: NuxtTemplate = {
 //   fileName: "views/error.html",

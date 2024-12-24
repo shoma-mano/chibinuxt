@@ -1,12 +1,13 @@
 import type { WatchOptions as ChokidarWatchOptions } from 'chokidar'
 import type express from 'express'
 import type { configHooksT } from 'hookable'
-import ignore from 'ignore'
+import type ignore from 'ignore'
 import capitalize from 'lodash/capitalize'
 import env from 'std-env'
 import type { Configuration as WebpackConfiguration } from 'webpack'
-import Hookable from 'hookable'
-import { TARGETS, MODES, Target, Mode } from '../../utils'
+import type Hookable from 'hookable'
+import type { Target, Mode } from '../../utils'
+import { TARGETS, MODES } from '../../utils'
 
 import { APP_DIR } from '../../consts'
 import type { NormalizedConfiguration } from '../../core/options'
@@ -81,13 +82,13 @@ export type NuxtModule = string | ModuleHandler | [string | ModuleHandler, any]
 export type ServerMiddleware = string | { path: string, prefix?: boolean, handler: string | express.NextFunction } | express.NextFunction
 
 interface CommonConfiguration {
-  _majorVersion: Number
+  _majorVersion: number
   _modules: NuxtModule[]
   _nuxtConfigFile?: string
   alias: Record<string, string>
-  appDir: string,
-  buildDir: string,
-  vite: boolean,
+  appDir: string
+  buildDir: string
+  vite: boolean
   buildModules: NuxtModule[]
   createRequire?: (module: NodeJS.Module) => NodeJS.Require
   debug?: boolean
@@ -96,7 +97,7 @@ interface CommonConfiguration {
   editor: undefined
   env: NodeJS.ProcessEnv
   extensions: string[]
-  globalName?: string,
+  globalName?: string
   globals: {
     id: (globalName: string) => string
     nuxt: (globalName: string) => string
@@ -162,7 +163,7 @@ export default (): CommonConfiguration => ({
     context: globalName => `__${globalName.toUpperCase()}__`,
     pluginPrefix: globalName => globalName,
     readyCallback: globalName => `on${capitalize(globalName)}Ready`,
-    loadedCallback: globalName => `_on${capitalize(globalName)}Loaded`
+    loadedCallback: globalName => `_on${capitalize(globalName)}Loaded`,
   },
 
   // Server
@@ -174,7 +175,7 @@ export default (): CommonConfiguration => ({
   buildDir: '.nuxt',
   vite: false,
   modulesDir: [
-    'node_modules'
+    'node_modules',
   ],
   appDir: APP_DIR,
   dir: {
@@ -184,7 +185,7 @@ export default (): CommonConfiguration => ({
     middleware: 'middleware',
     pages: 'pages',
     static: 'static',
-    store: 'store'
+    store: 'store',
   },
   extensions: [],
   styleExtensions: ['css', 'pcss', 'postcss', 'styl', 'stylus', 'scss', 'sass', 'less'],
@@ -195,18 +196,18 @@ export default (): CommonConfiguration => ({
   ignorePrefix: '_',
   ignore: [
     '**/*.test.*',
-    '**/*.spec.*'
+    '**/*.spec.*',
   ],
 
   // Watch
   watch: [],
   watchers: {
     webpack: {
-      aggregateTimeout: 1000
+      aggregateTimeout: 1000,
     },
     chokidar: {
-      ignoreInitial: true
-    }
+      ignoreInitial: true,
+    },
   },
 
   // Editor
@@ -217,5 +218,5 @@ export default (): CommonConfiguration => ({
 
   // runtimeConfig
   privateRuntimeConfig: {},
-  publicRuntimeConfig: {}
+  publicRuntimeConfig: {},
 })

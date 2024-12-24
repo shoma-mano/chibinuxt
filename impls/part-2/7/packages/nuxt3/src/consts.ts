@@ -1,3 +1,3 @@
-import { resolve } from "path";
+import { resolve } from 'node:path'
 
-export const APP_DIR = resolve(import.meta.dirname, "app");
+export const APP_DIR = resolve(import.meta.dirname, 'app')

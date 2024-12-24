@@ -4,22 +4,22 @@ import consola from 'consola'
 import globby from 'globby'
 
 import { writeFile } from '../utils'
-import { NitroPreset, NitroContext } from '../context'
+import type { NitroPreset, NitroContext } from '../context'
 
 export const firebase: NitroPreset = {
   entry: '{{ _internal.runtimeDir }}/entries/firebase',
   hooks: {
-    async 'nitro:compiled' (ctx: NitroContext) {
+    async 'nitro:compiled'(ctx: NitroContext) {
       await writeRoutes(ctx)
-    }
-  }
+    },
+  },
 }
 
-async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir } }: NitroContext) {
+async function writeRoutes({ output: { publicDir, serverDir }, _nuxt: { rootDir } }: NitroContext) {
   if (!existsSync(join(rootDir, 'firebase.json'))) {
     const firebase = {
       functions: {
-        source: relative(rootDir, serverDir)
+        source: relative(rootDir, serverDir),
       },
       hosting: [
         {
@@ -29,11 +29,11 @@ async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir
           rewrites: [
             {
               source: '**',
-              function: 'server'
-            }
-          ]
-        }
-      ]
+              function: 'server',
+            },
+          ],
+        },
+      ],
     }
     await writeFile(resolve(rootDir, 'firebase.json'), JSON.stringify(firebase))
   }
@@ -55,7 +55,8 @@ async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir
     if (['12', '10'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }
-  } catch {}
+  }
+  catch {}
 
   await writeFile(
     resolve(serverDir, 'package.json'),
@@ -68,13 +69,13 @@ async function writeRoutes ({ output: { publicDir, serverDir }, _nuxt: { rootDir
           'firebase-functions-test': 'latest',
           'firebase-admin': require('firebase-admin/package.json').version,
           'firebase-functions': require('firebase-functions/package.json')
-            .version
+            .version,
         },
-        engines: { node: nodeVersion }
+        engines: { node: nodeVersion },
       },
       null,
-      2
-    )
+      2,
+    ),
   )
 
   consola.success('Ready to run `firebase deploy`')

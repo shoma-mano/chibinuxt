@@ -10,17 +10,17 @@ import type { NitroPreset, NitroInput } from '../context'
 
 export const MODULE_DIR = resolve(__dirname, '..')
 
-export function hl (str: string) {
+export function hl(str: string) {
   return chalk.cyan(str)
 }
 
-export function prettyPath (p: string, highlight = true) {
+export function prettyPath(p: string, highlight = true) {
   p = relative(process.cwd(), p)
   return highlight ? hl(p) : p
 }
 
-export function compileTemplate (contents: string) {
-  return (params: Record<string, any>) => contents.replace(/{{ ?([\w.]+) ?}}/g, (_, match) => {
+export function compileTemplate(contents: string) {
+  return (params: Record<string, any>) => contents.replace(/\{\{ ?([\w.]+) ?\}\}/g, (_, match) => {
     const val = get(params, match)
     if (!val) {
       consola.warn(`cannot resolve template param '${match}' in ${contents.substr(0, 20)}`)
@@ -29,22 +29,22 @@ export function compileTemplate (contents: string) {
   })
 }
 
-export function serializeTemplate (contents: string) {
-  // eslint-disable-next-line no-template-curly-in-string
-  return `(params) => \`${contents.replace(/{{ (\w+) }}/g, '${params.$1}')}\``
+export function serializeTemplate(contents: string) {
+  return `(params) => \`${contents.replace(/\{\{ (\w+) \}\}/g, '${params.$1}')}\``
 }
 
-export function jitiImport (dir: string, path: string) {
+export function jitiImport(dir: string, path: string) {
   return jiti(dir)(path)
 }
 
-export function tryImport (dir: string, path: string) {
+export function tryImport(dir: string, path: string) {
   try {
     return jitiImport(dir, path)
-  } catch (_err) { }
+  }
+  catch (_err) { }
 }
 
-export async function writeFile (file, contents, log = false) {
+export async function writeFile(file, contents, log = false) {
   await fse.mkdirp(dirname(file))
   await fse.writeFile(file, contents, 'utf-8')
   if (log) {
@@ -52,7 +52,7 @@ export async function writeFile (file, contents, log = false) {
   }
 }
 
-export function resolvePath (nitroContext: NitroInput, path: string | ((nitroContext) => string), resolveBase: string = ''): string {
+export function resolvePath(nitroContext: NitroInput, path: string | ((nitroContext) => string), resolveBase: string = ''): string {
   if (typeof path === 'function') {
     path = path(nitroContext)
   }
@@ -66,7 +66,7 @@ export function resolvePath (nitroContext: NitroInput, path: string | ((nitroCon
   return resolve(resolveBase, path)
 }
 
-export function detectTarget () {
+export function detectTarget() {
   if (process.env.NETLIFY) {
     return 'netlify'
   }
@@ -80,15 +80,16 @@ export function detectTarget () {
   }
 }
 
-export async function isDirectory (path: string) {
+export async function isDirectory(path: string) {
   try {
     return (await fse.stat(path)).isDirectory()
-  } catch (_err) {
+  }
+  catch (_err) {
     return false
   }
 }
 
-export function extendPreset (base: NitroPreset, preset: NitroPreset): NitroPreset {
+export function extendPreset(base: NitroPreset, preset: NitroPreset): NitroPreset {
   return (config: NitroInput) => {
     if (typeof preset === 'function') {
       preset = preset(config)
@@ -97,7 +98,7 @@ export function extendPreset (base: NitroPreset, preset: NitroPreset): NitroPres
       base = base(config)
     }
     return defu({
-      hooks: Hookable.mergeHooks(base.hooks, preset.hooks)
+      hooks: Hookable.mergeHooks(base.hooks, preset.hooks),
     }, preset, base)
   }
 }
@@ -105,9 +106,9 @@ export function extendPreset (base: NitroPreset, preset: NitroPreset): NitroPres
 const _getDependenciesMode = {
   dev: ['devDependencies'],
   prod: ['dependencies'],
-  all: ['devDependencies', 'dependencies']
+  all: ['devDependencies', 'dependencies'],
 }
-export function getDependencies (dir: string, mode: keyof typeof _getDependenciesMode = 'all') {
+export function getDependencies(dir: string, mode: keyof typeof _getDependenciesMode = 'all') {
   const fields = _getDependenciesMode[mode]
   const pkg = require(resolve(dir, 'package.json'))
   const dependencies = []

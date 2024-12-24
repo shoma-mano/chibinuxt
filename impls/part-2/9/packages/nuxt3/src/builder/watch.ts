@@ -1,16 +1,17 @@
-import chokidar, { WatchOptions } from 'chokidar'
+import type { WatchOptions } from 'chokidar'
+import chokidar from 'chokidar'
 import defu from 'defu'
 import consola from 'consola'
-import Ignore from './ignore'
+import type Ignore from './ignore'
 
-export function createWatcher (
+export function createWatcher(
   pattern: string,
   options?: WatchOptions,
-  ignore?: Ignore
+  ignore?: Ignore,
 ) {
   const opts = defu(options, {
     ignored: [],
-    ignoreInitial: true
+    ignoreInitial: true,
   })
   const watcher = chokidar.watch(pattern, opts)
   const watchAll = (cb: Function, filter?: Function) => {
@@ -39,7 +40,7 @@ export function createWatcher (
     watchAll,
     watch,
     debug,
-    close: () => watcher.close()
+    close: () => watcher.close(),
   }
 }
 

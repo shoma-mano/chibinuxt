@@ -12,7 +12,7 @@ export const setNuxtInstance = (nuxt: Nuxt | null) => {
  * @param nuxt A Nuxt instance
  * @param setup The function to call
  */
-export async function callWithNuxt (nuxt: Nuxt, setup: () => any) {
+export async function callWithNuxt(nuxt: Nuxt, setup: () => any) {
   setNuxtInstance(nuxt)
   const p = setup()
   setNuxtInstance(null)
@@ -22,7 +22,7 @@ export async function callWithNuxt (nuxt: Nuxt, setup: () => any) {
 /**
  * Returns the current Nuxt instance.
  */
-export function useNuxt (): Nuxt {
+export function useNuxt(): Nuxt {
   const vm = getCurrentInstance()
 
   if (!vm) {

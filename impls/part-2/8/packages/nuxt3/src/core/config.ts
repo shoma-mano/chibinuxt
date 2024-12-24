@@ -1,52 +1,52 @@
-import defu from "defu";
+import defu from 'defu'
 
 export function getConfig(_options: any) {
   // Prevent duplicate calls
-  if ("__normalized__" in _options) {
-    return _options;
+  if ('__normalized__' in _options) {
+    return _options
   }
 
-  return normalizeConfig(_options);
+  return normalizeConfig(_options)
 }
 
 const normalizeConfig = (config: any): NuxtConfiguration => {
-  const createRequire = require("create-require");
-  config.createRequire = (module) => createRequire(module.filename);
+  const createRequire = require('create-require')
+  config.createRequire = module => createRequire(module.filename)
 
   config = defu(config, {
-    rootDir: "/Users/mano/playground/nuxts/nuxt/books/0/playground",
+    rootDir: '/Users/mano/playground/nuxts/nuxt/books/0/playground',
     dev: true,
     __normalized__: true,
-    globalName: "nuxt",
+    globalName: 'nuxt',
     _majorVersion: 3,
     env: {},
-    srcDir: "/Users/mano/playground/nuxts/nuxt/books/0/playground",
-    buildDir: "/Users/mano/playground/nuxts/nuxt/books/0/playground/.nuxt",
+    srcDir: '/Users/mano/playground/nuxts/nuxt/books/0/playground',
+    buildDir: '/Users/mano/playground/nuxts/nuxt/books/0/playground/.nuxt',
     modulesDir: [
-      "/Users/mano/playground/nuxts/nuxt/books/0/playground/node_modules",
-      "/Users/mano/playground/nuxts/nuxt/books/0/node_modules",
-      "/Users/mano/playground/nuxts/nuxt/books/node_modules",
-      "/Users/mano/playground/nuxts/nuxt/node_modules",
-      "/Users/mano/playground/nuxts/node_modules",
-      "/Users/mano/playground/node_modules",
-      "/Users/mano/node_modules",
-      "/Users/node_modules",
-      "/node_modules",
+      '/Users/mano/playground/nuxts/nuxt/books/0/playground/node_modules',
+      '/Users/mano/playground/nuxts/nuxt/books/0/node_modules',
+      '/Users/mano/playground/nuxts/nuxt/books/node_modules',
+      '/Users/mano/playground/nuxts/nuxt/node_modules',
+      '/Users/mano/playground/nuxts/node_modules',
+      '/Users/mano/playground/node_modules',
+      '/Users/mano/node_modules',
+      '/Users/node_modules',
+      '/node_modules',
     ],
-    appDir: "/Users/mano/playground/nuxts/nuxt/books/0/packages/nuxt3/dist/app",
+    appDir: '/Users/mano/playground/nuxts/nuxt/books/0/packages/nuxt3/dist/app',
     dir: {
-      assets: "assets",
-      app: "app",
-      layouts: "layouts",
-      middleware: "middleware",
-      pages: "pages",
-      static: "static",
-      store: "store",
+      assets: 'assets',
+      app: 'app',
+      layouts: 'layouts',
+      middleware: 'middleware',
+      pages: 'pages',
+      static: 'static',
+      store: 'store',
     },
-    extensions: ["js", "mjs", "ts", "tsx", "vue", "jsx"],
-    ignore: ["**/*.test.*", "**/*.spec.*", "_*"],
+    extensions: ['js', 'mjs', 'ts', 'tsx', 'vue', 'jsx'],
+    ignore: ['**/*.test.*', '**/*.spec.*', '_*'],
     build: {
-      _publicPath: "/_nuxt/",
+      _publicPath: '/_nuxt/',
       additionalExtensions: [],
       aggressiveCodeRemoval: false,
       analyze: false,
@@ -87,7 +87,7 @@ const normalizeConfig = (config: any): NuxtConfiguration => {
         minimize: false,
         minimizer: undefined,
         splitChunks: {
-          chunks: "all",
+          chunks: 'all',
           name: undefined,
           cacheGroups: {
             default: {
@@ -104,9 +104,9 @@ const normalizeConfig = (config: any): NuxtConfiguration => {
         },
       },
       profile: false,
-      publicPath: "/_nuxt/",
+      publicPath: '/_nuxt/',
       quiet: false,
-      serverURLPolyfill: "url",
+      serverURLPolyfill: 'url',
       splitChunks: {
         layouts: false,
         pages: true,
@@ -125,190 +125,190 @@ const normalizeConfig = (config: any): NuxtConfiguration => {
       template: undefined,
       templates: [],
       terser: {},
-      transpile: ["app"],
+      transpile: ['app'],
       warningIgnoreFilters: [],
       watch: [],
     },
     router: {
-      base: "/",
+      base: '/',
     },
     generate: {
-      dir: "/Users/mano/playground/nuxts/nuxt/books/0/playground/dist",
+      dir: '/Users/mano/playground/nuxts/nuxt/books/0/playground/dist',
       staticAssets: {
-        base: "/_nuxt/static",
-        dir: "static",
+        base: '/_nuxt/static',
+        dir: 'static',
       },
     },
-  });
-  return config;
-};
+  })
+  return config
+}
 
 export interface NuxtConfiguration {
-  rootDir: string;
-  __normalized__: boolean;
-  dev: boolean;
-  globalName: string;
-  _majorVersion: number;
-  env: Record<string, any>;
-  createRequire: Function;
-  srcDir: string;
-  buildDir: string;
-  modulesDir: string[];
-  appDir: string;
+  rootDir: string
+  __normalized__: boolean
+  dev: boolean
+  globalName: string
+  _majorVersion: number
+  env: Record<string, any>
+  createRequire: Function
+  srcDir: string
+  buildDir: string
+  modulesDir: string[]
+  appDir: string
   dir: {
-    assets: string;
-    app: string;
-    layouts: string;
-    middleware: string;
-    pages: string;
-    static: string;
-    store: string;
-  };
-  extensions: string[];
-  ignore: string[];
+    assets: string
+    app: string
+    layouts: string
+    middleware: string
+    pages: string
+    static: string
+    store: string
+  }
+  extensions: string[]
+  ignore: string[]
   build: {
-    _publicPath: string;
-    additionalExtensions: string[];
-    aggressiveCodeRemoval: boolean;
-    analyze: boolean;
+    _publicPath: string
+    additionalExtensions: string[]
+    aggressiveCodeRemoval: boolean
+    analyze: boolean
     babel: {
-      configFile: boolean;
-      babelrc: boolean;
-      cacheDirectory: boolean;
-    };
-    cache: boolean;
-    corejs?: any;
-    crossorigin?: any;
-    cssSourceMap: boolean;
-    devMiddleware: Record<string, any>;
-    devtools?: any;
-    extend: any;
-    extractCSS: boolean;
+      configFile: boolean
+      babelrc: boolean
+      cacheDirectory: boolean
+    }
+    cache: boolean
+    corejs?: any
+    crossorigin?: any
+    cssSourceMap: boolean
+    devMiddleware: Record<string, any>
+    devtools?: any
+    extend: any
+    extractCSS: boolean
     filenames: {
-      app: Function;
-      chunk: Function;
-      css: Function;
-      img: Function;
-      font: Function;
-      video: Function;
-    };
-    followSymlinks: boolean;
-    friendlyErrors: boolean;
-    hardSource: boolean;
-    hotMiddleware: Record<string, any>;
+      app: Function
+      chunk: Function
+      css: Function
+      img: Function
+      font: Function
+      video: Function
+    }
+    followSymlinks: boolean
+    friendlyErrors: boolean
+    hardSource: boolean
+    hotMiddleware: Record<string, any>
     html: {
       minify: {
-        collapseBooleanAttributes: boolean;
-        decodeEntities: boolean;
-        minifyCSS: boolean;
-        minifyJS: boolean;
-        processConditionalComments: boolean;
-        removeEmptyAttributes: boolean;
-        removeRedundantAttributes: boolean;
-        trimCustomFragments: boolean;
-        useShortDoctype: boolean;
-      };
-    };
-    indicator: boolean;
+        collapseBooleanAttributes: boolean
+        decodeEntities: boolean
+        minifyCSS: boolean
+        minifyJS: boolean
+        processConditionalComments: boolean
+        removeEmptyAttributes: boolean
+        removeRedundantAttributes: boolean
+        trimCustomFragments: boolean
+        useShortDoctype: boolean
+      }
+    }
+    indicator: boolean
     loaders: {
-      file: Record<string, any>;
+      file: Record<string, any>
       fontUrl: {
-        limit: number;
-      };
+        limit: number
+      }
       imgUrl: {
-        limit: number;
-      };
-      pugPlain: Record<string, any>;
+        limit: number
+      }
+      pugPlain: Record<string, any>
       vue: {
         transformAssetUrls: {
-          video: string;
-          source: string;
-          object: string;
-          embed: string;
-        };
-      };
+          video: string
+          source: string
+          object: string
+          embed: string
+        }
+      }
       css: {
-        esModule: boolean;
-        sourceMap: boolean;
-      };
+        esModule: boolean
+        sourceMap: boolean
+      }
       cssModules: {
-        esModule: boolean;
+        esModule: boolean
         modules: {
-          localIdentName: string;
-        };
-        sourceMap: boolean;
-      };
+          localIdentName: string
+        }
+        sourceMap: boolean
+      }
       less: {
-        sourceMap: boolean;
-      };
+        sourceMap: boolean
+      }
       sass: {
         sassOptions: {
-          indentedSyntax: boolean;
-        };
-        sourceMap: boolean;
-      };
+          indentedSyntax: boolean
+        }
+        sourceMap: boolean
+      }
       scss: {
-        sourceMap: boolean;
-      };
+        sourceMap: boolean
+      }
       stylus: {
-        sourceMap: boolean;
-      };
+        sourceMap: boolean
+      }
       vueStyle: {
-        sourceMap: boolean;
-      };
-    };
-    loadingScreen: boolean;
-    optimizeCSS: boolean;
+        sourceMap: boolean
+      }
+    }
+    loadingScreen: boolean
+    optimizeCSS: boolean
     optimization: {
-      minimize: boolean;
-      minimizer?: any;
+      minimize: boolean
+      minimizer?: any
       splitChunks: {
-        chunks: string;
-        name?: any;
+        chunks: string
+        name?: any
         cacheGroups: {
           default: {
-            name?: any;
-          };
-        };
-      };
-    };
-    parallel: boolean;
-    plugins: any[];
+            name?: any
+          }
+        }
+      }
+    }
+    parallel: boolean
+    plugins: any[]
     postcss: {
       preset: {
-        stage: number;
-      };
-    };
-    profile: boolean;
-    publicPath: string;
-    quiet: boolean;
-    serverURLPolyfill: string;
+        stage: number
+      }
+    }
+    profile: boolean
+    publicPath: string
+    quiet: boolean
+    serverURLPolyfill: string
     splitChunks: {
-      layouts: boolean;
-      pages: boolean;
-      commons: boolean;
-    };
-    ssr: boolean;
-    standalone: boolean;
+      layouts: boolean
+      pages: boolean
+      commons: boolean
+    }
+    ssr: boolean
+    standalone: boolean
     stats: {
-      excludeAssets: (RegExp | string)[];
-    };
-    styleResources: Record<string, any>;
-    template?: any;
-    templates: any[];
-    terser: Record<string, any>;
-    transpile: string[];
-    warningIgnoreFilters: any[];
-    watch: any[];
-  };
+      excludeAssets: (RegExp | string)[]
+    }
+    styleResources: Record<string, any>
+    template?: any
+    templates: any[]
+    terser: Record<string, any>
+    transpile: string[]
+    warningIgnoreFilters: any[]
+    watch: any[]
+  }
   router: {
-    base: string;
-  };
+    base: string
+  }
   generate: {
-    dir: string;
+    dir: string
     staticAssets: {
-      base: string;
-      dir: string;
-    };
-  };
+      base: string
+      dir: string
+    }
+  }
 }

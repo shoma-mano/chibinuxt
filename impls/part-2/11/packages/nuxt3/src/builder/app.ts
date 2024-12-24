@@ -1,8 +1,11 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import defu from 'defu'
-import { Builder } from './builder'
-import { NuxtRoute, resolvePagesRoutes } from './pages'
-import { NuxtPlugin, resolvePlugins } from './plugins'
+import type { Builder } from './builder'
+import type { NuxtRoute } from './pages'
+import { resolvePagesRoutes } from './pages'
+import type { NuxtPlugin } from './plugins'
+import { resolvePlugins } from './plugins'
+
 export interface NuxtApp {
   main?: string
   routes: NuxtRoute[]
@@ -16,9 +19,9 @@ export interface NuxtApp {
 }
 
 // Scan project structure
-export async function createApp (
+export async function createApp(
   builder: Builder,
-  options: Partial<NuxtApp> = {}
+  options: Partial<NuxtApp> = {},
 ): Promise<NuxtApp> {
   const { nuxt } = builder
 
@@ -30,15 +33,15 @@ export async function createApp (
     plugins: [],
     templates: {},
     pages: {
-      dir: 'pages'
-    }
+      dir: 'pages',
+    },
   })
 
   // Resolve app.main
   if (!app.main) {
-    app.main =
-      nuxt.resolver.tryResolvePath('~/App') ||
-      nuxt.resolver.tryResolvePath('~/app')
+    app.main
+      = nuxt.resolver.tryResolvePath('~/App')
+      || nuxt.resolver.tryResolvePath('~/app')
   }
 
   // Resolve pages/
@@ -53,7 +56,7 @@ export async function createApp (
         name: '404',
         path: '/:catchAll(.*)*',
         file: resolve(nuxt.options.appDir, 'pages/404.vue'),
-        children: []
+        children: [],
       })
     }
   }
@@ -61,7 +64,8 @@ export async function createApp (
   // Fallback app.main
   if (!app.main && app.routes.length) {
     app.main = resolve(nuxt.options.appDir, 'app.pages.vue')
-  } else if (!app.main) {
+  }
+  else if (!app.main) {
     app.main = resolve(nuxt.options.appDir, 'app.tutorial.vue')
   }
 

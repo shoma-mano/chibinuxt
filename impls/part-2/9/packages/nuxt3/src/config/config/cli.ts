@@ -1,4 +1,4 @@
-import { Color } from 'chalk'
+import type { Color } from 'chalk'
 
 export interface CliOptions {
   badgeMessages: string[]
@@ -7,5 +7,5 @@ export interface CliOptions {
 
 export default (): CliOptions => ({
   badgeMessages: [],
-  bannerColor: 'green'
+  bannerColor: 'green',
 })

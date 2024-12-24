@@ -1,19 +1,19 @@
-import type { ServerResponse, IncomingMessage } from "http";
+import type { ServerResponse, IncomingMessage } from 'node:http'
 
-import { TARGETS } from "./constants";
+import { TARGETS } from './constants'
 
 export const getContext = function getContext(
   req: IncomingMessage,
-  res: ServerResponse
+  res: ServerResponse,
 ) {
-  return { req, res };
-};
+  return { req, res }
+}
 
 export const isFullStatic = function (options) {
   return (
-    !options.dev &&
-    !options._legacyGenerate &&
-    options.target === TARGETS.static &&
-    options.render.ssr
-  );
-};
+    !options.dev
+    && !options._legacyGenerate
+    && options.target === TARGETS.static
+    && options.render.ssr
+  )
+}

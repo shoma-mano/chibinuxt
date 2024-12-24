@@ -1,8 +1,8 @@
-import type { ServerResponse, IncomingMessage } from 'http'
+import type { ServerResponse, IncomingMessage } from 'node:http'
 
 import { TARGETS } from './constants'
 
-export const getContext = function getContext (req: IncomingMessage, res: ServerResponse) {
+export const getContext = function getContext(req: IncomingMessage, res: ServerResponse) {
   return { req, res }
 }
 
@@ -18,13 +18,14 @@ export type DeterminedGlobals = {
   [key in keyof NuxtGlobals]: string
 }
 
-export const determineGlobals = function determineGlobals (globalName: string, globals: NuxtGlobals) {
+export const determineGlobals = function determineGlobals(globalName: string, globals: NuxtGlobals) {
   const _globals: Partial<DeterminedGlobals> = {}
   for (const global in globals) {
     const currentGlobal = globals[global]
     if (currentGlobal instanceof Function) {
       _globals[global] = currentGlobal(globalName)
-    } else {
+    }
+    else {
       _globals[global] = currentGlobal
     }
   }

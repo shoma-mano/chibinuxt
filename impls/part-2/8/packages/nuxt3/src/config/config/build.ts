@@ -12,7 +12,7 @@ import type { Options as PugOptions } from 'pug'
 import type { TerserPluginOptions } from 'terser-webpack-plugin'
 import type { VueLoaderOptions } from 'vue-loader'
 import type {
-  Configuration as WebpackConfiguration, WebpackPluginFunction
+  Configuration as WebpackConfiguration, WebpackPluginFunction,
 
 } from 'webpack'
 import type { Options as WebpackDevMiddlewareOptions } from 'webpack-dev-middleware'
@@ -128,11 +128,11 @@ export interface Template {
   /**
    * Source file. Can be absolute or relative.
    */
-  src: string,
+  src: string
   /**
    * Destination file within `.nuxt` filter. This filename should be relative to the project `.nuxt` dir
    */
-  dst: string,
+  dst: string
   /**
    * Options are provided to template as `options` key
    */
@@ -155,7 +155,7 @@ export default () => ({
   babel: {
     configFile: false,
     babelrc: false,
-    cacheDirectory: undefined
+    cacheDirectory: undefined,
   } as BabelOptions,
   /**
    * Enable cache of [terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin#options) and [cache-loader](https://github.com/webpack-contrib/cache-loader#cache-loader)
@@ -196,7 +196,7 @@ export default () => ({
     css: ({ isDev }: WebpackEnv) => isDev ? '[name].css' : '[name].[contenthash:7].css',
     img: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'img/[name].[contenthash:7].[ext]',
     font: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'fonts/[name].[contenthash:7].[ext]',
-    video: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'videos/[name].[contenthash:7].[ext]'
+    video: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'videos/[name].[contenthash:7].[ext]',
   },
   /**
    * By default, the build process does not scan files inside symlinks. This boolean includes them, thus allowing usage of symlinks inside folders such as the "pages" folder, for example.
@@ -223,13 +223,13 @@ export default () => ({
       removeEmptyAttributes: true,
       removeRedundantAttributes: true,
       trimCustomFragments: true,
-      useShortDoctype: true
-    }
+      useShortDoctype: true,
+    },
   } as { minify: HtmlMinifierOptions },
   indicator: {
     position: 'bottom-right',
     backgroundColor: '#2E495E',
-    color: '#00C48D'
+    color: '#00C48D',
   } as boolean | { position: string, backgroundColor: string, color: string },
   /**
    * Customize options of Nuxt.js integrated webpack loaders.
@@ -247,28 +247,28 @@ export default () => ({
         video: 'src',
         source: 'src',
         object: 'src',
-        embed: 'src'
-      }
+        embed: 'src',
+      },
     },
     css: {
-      esModule: false
+      esModule: false,
     },
     cssModules: {
       esModule: false,
       modules: {
-        localIdentName: '[local]_[hash:base64:5]'
-      }
+        localIdentName: '[local]_[hash:base64:5]',
+      },
     },
     less: {},
     sass: {
       sassOptions: {
-        indentedSyntax: true
-      }
+        indentedSyntax: true,
+      },
     },
     scss: {},
     // tODO
     stylus: {},
-    vueStyle: {}
+    vueStyle: {},
   } as Loaders,
   loadingScreen: {} as Record<string, any> | false,
   optimizeCSS: undefined as Record<string, any> | false | undefined,
@@ -280,10 +280,10 @@ export default () => ({
       name: undefined,
       cacheGroups: {
         default: {
-          name: undefined
-        }
-      }
-    }
+          name: undefined,
+        },
+      },
+    },
   } as WebpackConfiguration['optimization'],
   /**
    * Enable [thread-loader](https://github.com/webpack-contrib/thread-loader#thread-loader) in webpack building
@@ -296,8 +296,8 @@ export default () => ({
   postcss: {
     preset: {
       // https://cssdb.org/#staging-process
-      stage: 2
-    }
+      stage: 2,
+    },
   } as string[] | boolean | PostcssConfiguration | (() => PostcssConfiguration),
   /**
    * Enable the profiler in [WebpackBar](https://github.com/nuxt/webpackbar#profile)
@@ -330,7 +330,7 @@ export default () => ({
   splitChunks: {
     layouts: false,
     pages: true,
-    commons: true
+    commons: true,
   },
   /**
    * Creates special webpack bundle for SSR renderer.
@@ -345,8 +345,8 @@ export default () => ({
     excludeAssets: [
       /.map$/,
       /index\..+\.html$/,
-      /vue-ssr-(client|modern)-manifest.json/
-    ]
+      /vue-ssr-(client|modern)-manifest.json/,
+    ],
   } as 'none' | false | { excludeAssets: RegExp[] },
   styleResources: {},
   template: undefined,
@@ -364,6 +364,6 @@ export default () => ({
   /**
    * You can provide your custom files to watch and regenerate after changes. This feature is specially useful for using with modules.
    */
-  watch: [] as string[]
+  watch: [] as string[],
 
 })

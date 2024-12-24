@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/named
 import {
   wpfs,
   getNitroContext,
@@ -6,55 +5,56 @@ import {
   build,
   prepare,
   generate,
-} from "@nuxt/nitro";
-import type { Nuxt } from "./index";
-import { dynamicEventHandler } from "h3";
+} from '@nuxt/nitro'
+import { dynamicEventHandler } from 'h3'
+import type { Nuxt } from './index'
 
-const devMiddlewareHandler = dynamicEventHandler();
+const devMiddlewareHandler = dynamicEventHandler()
 export function initNitro(nuxt: Nuxt) {
   // Create contexts
-  const nitroContext = getNitroContext(nuxt.options, nuxt.options.nitro || {});
-  const nitroDevContext = getNitroContext(nuxt.options, { preset: "dev" });
+  const nitroContext = getNitroContext(nuxt.options, nuxt.options.nitro || {})
+  const nitroDevContext = getNitroContext(nuxt.options, { preset: 'dev' })
   // handler
-  nitroDevContext.viteDevHandler = devMiddlewareHandler;
+  nitroDevContext.viteDevHandler = devMiddlewareHandler
 
-  nuxt.server = createDevServer(nitroDevContext);
+  nuxt.server = createDevServer(nitroDevContext)
 
   // Connect hooks
-  nuxt.hooks.addHooks(nitroContext.nuxtHooks);
-  nuxt.hooks.hook("close", () =>
-    nitroContext._internal.hooks.callHook("close")
-  );
+  nuxt.hooks.addHooks(nitroContext.nuxtHooks)
+  nuxt.hooks.hook('close', () =>
+    nitroContext._internal.hooks.callHook('close'),
+  )
 
-  nuxt.hooks.addHooks(nitroDevContext.nuxtHooks);
-  nuxt.hooks.hook("close", () =>
-    nitroDevContext._internal.hooks.callHook("close")
-  );
+  nuxt.hooks.addHooks(nitroDevContext.nuxtHooks)
+  nuxt.hooks.hook('close', () =>
+    nitroDevContext._internal.hooks.callHook('close'),
+  )
 
   // Expose process.env.NITRO_PRESET
-  nuxt.options.env.NITRO_PRESET = nitroContext.preset;
+  nuxt.options.env.NITRO_PRESET = nitroContext.preset
 
   // nuxt build/dev
-  nuxt.hooks.hook("build:done", async () => {
+  nuxt.hooks.hook('build:done', async () => {
     if (nuxt.options.dev) {
-      await build(nitroDevContext);
-    } else if (!nitroContext._nuxt.isStatic) {
-      await prepare(nitroContext);
-      await generate(nitroContext);
-      await build(nitroContext);
+      await build(nitroDevContext)
     }
-  });
+    else if (!nitroContext._nuxt.isStatic) {
+      await prepare(nitroContext)
+      await generate(nitroContext)
+      await build(nitroContext)
+    }
+  })
 
   // nude dev
   if (nuxt.options.dev) {
-    nitroDevContext._internal.hooks.hook("nitro:compiled", () => {
-      nuxt.server.watch();
-    });
-    nuxt.hooks.hook("build:compile", ({ compiler }) => {
-      compiler.outputFileSystem = wpfs;
-    });
-    nuxt.hooks.hook("server:devMiddleware", (m) => {
-      devMiddlewareHandler.set(m);
-    });
+    nitroDevContext._internal.hooks.hook('nitro:compiled', () => {
+      nuxt.server.watch()
+    })
+    nuxt.hooks.hook('build:compile', ({ compiler }) => {
+      compiler.outputFileSystem = wpfs
+    })
+    nuxt.hooks.hook('server:devMiddleware', (m) => {
+      devMiddlewareHandler.set(m)
+    })
   }
 }

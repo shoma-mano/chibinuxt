@@ -1,3 +1,3 @@
 export default {
-  vite: true
+  vite: true,
 }

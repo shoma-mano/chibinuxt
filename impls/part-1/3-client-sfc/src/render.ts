@@ -1,46 +1,46 @@
-import { createRenderer } from "vue-bundle-renderer/runtime";
-import { renderToString } from "vue/server-renderer";
-import { defineEventHandler } from "h3";
-import { join } from "path";
-import { readFileSync } from "fs";
+import { join } from 'node:path'
+import { readFileSync } from 'node:fs'
+import { createRenderer } from 'vue-bundle-renderer/runtime'
+import { renderToString } from 'vue/server-renderer'
+import { defineEventHandler } from 'h3'
 
-let renderer: ReturnType<typeof createRenderer>;
+let renderer: ReturnType<typeof createRenderer>
 const setupRenderer = async () => {
   const createApp = await import(
-    join(import.meta.dirname, "dist/entry.server.js")
-  ).then((m) => m.default);
+    join(import.meta.dirname, 'dist/entry.server.js')
+  ).then(m => m.default)
   renderer = createRenderer(createApp, {
     renderToString,
     manifest: {},
-  });
-};
+  })
+}
 
 export const renderMiddleware = defineEventHandler(async (event) => {
-  if (!renderer) await setupRenderer();
+  if (!renderer) await setupRenderer()
 
-  const { req, res } = event.node;
-  if (req.url === "/entry.client.js") {
+  const { req, res } = event.node
+  if (req.url === '/entry.client.js') {
     const code = readFileSync(
-      join(import.meta.dirname, "dist/entry.client.js"),
-      "utf-8"
-    );
-    res.setHeader("Content-Type", "application/javascript");
-    res.end(code);
+      join(import.meta.dirname, 'dist/entry.client.js'),
+      'utf-8',
+    )
+    res.setHeader('Content-Type', 'application/javascript')
+    res.end(code)
   }
 
-  const rendered = await renderer.renderToString({});
-  const data = renderHTML(rendered);
-  res.setHeader("Content-Type", "text/html;charset=UTF-8");
-  res.end(data, "utf-8");
-});
+  const rendered = await renderer.renderToString({})
+  const data = renderHTML(rendered)
+  res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+  res.end(data, 'utf-8')
+})
 
 type Rendered = {
-  html: string;
-  renderResourceHeaders: () => Record<string, string>;
-  renderResourceHints: () => string;
-  renderStyles: () => string;
-  renderScripts: () => string;
-};
+  html: string
+  renderResourceHeaders: () => Record<string, string>
+  renderResourceHints: () => string
+  renderStyles: () => string
+  renderScripts: () => string
+}
 function renderHTML({
   html,
   renderResourceHints,
@@ -50,12 +50,12 @@ function renderHTML({
   return htmlTemplate({
     HEAD: renderResourceHints() + renderStyles(),
     APP: html + renderScripts(),
-  });
+  })
 }
 
 interface HtmlTemplateParams {
-  HEAD: string;
-  APP: string;
+  HEAD: string
+  APP: string
 }
 
 function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
@@ -70,5 +70,5 @@ function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
   <script type="module" src="/entry.client.js"></script>
 </body>
 </html>
-  `;
+  `
 }

@@ -1,30 +1,30 @@
-import { shallowRef } from "vue";
+import { shallowRef } from 'vue'
 import {
   createRouter,
   createWebHistory,
   createMemoryHistory,
   RouterLink,
-} from "vue-router";
-import type { Plugin } from "nuxt/app";
-import routes from "nuxt/build/routes";
-import NuxtPage from "./NuxtPage.vue";
+} from 'vue-router'
+import type { Plugin } from 'nuxt/app'
+import routes from 'nuxt/build/routes'
+import NuxtPage from './NuxtPage.vue'
 
-export default <Plugin>function router(nuxt) {
-  const { app } = nuxt;
+export default <Plugin> function router(nuxt) {
+  const { app } = nuxt
 
-  app.component("NuxtPage", NuxtPage);
-  app.component("NuxtLink", RouterLink);
+  app.component('NuxtPage', NuxtPage)
+  app.component('NuxtLink', RouterLink)
 
-  const routerHistory = process.client
+  const routerHistory = import.meta.client
     ? createWebHistory()
-    : createMemoryHistory();
+    : createMemoryHistory()
 
   const router = createRouter({
     history: routerHistory,
     routes,
-  });
-  app.use(router);
-  nuxt.provide("router", router);
+  })
+  app.use(router)
+  nuxt.provide('router', router)
 
   // const previousRoute = shallowRef(router.currentRoute.value);
   // router.afterEach((_to, from) => {
@@ -35,8 +35,8 @@ export default <Plugin>function router(nuxt) {
   //   get: () => previousRoute.value,
   // });
 
-  nuxt.hook("app:created", async () => {
-    if (process.server) {
+  nuxt.hook('app:created', async () => {
+    if (import.meta.server) {
       // router.push(nuxt.ssrContext.url);
     }
     try {
@@ -44,8 +44,9 @@ export default <Plugin>function router(nuxt) {
       if (!router.currentRoute.value.matched.length) {
         // TODO
       }
-    } catch (err) {
+    }
+    catch (err) {
       // TODO
     }
-  });
-};
+  })
+}

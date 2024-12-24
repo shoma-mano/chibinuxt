@@ -1,5 +1,5 @@
 // TODO: Refactor @nuxt/server related options into `server.js`
-import type { ServerResponse, IncomingMessage } from 'http'
+import type { ServerResponse, IncomingMessage } from 'node:http'
 import type { CompressionOptions } from 'compression'
 import type { ServeStaticOptions } from 'serve-static'
 import type etag from 'etag'
@@ -73,7 +73,7 @@ export default (): RenderOptions => ({
   bundleRenderer: {
     shouldPrefetch: () => false,
     shouldPreload: (_fileWithoutQuery, asType) => ['script', 'style'].includes(asType),
-    runInNewContext: undefined
+    runInNewContext: undefined,
   },
   crossorigin: undefined,
   resourceHints: true,
@@ -82,21 +82,21 @@ export default (): RenderOptions => ({
   http2: {
     push: false,
     shouldPush: null,
-    pushAssets: null
+    pushAssets: null,
   },
   static: {},
   compressor: {
-    threshold: 0
+    threshold: 0,
   },
   etag: {
-    weak: false
+    weak: false,
   },
   csp: false,
   dist: {
     // Don't serve index.html template
     index: false,
     // 1 year in production
-    maxAge: '1y'
+    maxAge: '1y',
   },
   // https://github.com/nuxt/serve-placeholder
   fallback: {
@@ -105,8 +105,8 @@ export default (): RenderOptions => ({
       skipUnknown: true,
       handlers: {
         '.htm': false,
-        '.html': false
-      }
-    }
-  }
+        '.html': false,
+      },
+    },
+  },
 })

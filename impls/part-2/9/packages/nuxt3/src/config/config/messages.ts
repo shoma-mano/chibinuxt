@@ -8,5 +8,5 @@ export default () => ({
     'An error occurred in the application and your page could not be served. If you are the application owner, check your logs for details.',
   client_error: 'Error',
   client_error_details:
-    'An error occurred while rendering the page. Check developer tools console for details.'
+    'An error occurred while rendering the page. Check developer tools console for details.',
 })

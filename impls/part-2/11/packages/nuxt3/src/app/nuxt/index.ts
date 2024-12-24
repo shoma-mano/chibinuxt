@@ -1,4 +1,5 @@
-import { createHooks, Hookable } from 'hookable'
+import type { Hookable } from 'hookable'
+import { createHooks } from 'hookable'
 import type { App } from 'vue'
 import { defineGetter } from '../utils'
 import { callWithNuxt } from './composables'
@@ -34,14 +35,14 @@ export interface CreateOptions {
   globalName?: Nuxt['globalName']
 }
 
-export function createNuxt (options: CreateOptions) {
+export function createNuxt(options: CreateOptions) {
   const nuxt: Nuxt = {
     provide: undefined,
     globalName: 'nuxt',
     state: {},
     payload: {},
-    isHydrating: process.client,
-    ...options
+    isHydrating: import.meta.client,
+    ...options,
   } as any as Nuxt
 
   nuxt.hooks = createHooks()
@@ -63,9 +64,9 @@ export function createNuxt (options: CreateOptions) {
     nuxt.ssrContext.nuxt = nuxt
   }
 
-  if (process.server) {
+  if (import.meta.server) {
     nuxt.payload = {
-      serverRendered: true // TODO: legacy
+      serverRendered: true, // TODO: legacy
     }
 
     nuxt.ssrContext = nuxt.ssrContext || {}
@@ -74,19 +75,19 @@ export function createNuxt (options: CreateOptions) {
     nuxt.ssrContext.payload = nuxt.payload
   }
 
-  if (process.client) {
+  if (import.meta.client) {
     nuxt.payload = window.__NUXT__ || {}
   }
 
   return nuxt
 }
 
-export function applyPlugin (nuxt: Nuxt, plugin: Plugin) {
+export function applyPlugin(nuxt: Nuxt, plugin: Plugin) {
   if (typeof plugin !== 'function') { return }
   return callWithNuxt(nuxt, () => plugin(nuxt))
 }
 
-export async function applyPlugins (nuxt: Nuxt, plugins: Plugin[]) {
+export async function applyPlugins(nuxt: Nuxt, plugins: Plugin[]) {
   for (const plugin of plugins) {
     await applyPlugin(nuxt, plugin)
   }

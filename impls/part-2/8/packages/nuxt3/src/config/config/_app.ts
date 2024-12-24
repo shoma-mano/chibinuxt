@@ -67,8 +67,8 @@ interface AppOptions {
 export default (): AppOptions => ({
   vue: {
     config: {
-      performance: undefined // = dev
-    }
+      performance: undefined, // = dev
+    },
   },
 
   vueMeta: null,
@@ -77,12 +77,12 @@ export default (): AppOptions => ({
     meta: [],
     link: [],
     style: [],
-    script: []
+    script: [],
   },
 
   fetch: {
     server: true,
-    client: true
+    client: true,
   },
 
   plugins: [],
@@ -103,7 +103,7 @@ export default (): AppOptions => ({
     duration: 5000,
     continuous: false,
     rtl: false,
-    css: true
+    css: true,
   },
 
   loadingIndicator: 'default',
@@ -114,12 +114,12 @@ export default (): AppOptions => ({
     appear: false,
     appearClass: 'appear',
     appearActiveClass: 'appear-active',
-    appearToClass: 'appear-to'
+    appearToClass: 'appear-to',
   },
 
   layoutTransition: {
     name: 'layout',
-    mode: 'out-in'
+    mode: 'out-in',
   },
 
   features: {
@@ -136,8 +136,8 @@ export default (): AppOptions => ({
     clientPrefetch: true,
     clientUseUrl: false,
     componentAliases: true,
-    componentClientOnly: true
-  }
+    componentClientOnly: true,
+  },
 })
 
 // type NormalizedConfiguration<T extends Record<string, any>> = T & {

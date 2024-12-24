@@ -1,3 +1,4 @@
 #!/usr/bin/env bun
-import { main } from "./main";
-main();
+import { main } from './main'
+
+main()

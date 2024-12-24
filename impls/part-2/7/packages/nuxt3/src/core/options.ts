@@ -1,11 +1,11 @@
-import path from "path";
-import fs from "fs";
-import consola from "consola";
-import defu from "defu";
-import defaultsDeep from "lodash/defaultsDeep";
-import pick from "lodash/pick";
-import uniq from "lodash/uniq";
-import destr from "destr";
+import path from 'node:path'
+import fs from 'node:fs'
+import consola from 'consola'
+import defu from 'defu'
+import defaultsDeep from 'lodash/defaultsDeep'
+import pick from 'lodash/pick'
+import uniq from 'lodash/uniq'
+import destr from 'destr'
 import {
   TARGETS,
   MODES,
@@ -16,125 +16,125 @@ import {
   getMainModule,
   urlJoin,
   getPKG,
-} from "../utils";
-import type { EnvConfig } from "../config/load";
-import { defaultNuxtConfigFile, getDefaultNuxtConfig } from "../config/config";
-import type { DefaultConfiguration } from "../config/config";
+} from '../utils'
+import type { EnvConfig } from '../config/load'
+import { defaultNuxtConfigFile, getDefaultNuxtConfig } from '../config/config'
+import type { DefaultConfiguration } from '../config/config'
 import {
   deleteProp,
   mergeConfigs,
   setProp,
   overrideProp,
-} from "../config/transformers";
-import type { Optional } from "../config/transformers";
+} from '../config/transformers'
+import type { Optional } from '../config/transformers'
 
 interface InputConfiguration {
-  documentPath?: string;
-  layoutTransition?: string | DefaultConfiguration["layoutTransition"];
-  loading?: true | false | DefaultConfiguration["loading"];
+  documentPath?: string
+  layoutTransition?: string | DefaultConfiguration['layoutTransition']
+  loading?: true | false | DefaultConfiguration['loading']
   manifest?: {
-    // eslint-disable-next-line camelcase
-    theme_color?: string;
-  };
-  pageTransition?: string | DefaultConfiguration["pageTransition"];
-  rootDir?: string;
-  store?: boolean;
+
+    theme_color?: string
+  }
+  pageTransition?: string | DefaultConfiguration['pageTransition']
+  rootDir?: string
+  store?: boolean
 }
 
 export interface Configuration
   extends InputConfiguration,
-    Optional<Omit<DefaultConfiguration, keyof InputConfiguration>> {}
+  Optional<Omit<DefaultConfiguration, keyof InputConfiguration>> {}
 
 export interface CliConfiguration extends Configuration {
   // cli
-  _build?: boolean;
-  _cli?: boolean;
-  _export?: boolean;
-  _generate?: boolean;
-  _start?: boolean;
-  _ready?: boolean;
-  _legacyGenerate?: boolean;
-  _env?: NodeJS.ProcessEnv;
-  _envConfig?: EnvConfig;
-  _nuxtConfigFiles?: string[];
+  _build?: boolean
+  _cli?: boolean
+  _export?: boolean
+  _generate?: boolean
+  _start?: boolean
+  _ready?: boolean
+  _legacyGenerate?: boolean
+  _env?: NodeJS.ProcessEnv
+  _envConfig?: EnvConfig
+  _nuxtConfigFiles?: string[]
 }
 
 export function getNuxtConfig(_options: Configuration) {
   // Prevent duplicate calls
-  if ("__normalized__" in _options) {
-    return _options;
+  if ('__normalized__' in _options) {
+    return _options
   }
 
   const normalizedOptions = normalizeConfig(
-    _options as CliConfiguration
-  ) as any;
+    _options as CliConfiguration,
+  ) as any
 
   const deletes = [
-    "mode",
-    "modern",
-    "modules",
-    "messages",
-    "vue",
-    "vueMeta",
-    "css",
-    "loadingIndicator",
-    "loading",
-    "modes",
-    "plugins",
-    "extendPlugins",
-    "layouts",
-    "ErrorPage",
-    "pageTransition",
-    "features",
-    "layoutTransition",
-    "head",
-    "buildModules",
-    "_modules",
-    "serverMiddleware",
-    "editor",
-    "hooks",
-    "watchers",
-    "_build",
-    "__normalized__",
-    "_routerBaseSpecified",
-    "test",
-    "debug",
-    "fetch",
-    "_nuxtConfigFile",
-    "vite",
-    "_nuxtConfigFiles",
-    "export",
-    "telemetry",
-    "documentPath",
-    "cli",
-    "server",
-    "render",
-    "ssr",
-    "target",
-    "ignoreOptions",
-    "ignorePrefix",
-    "watch",
-    "alias",
-    "styleExtensions",
-    "publicRuntimeConfig",
-    "privateRuntimeConfig",
-    "globals",
-  ];
+    'mode',
+    'modern',
+    'modules',
+    'messages',
+    'vue',
+    'vueMeta',
+    'css',
+    'loadingIndicator',
+    'loading',
+    'modes',
+    'plugins',
+    'extendPlugins',
+    'layouts',
+    'ErrorPage',
+    'pageTransition',
+    'features',
+    'layoutTransition',
+    'head',
+    'buildModules',
+    '_modules',
+    'serverMiddleware',
+    'editor',
+    'hooks',
+    'watchers',
+    '_build',
+    '__normalized__',
+    '_routerBaseSpecified',
+    'test',
+    'debug',
+    'fetch',
+    '_nuxtConfigFile',
+    'vite',
+    '_nuxtConfigFiles',
+    'export',
+    'telemetry',
+    'documentPath',
+    'cli',
+    'server',
+    'render',
+    'ssr',
+    'target',
+    'ignoreOptions',
+    'ignorePrefix',
+    'watch',
+    'alias',
+    'styleExtensions',
+    'publicRuntimeConfig',
+    'privateRuntimeConfig',
+    'globals',
+  ]
   for (const key of deletes) {
-    delete normalizedOptions[key];
+    delete normalizedOptions[key]
   }
 
   normalizedOptions.router = {
-    base: "/",
-  };
+    base: '/',
+  }
 
   normalizedOptions.generate = {
-    dir: "/Users/mano/playground/nuxts/nuxt/books/0/playground/dist",
+    dir: '/Users/mano/playground/nuxts/nuxt/books/0/playground/dist',
     staticAssets: {
-      base: "/_nuxt/static",
-      dir: "static",
+      base: '/_nuxt/static',
+      dir: 'static',
     },
-  };
+  }
 
   // nitroで使用している
   // env dir router globalName
@@ -147,63 +147,63 @@ export function getNuxtConfig(_options: Configuration) {
   // Builderのconstructorで使用
   // ignore
 
-  return normalizedOptions;
+  return normalizedOptions
 }
 
 function normalizeConfig(_options: CliConfiguration) {
   // Clone options to prevent unwanted side-effects
-  const _config: CliConfiguration = Object.assign({}, _options);
+  const _config: CliConfiguration = Object.assign({}, _options)
 
-  setProp(_config, "__normalized__", true as const);
+  setProp(_config, '__normalized__', true as const)
 
   // Normalize options
   if (_config.loading === true) {
-    deleteProp(_config, "loading");
+    deleteProp(_config, 'loading')
   }
 
   setProp(
     _config,
-    "_routerBaseSpecified",
-    _config.router && typeof _config.router.base === "string"
-  );
+    '_routerBaseSpecified',
+    _config.router && typeof _config.router.base === 'string',
+  )
 
   overrideProp(
     _config,
-    "pageTransition",
-    typeof _config.pageTransition === "string"
+    'pageTransition',
+    typeof _config.pageTransition === 'string'
       ? { name: _config.pageTransition }
-      : _config.pageTransition
-  );
+      : _config.pageTransition,
+  )
   overrideProp(
     _config,
-    "layoutTransition",
-    typeof _config.layoutTransition === "string"
+    'layoutTransition',
+    typeof _config.layoutTransition === 'string'
       ? { name: _config.layoutTransition }
-      : _config.layoutTransition
-  );
+      : _config.layoutTransition,
+  )
 
-  if (typeof _config.extensions === "string") {
-    _config.extensions = [_config.extensions];
+  if (typeof _config.extensions === 'string') {
+    _config.extensions = [_config.extensions]
   }
 
   overrideProp(
     _config,
-    "globalName",
-    isNonEmptyString(_config.globalName) &&
-      /^[a-zA-Z]+$/.test(_config.globalName)
+    'globalName',
+    isNonEmptyString(_config.globalName)
+    && /^[a-z]+$/i.test(_config.globalName)
       ? _config.globalName.toLowerCase()
       : // use `` for preventing replacing to nuxt-edge
-        "nuxt"
-  );
+      'nuxt',
+  )
 
   // Resolve rootDir
   overrideProp(
     _config,
-    "rootDir",
+    'rootDir',
     isNonEmptyString(_config.rootDir)
       ? path.resolve(_config.rootDir)
-      : process.cwd()
-  );
+      : process.cwd(),
+  )
 
   // Apply defaults by ${buildDir}/dist/build.config.js
   // TODO: Unsafe operation.
@@ -215,218 +215,220 @@ function normalizeConfig(_options: CliConfiguration) {
 
   // Fall back to default if publicPath is falsy
   if (_config.build && !_config.build.publicPath) {
-    _config.build.publicPath = undefined;
+    _config.build.publicPath = undefined
   }
 
   // Apply defaults
-  const options = mergeConfigs(_config, getDefaultNuxtConfig());
+  const options = mergeConfigs(_config, getDefaultNuxtConfig())
 
   // Target
   if (!Object.values(TARGETS).includes(options.target!)) {
-    consola.warn(`Unknown target: ${options.target}. Falling back to server`);
-    options.target = "server";
+    consola.warn(`Unknown target: ${options.target}. Falling back to server`)
+    options.target = 'server'
   }
 
   // SSR root option
   if (options.ssr === false) {
-    options.mode = MODES.spa;
+    options.mode = MODES.spa
   }
 
   // Apply mode preset
-  const modePreset = options.modes!![options.mode || MODES.universal];
+  const modePreset = options.modes![options.mode || MODES.universal]
 
   if (!modePreset) {
     consola.warn(
-      `Unknown mode: ${options.mode}. Falling back to ${MODES.universal}`
-    );
+      `Unknown mode: ${options.mode}. Falling back to ${MODES.universal}`,
+    )
   }
-  defaultsDeep(options, modePreset || options.modes![MODES.universal]);
+  defaultsDeep(options, modePreset || options.modes![MODES.universal])
 
   // Sanitize router.base
   if (!/\/$/.test(options.router!.base!)) {
-    options.router!.base += "/";
+    options.router!.base += '/'
   }
 
   // Alias export to generate
   // TODO: switch to export by default for nuxt3
   if (options.export) {
-    options.generate = defu(options.export, options.generate!);
+    options.generate = defu(options.export, options.generate!)
     // exports.export = options.generate;
   }
 
   // Check srcDir and generate.dir existence
-  const hasSrcDir = isNonEmptyString(options.srcDir);
-  const hasGenerateDir = isNonEmptyString(options.generate!.dir);
+  const hasSrcDir = isNonEmptyString(options.srcDir)
+  const hasGenerateDir = isNonEmptyString(options.generate!.dir)
 
   // Resolve srcDir
   overrideProp(
     options,
-    "srcDir",
-    hasSrcDir ? path.resolve(options.rootDir, options.srcDir!) : options.rootDir
-  );
+    'srcDir',
+    hasSrcDir ? path.resolve(options.rootDir, options.srcDir!) : options.rootDir,
+  )
 
   // Resolve buildDir
   overrideProp(
     options,
-    "buildDir",
-    path.resolve(options.rootDir, options.buildDir!)
-  );
+    'buildDir',
+    path.resolve(options.rootDir, options.buildDir!),
+  )
 
   // Aliases
   const {
     rootDir,
     srcDir,
     dir: { assets: assetsDir, static: staticDir },
-  } = options as any;
-  overrideProp(options, "alias", {
-    "~~": rootDir,
-    "@@": rootDir,
-    "~": srcDir,
-    "@": srcDir,
+  } = options as any
+  overrideProp(options, 'alias', {
+    '~~': rootDir,
+    '@@': rootDir,
+    '~': srcDir,
+    '@': srcDir,
     [assetsDir]: path.join(srcDir, assetsDir),
     [staticDir]: path.join(srcDir, staticDir),
     ...options.alias,
-  });
+  })
 
   // Default value for _nuxtConfigFile
   overrideProp(
     options,
-    "_nuxtConfigFile",
-    options._nuxtConfigFile ||
-      path.resolve(options.rootDir, `${defaultNuxtConfigFile}.js`)
-  );
+    '_nuxtConfigFile',
+    options._nuxtConfigFile
+    || path.resolve(options.rootDir, `${defaultNuxtConfigFile}.js`),
+  )
 
   setProp(
     options,
-    "_nuxtConfigFiles",
-    (options as any)._nuxtConfigFiles || [options._nuxtConfigFile]
-  );
+    '_nuxtConfigFiles',
+    (options as any)._nuxtConfigFiles || [options._nuxtConfigFile],
+  )
 
   // Watch for config file changes
-  options.watch!.push(...options._nuxtConfigFiles);
+  options.watch!.push(...options._nuxtConfigFiles)
 
   // Protect rootDir against buildDir
-  guardDir(options, "rootDir", "buildDir");
+  guardDir(options, 'rootDir', 'buildDir')
 
   if (hasGenerateDir) {
     // Resolve generate.dir
     options.generate!.dir = path.resolve(
       options.rootDir,
-      options.generate!.dir!
-    );
+      options.generate!.dir!,
+    )
 
     // Protect rootDir against buildDir
-    guardDir(options, "rootDir", "generate.dir");
+    guardDir(options, 'rootDir', 'generate.dir')
   }
 
   if (hasSrcDir) {
     // Protect srcDir against buildDir
-    guardDir(options, "srcDir", "buildDir");
+    guardDir(options, 'srcDir', 'buildDir')
 
     if (hasGenerateDir) {
       // Protect srcDir against generate.dir
-      guardDir(options, "srcDir", "generate.dir");
+      guardDir(options, 'srcDir', 'generate.dir')
     }
   }
 
   // Populate modulesDir
-  options.modulesDir = [];
+  options.modulesDir = []
 
-  const mandatoryExtensions = ["js", "mjs", "ts", "tsx", "vue", "jsx"];
+  const mandatoryExtensions = ['js', 'mjs', 'ts', 'tsx', 'vue', 'jsx']
 
   overrideProp(
     options,
-    "extensions",
+    'extensions',
     mandatoryExtensions
-      .filter((ext) => !options.extensions!.includes(ext))
-      .concat(options.extensions!)
-  );
+      .filter(ext => !options.extensions!.includes(ext))
+      .concat(options.extensions!),
+  )
 
   // If app.html is defined, set the template path to the user template
   if (options.documentPath === undefined) {
     options.documentPath = path.resolve(
       options.buildDir,
-      "views/app.template.html"
-    ); // NITRO/Nuxt2 compat
-    const userDocumentPath = path.join(options.srcDir, "document.html");
+      'views/app.template.html',
+    ) // NITRO/Nuxt2 compat
+    const userDocumentPath = path.join(options.srcDir, 'document.html')
     if (fs.existsSync(userDocumentPath)) {
-      options.documentPath = userDocumentPath;
-    } else {
-      options.watch!.push(userDocumentPath);
+      options.documentPath = userDocumentPath
     }
-  } else {
-    options.documentPath = path.resolve(options.srcDir, options.documentPath);
+    else {
+      options.watch!.push(userDocumentPath)
+    }
+  }
+  else {
+    options.documentPath = path.resolve(options.srcDir, options.documentPath)
   }
 
   overrideProp(
     options.build!,
-    "publicPath",
-    options.build!.publicPath!.replace(/([^/])$/, "$1/")
-  );
+    'publicPath',
+    options.build!.publicPath!.replace(/([^/])$/, '$1/'),
+  )
   overrideProp(
     options.build,
-    "_publicPath",
-    options.build!._publicPath!.replace(/([^/])$/, "$1/")
-  );
+    '_publicPath',
+    options.build!._publicPath!.replace(/([^/])$/, '$1/'),
+  )
 
   // Ignore publicPath on dev
   if (options.dev && isUrl(options.build.publicPath)) {
-    options.build.publicPath = options.build._publicPath;
+    options.build.publicPath = options.build._publicPath
   }
 
   // If store defined, update store options to true unless explicitly disabled
   if (
-    options.store !== false &&
-    fs.existsSync(path.join(options.srcDir, options.dir!.store!)) &&
-    fs
+    options.store !== false
+    && fs.existsSync(path.join(options.srcDir, options.dir!.store!))
+    && fs
       .readdirSync(path.join(options.srcDir, options.dir!.store!))
-      .find((filename) => filename !== "README.md" && filename[0] !== ".")
+      .find(filename => filename !== 'README.md' && filename[0] !== '.')
   ) {
-    options.store = true;
+    options.store = true
   }
 
   // SPA loadingIndicator
   if (options.loadingIndicator) {
     // Normalize loadingIndicator
     if (!isPureObject(options.loadingIndicator)) {
-      options.loadingIndicator = { name: options.loadingIndicator };
+      options.loadingIndicator = { name: options.loadingIndicator }
     }
 
     // Apply defaults
     options.loadingIndicator = Object.assign(
       {
-        name: "default",
+        name: 'default',
         color:
-          (options.loading &&
-            typeof options.loading !== "string" &&
-            typeof options.loading !== "boolean" &&
-            options.loading.color) ||
-          "#D3D3D3",
-        color2: "#F5F5F5",
+          (options.loading
+            && typeof options.loading !== 'string'
+            && typeof options.loading !== 'boolean'
+            && options.loading.color)
+          || '#D3D3D3',
+        color2: '#F5F5F5',
         background:
-          (options.manifest && options.manifest.theme_color) || "white",
+          (options.manifest && options.manifest.theme_color) || 'white',
         dev: options.dev,
         loading: options.messages!.loading,
       },
-      options.loadingIndicator
-    );
+      options.loadingIndicator,
+    )
   }
 
   // Debug errors
-  overrideProp(options, "debug", options.debug ?? options.dev);
+  overrideProp(options, 'debug', options.debug ?? options.dev)
 
   // Validate that etag.hash is a function, if not unset it
   if (options.render!.etag) {
-    const { hash } = options.render!.etag;
+    const { hash } = options.render!.etag
     if (hash) {
-      const isFn = hash instanceof Function;
+      const isFn = hash instanceof Function
       if (!isFn) {
-        options.render!.etag.hash = undefined;
+        options.render!.etag.hash = undefined
 
         if (options.dev) {
           consola.warn(
-            `render.etag.hash should be a function, received ${typeof hash} instead`
-          );
+            `render.etag.hash should be a function, received ${typeof hash} instead`,
+          )
         }
       }
     }
@@ -435,95 +437,95 @@ function normalizeConfig(_options: CliConfiguration) {
   // Apply default hash to CSP option
   if (options.render!.csp) {
     options.render!.csp = defu(options.render!.csp as any, {
-      hashAlgorithm: "sha256",
+      hashAlgorithm: 'sha256',
       allowedSources: undefined,
       policies: undefined,
       addMeta: Boolean(options.target === TARGETS.static),
       unsafeInlineCompatibility: false,
       reportOnly: options.debug,
-    });
+    })
   }
 
   // cssSourceMap
   overrideProp(
     options.build,
-    "cssSourceMap",
-    options.build.cssSourceMap ?? options.dev
-  );
+    'cssSourceMap',
+    options.build.cssSourceMap ?? options.dev,
+  )
 
   // babel cacheDirectory
-  const babelConfig = options.build.babel;
+  const babelConfig = options.build.babel
   overrideProp(
     options.build.babel!,
-    "cacheDirectory",
-    babelConfig!.cacheDirectory ?? options.dev
-  );
+    'cacheDirectory',
+    babelConfig!.cacheDirectory ?? options.dev,
+  )
 
   // Vue config
-  const vueConfig = options.vue!.config;
+  const vueConfig = options.vue!.config
 
   overrideProp(
     options.vue!.config!,
-    "performance",
-    vueConfig!.performance !== undefined ? vueConfig!.performance : options.dev
-  );
+    'performance',
+    vueConfig!.performance !== undefined ? vueConfig!.performance : options.dev,
+  )
 
   // merge custom env with variables
   const eligibleEnvVariables = pick(
     process.env,
-    Object.keys(process.env).filter((k) => k.startsWith("NUXT_ENV_"))
-  );
+    Object.keys(process.env).filter(k => k.startsWith('NUXT_ENV_')),
+  )
   overrideProp(
     options,
-    "env",
-    Object.assign(options.env!, eligibleEnvVariables)
-  );
+    'env',
+    Object.assign(options.env!, eligibleEnvVariables),
+  )
 
   // Normalize ignore
   overrideProp(
     options,
-    "ignore",
-    options.ignore ? Array.from(options.ignore) : []
-  );
+    'ignore',
+    options.ignore ? Array.from(options.ignore) : [],
+  )
 
   // Append ignorePrefix glob to ignore
-  if (typeof options.ignorePrefix === "string") {
-    options.ignore.push(`${options.ignorePrefix}*`);
+  if (typeof options.ignorePrefix === 'string') {
+    options.ignore.push(`${options.ignorePrefix}*`)
   }
 
   // Compression middleware legacy
   if (options.render!.gzip) {
     consola.warn(
-      "render.gzip is deprecated and will be removed in a future version! Please switch to render.compressor"
-    );
-    options!.render!.compressor = options.render!!.gzip;
-    delete options.render!.gzip;
+      'render.gzip is deprecated and will be removed in a future version! Please switch to render.compressor',
+    )
+    options!.render!.compressor = options.render!.gzip
+    delete options.render!.gzip
   }
 
   // If no server-side rendering, add appear true transition
   if (options.render!.ssr === false && options.pageTransition) {
-    options.pageTransition.appear = true;
+    options.pageTransition.appear = true
   }
 
   overrideProp(
     options.render!,
-    "ssrLog",
+    'ssrLog',
     options.dev
       ? options.render!.ssrLog === undefined || options.render!.ssrLog
-      : false
-  );
+      : false,
+  )
 
   // We assume the SPA fallback path is 404.html (for GitHub Pages, Surge, etc.)
   overrideProp(
     options.generate!,
-    "fallback",
+    'fallback',
     options.generate!.fallback === true
-      ? "404.html"
-      : options.generate!.fallback
-  );
+      ? '404.html'
+      : options.generate!.fallback,
+  )
 
-  if (options.build.stats === "none" || options.build.quiet === true) {
-    options.build.stats = false;
+  if (options.build.stats === 'none' || options.build.quiet === true) {
+    options.build.stats = false
   }
 
   // @pi0 - surely this can go
@@ -535,160 +537,161 @@ function normalizeConfig(_options: CliConfiguration) {
 
   // Disable CSS extraction due to incompatibility with thread-loader
   if (options.build.extractCSS && options.build.parallel) {
-    options.build.parallel = false;
+    options.build.parallel = false
     consola.warn(
-      "extractCSS cannot work with parallel build due to limited work pool in thread-loader"
-    );
+      'extractCSS cannot work with parallel build due to limited work pool in thread-loader',
+    )
   }
 
   // build.extractCSS.allChunks has no effect
   if (
-    typeof options.build.extractCSS !== "boolean" &&
-    typeof options.build.extractCSS!.allChunks !== "undefined"
+    typeof options.build.extractCSS !== 'boolean'
+    && typeof options.build.extractCSS!.allChunks !== 'undefined'
   ) {
     consola.warn(
-      "build.extractCSS.allChunks has no effect from v2.0.0. Please use build.optimization.splitChunks settings instead."
-    );
+      'build.extractCSS.allChunks has no effect from v2.0.0. Please use build.optimization.splitChunks settings instead.',
+    )
   }
 
   // Enable minimize for production builds
   if (options.build.optimization!.minimize === undefined) {
-    options.build.optimization!.minimize = !options.dev;
+    options.build.optimization!.minimize = !options.dev
   }
 
   if (options.build.optimizeCSS === undefined) {
-    options.build.optimizeCSS = options.build.extractCSS ? {} : false;
+    options.build.optimizeCSS = options.build.extractCSS ? {} : false
   }
 
-  const { loaders } = options.build;
+  const { loaders } = options.build
   // const vueLoader = loaders.vue
   // if (vueLoader.productionMode === undefined) {
   //   vueLoader.productionMode = !options.dev
   // }
   const styleLoaders: Array<string> = [
-    "css",
-    "cssModules",
-    "less",
-    "sass",
-    "scss",
-    "stylus",
-    "vueStyle",
-  ];
+    'css',
+    'cssModules',
+    'less',
+    'sass',
+    'scss',
+    'stylus',
+    'vueStyle',
+  ]
   for (const name of styleLoaders) {
-    const loader = loaders![name as keyof typeof loaders];
+    const loader = loaders![name as keyof typeof loaders]
     if (loader && (loader as any).sourceMap === undefined) {
-      (loader as any).sourceMap = Boolean(options.build.cssSourceMap);
+      (loader as any).sourceMap = Boolean(options.build.cssSourceMap)
     }
   }
 
   overrideProp(
     options.build,
-    "transpile",
-    Array.from(options.build.transpile || [])
-  );
-  options.build.transpile = [].concat((options.build.transpile as any) || []);
-  options.build.transpile.push("app");
+    'transpile',
+    Array.from(options.build.transpile || []),
+  )
+  options.build.transpile = [].concat((options.build.transpile as any) || [])
+  options.build.transpile.push('app')
 
   if (options.build.quiet === true) {
-    consola.level = 0;
+    consola.level = 0
   }
 
   // Use runInNewContext for dev mode by default
-  const { bundleRenderer } = options.render;
+  const { bundleRenderer } = options.render
   overrideProp(
     options.render.bundleRenderer!,
-    "runInNewContext",
-    bundleRenderer!.runInNewContext ?? options.dev
-  );
+    'runInNewContext',
+    bundleRenderer!.runInNewContext ?? options.dev,
+  )
 
   // const { timing } = options.server
   if (
-    options.server &&
-    typeof options.server !== "boolean" &&
-    options.server.timing
+    options.server
+    && typeof options.server !== 'boolean'
+    && options.server.timing
   ) {
-    overrideProp(options.server, "timing", {
+    overrideProp(options.server, 'timing', {
       total: true,
       ...options.server.timing,
-    });
+    })
   }
 
   overrideProp(
     options,
-    "serverMiddleware",
+    'serverMiddleware',
     Array.isArray(options.serverMiddleware)
       ? options.serverMiddleware
       : Object.entries(options.serverMiddleware).map(([path, handler]) => ({
           path,
           handler,
-        }))
-  );
+        })),
+  )
 
   // Generate staticAssets
-  const { staticAssets } = options.generate;
+  const { staticAssets } = options.generate
   overrideProp(
     options.generate.staticAssets!,
-    "version",
-    options.generate.staticAssets!.version ||
-      String(Math.round(Date.now() / 1000))
-  );
+    'version',
+    options.generate.staticAssets!.version
+    || String(Math.round(Date.now() / 1000)),
+  )
 
   if (!staticAssets!.base) {
     const publicPath = isUrl(options.build.publicPath)
-      ? ""
-      : options.build.publicPath; // "/_nuxt" or custom CDN URL
-    staticAssets!.base = urlJoin(publicPath, staticAssets!.dir!);
+      ? ''
+      : options.build.publicPath // "/_nuxt" or custom CDN URL
+    staticAssets!.base = urlJoin(publicPath, staticAssets!.dir!)
   }
-  if (!!staticAssets!.versionBase) {
+  if (staticAssets!.versionBase) {
     staticAssets!.versionBase = urlJoin(
       staticAssets!.base,
-      staticAssets!.version!
-    );
+      staticAssets!.version!,
+    )
   }
 
   // createRequire factory
   if (options.createRequire === undefined) {
     options.createRequire = async (module: any) =>
-      import("create-require").then((mod) => mod.default(module));
+      import('create-require').then(mod => mod.default(module))
   }
 
   // ----- Builtin modules -----
 
   // Loading screen
   // Force disable for production and programmatic users
-  if (!options.dev || !options._cli || !getPKG("@nuxt/loading-screen")) {
-    options.build.loadingScreen = false;
+  if (!options.dev || !options._cli || !getPKG('@nuxt/loading-screen')) {
+    options.build.loadingScreen = false
   }
   if (options.build.loadingScreen) {
     options._modules!.push([
-      "@nuxt/loading-screen",
+      '@nuxt/loading-screen',
       options.build.loadingScreen,
-    ]);
-  } else {
+    ])
+  }
+  else {
     // When loadingScreen is disabled we should also disable build indicator
-    options.build.indicator = false;
+    options.build.indicator = false
   }
 
   // Nuxt Telemetry
   if (
-    options.telemetry !== false &&
-    !options.test &&
-    !destr(process.env.NUXT_TELEMETRY_DISABLED) &&
-    getPKG("@nuxt/telemetry")
+    options.telemetry !== false
+    && !options.test
+    && !destr(process.env.NUXT_TELEMETRY_DISABLED)
+    && getPKG('@nuxt/telemetry')
   ) {
-    options._modules!.push("@nuxt/telemetry");
+    options._modules!.push('@nuxt/telemetry')
   }
 
-  options._majorVersion = 3;
+  options._majorVersion = 3
 
   if (options.vite && !options.dev) {
-    options.vite = false;
+    options.vite = false
     consola.warn(
-      "Vite does not support production builds yet! Using webpack..."
-    );
+      'Vite does not support production builds yet! Using webpack...',
+    )
   }
 
-  return options;
+  return options
 }
 
-export type NormalizedConfiguration = ReturnType<typeof normalizeConfig>;
+export type NormalizedConfiguration = ReturnType<typeof normalizeConfig>

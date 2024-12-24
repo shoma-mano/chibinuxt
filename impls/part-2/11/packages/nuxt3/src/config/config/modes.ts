@@ -3,18 +3,18 @@ import { MODES } from '../../utils'
 export default () => ({
   [MODES.universal]: {
     build: {
-      ssr: true
+      ssr: true,
     },
     render: {
-      ssr: true
-    }
+      ssr: true,
+    },
   } as const,
   [MODES.spa]: {
     build: {
-      ssr: false
+      ssr: false,
     },
     render: {
-      ssr: false
-    }
-  } as const
+      ssr: false,
+    },
+  } as const,
 })

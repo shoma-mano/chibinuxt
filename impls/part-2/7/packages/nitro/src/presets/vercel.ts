@@ -1,50 +1,50 @@
-import { resolve } from "path";
-import { extendPreset, writeFile } from "../utils";
-import { NitroPreset, NitroContext } from "../context";
-import { node } from "./node";
+import { resolve } from 'node:path'
+import { extendPreset, writeFile } from '../utils'
+import type { NitroPreset, NitroContext } from '../context'
+import { node } from './node'
 
 export const vercel: NitroPreset = extendPreset(node, {
-  entry: "{{ _internal.runtimeDir }}/entries/vercel",
+  entry: '{{ _internal.runtimeDir }}/entries/vercel',
   output: {
-    dir: "{{ _nuxt.rootDir }}/.vercel_build_output",
-    serverDir: "{{ output.dir }}/functions/node/server",
-    publicDir: "{{ output.dir }}/static",
+    dir: '{{ _nuxt.rootDir }}/.vercel_build_output',
+    serverDir: '{{ output.dir }}/functions/node/server',
+    publicDir: '{{ output.dir }}/static',
   },
-  ignore: ["vercel.json"],
+  ignore: ['vercel.json'],
   hooks: {
-    async "nitro:compiled"(ctx: NitroContext) {
-      await writeRoutes(ctx);
+    async 'nitro:compiled'(ctx: NitroContext) {
+      await writeRoutes(ctx)
     },
   },
-});
+})
 
 async function writeRoutes({ output }: NitroContext) {
   const routes = [
     {
-      src: "/sw.js",
+      src: '/sw.js',
       headers: {
-        "cache-control": "public, max-age=0, must-revalidate",
+        'cache-control': 'public, max-age=0, must-revalidate',
       },
       continue: true,
     },
     {
-      src: "/_nuxt/(.*)",
+      src: '/_nuxt/(.*)',
       headers: {
-        "cache-control": "public,max-age=31536000,immutable",
+        'cache-control': 'public,max-age=31536000,immutable',
       },
       continue: true,
     },
     {
-      handle: "filesystem",
+      handle: 'filesystem',
     },
     {
-      src: "(.*)",
-      dest: "/.vercel/functions/server/index",
+      src: '(.*)',
+      dest: '/.vercel/functions/server/index',
     },
-  ];
+  ]
 
   await writeFile(
-    resolve(output.dir, "config/routes.json"),
-    JSON.stringify(routes, null, 2)
-  );
+    resolve(output.dir, 'config/routes.json'),
+    JSON.stringify(routes, null, 2),
+  )
 }

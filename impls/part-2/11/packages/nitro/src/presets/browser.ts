@@ -2,7 +2,7 @@ import { writeFile } from 'fs-extra'
 import { resolve } from 'upath'
 import consola from 'consola'
 import { extendPreset, prettyPath } from '../utils'
-import { NitroPreset, NitroContext, NitroInput } from '../context'
+import type { NitroPreset, NitroContext, NitroInput } from '../context'
 import { worker } from './worker'
 
 export const browser: NitroPreset = extendPreset(worker, (input: NitroInput) => {
@@ -50,21 +50,21 @@ if ('serviceWorker' in navigator) {
   return <NitroInput> {
     entry: '{{ _internal.runtimeDir }}/entries/service-worker',
     output: {
-      serverDir: '{{ output.dir }}/public/_server'
+      serverDir: '{{ output.dir }}/public/_server',
     },
     nuxtHooks: {
-      'vue-renderer:ssr:templateParams' (params) {
+      'vue-renderer:ssr:templateParams'(params) {
         params.APP += script
       },
-      'vue-renderer:spa:templateParams' (params) {
+      'vue-renderer:spa:templateParams'(params) {
         params.APP += script
-      }
+      },
     },
     hooks: {
-      'nitro:template:document' (tmpl) {
+      'nitro:template:document'(tmpl) {
         tmpl.compiled = tmpl.compiled.replace('</body>', script + '</body>')
       },
-      async 'nitro:compiled' ({ output }: NitroContext) {
+      async 'nitro:compiled'({ output }: NitroContext) {
         await writeFile(resolve(output.publicDir, 'sw.js'), `self.importScripts('${input._nuxt.routerBase}_server/index.js');`)
 
         // Temp fix
@@ -73,7 +73,7 @@ if ('serviceWorker' in navigator) {
         await writeFile(resolve(output.publicDir, '404.html'), html)
 
         consola.info('Ready to deploy to static hosting:', prettyPath(output.publicDir as string))
-      }
-    }
+      },
+    },
   }
 })

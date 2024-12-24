@@ -1,3 +1,3 @@
 interface Window {
-    __NUXT__?: Record<string, any>
+  __NUXT__?: Record<string, any>
 }

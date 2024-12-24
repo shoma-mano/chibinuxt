@@ -1,3 +1,3 @@
 interface ImportMeta {
-  server: boolean;
+  server: boolean
 }

@@ -1,13 +1,17 @@
-import { relative } from 'path'
+import { relative } from 'node:path'
 import fsExtra from 'fs-extra'
-import { Nuxt } from '../core'
-import { DeterminedGlobals, determineGlobals } from '../utils'
+import type { Nuxt } from '../core'
+import type { DeterminedGlobals } from '../utils'
+import { determineGlobals } from '../utils'
+import type {
+  NuxtTemplate,
+} from './template'
 import {
   templateData,
   compileTemplates,
-  NuxtTemplate
 } from './template'
-import { createApp, NuxtApp } from './app'
+import type { NuxtApp } from './app'
+import { createApp } from './app'
 import Ignore from './ignore'
 import * as defaultTemplates from './templates'
 
@@ -18,29 +22,29 @@ export class Builder {
   templates: NuxtTemplate[]
   app: NuxtApp
 
-  constructor (nuxt) {
+  constructor(nuxt) {
     this.nuxt = nuxt
     this.globals = determineGlobals(nuxt.options.globalName, nuxt.options.globals)
     console.log('globals', this.globals)
     this.ignore = new Ignore({
       rootDir: nuxt.options.srcDir,
       ignoreArray: nuxt.options.ignore.concat(
-        relative(nuxt.options.rootDir, nuxt.options.buildDir)
-      )
+        relative(nuxt.options.rootDir, nuxt.options.buildDir),
+      ),
     })
   }
 
-  build () {
+  build() {
     return build(this)
   }
 
-  close () {
+  close() {
     // TODO: close watchers
   }
 }
 
 // Extends VueRouter
-async function build (builder: Builder) {
+async function build(builder: Builder) {
   const { nuxt } = builder
 
   await fsExtra.emptyDir(nuxt.options.buildDir)
@@ -51,7 +55,7 @@ async function build (builder: Builder) {
   await nuxt.hooks.callHook('build:done')
 }
 
-export async function generate (builder: Builder) {
+export async function generate(builder: Builder) {
   const { nuxt } = builder
 
   builder.app = await createApp(builder)
@@ -63,7 +67,7 @@ export async function generate (builder: Builder) {
   await compileTemplates(templates, nuxt.options.buildDir)
 }
 
-async function bundle ({ nuxt }: Builder) {
+async function bundle({ nuxt }: Builder) {
   // @ts-ignore
   const bundle = await import('./vite/vite')
     .then(p => p.bundle)

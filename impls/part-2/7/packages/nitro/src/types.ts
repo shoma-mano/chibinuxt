@@ -1,12 +1,12 @@
 // @ts-ignore
-import type { $Fetch } from "ohmyfetch";
+import type { $Fetch } from 'ohmyfetch'
 
 declare global {
-  const $fetch: $Fetch;
+  const $fetch: $Fetch
 
   namespace NodeJS {
     interface Global {
-      $fetch: $Fetch;
+      $fetch: $Fetch
     }
   }
 }

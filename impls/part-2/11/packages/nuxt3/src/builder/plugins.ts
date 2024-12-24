@@ -1,6 +1,5 @@
-
-import { NuxtApp } from './app'
-import { Builder } from './builder'
+import type { NuxtApp } from './app'
+import type { Builder } from './builder'
 import { resolveFiles } from './utils'
 
 export interface NuxtPlugin {
@@ -15,12 +14,12 @@ const getPluginMode = (src) => {
   return mode
 }
 
-export function resolvePlugins (builder: Builder, app: NuxtApp) {
+export function resolvePlugins(builder: Builder, app: NuxtApp) {
   return resolveFiles(builder, 'plugins/**/*.{js,ts}', app.dir)
     .then(plugins => plugins.map((src) => {
       return {
         src,
-        mode: getPluginMode(src)
+        mode: getPluginMode(src),
       }
     }))
 }

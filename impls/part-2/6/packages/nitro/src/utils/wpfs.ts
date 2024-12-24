@@ -1,5 +1,5 @@
-import { join } from "path";
-import fsExtra from "fs";
+import { join } from 'node:path'
+import fsExtra from 'node:fs'
 
 // @ts-ignore
 export const wpfs = {
@@ -7,4 +7,4 @@ export const wpfs = {
   ...(fsExtra as any),
   // @ts-ignore
   join: join as any,
-};
+}

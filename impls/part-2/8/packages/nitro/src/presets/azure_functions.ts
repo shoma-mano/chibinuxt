@@ -3,20 +3,19 @@ import consola from 'consola'
 import { createWriteStream } from 'fs-extra'
 import { join, resolve } from 'upath'
 import { prettyPath, writeFile } from '../utils'
-import { NitroPreset, NitroContext } from '../context'
+import type { NitroPreset, NitroContext } from '../context'
 
-// eslint-disable-next-line
 export const azure_functions: NitroPreset = {
   serveStatic: true,
   entry: '{{ _internal.runtimeDir }}/entries/azure_functions',
   hooks: {
-    async 'nitro:compiled' (ctx: NitroContext) {
+    async 'nitro:compiled'(ctx: NitroContext) {
       await writeRoutes(ctx)
-    }
-  }
+    },
+  },
 }
 
-function zipDirectory (dir: string, outfile: string): Promise<undefined> {
+function zipDirectory(dir: string, outfile: string): Promise<undefined> {
   const archive = archiver('zip', { zlib: { level: 9 } })
   const stream = createWriteStream(outfile)
 
@@ -31,10 +30,10 @@ function zipDirectory (dir: string, outfile: string): Promise<undefined> {
   })
 }
 
-async function writeRoutes ({ output: { dir, serverDir } }: NitroContext) {
+async function writeRoutes({ output: { dir, serverDir } }: NitroContext) {
   const host = {
     version: '2.0',
-    extensions: { http: { routePrefix: '' } }
+    extensions: { http: { routePrefix: '' } },
   }
 
   const functionDefinition = {
@@ -53,15 +52,15 @@ async function writeRoutes ({ output: { dir, serverDir } }: NitroContext) {
           'options',
           'patch',
           'post',
-          'put'
-        ]
+          'put',
+        ],
       },
       {
         type: 'http',
         direction: 'out',
-        name: 'res'
-      }
-    ]
+        name: 'res',
+      },
+    ],
   }
 
   await writeFile(resolve(serverDir, 'function.json'), JSON.stringify(functionDefinition))

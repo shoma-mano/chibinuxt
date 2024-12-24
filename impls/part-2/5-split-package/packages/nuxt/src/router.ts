@@ -3,27 +3,27 @@ import {
   createRouter as _createRouter,
   createMemoryHistory,
   createWebHistory,
-} from "vue-router";
-import Hello from "./pages/hello.vue";
-import World from "./pages/world.vue";
+} from 'vue-router'
+import Hello from './pages/hello.vue'
+import World from './pages/world.vue'
 
 export const createRouter = () => {
   const routes = [
     {
-      path: "/hello",
+      path: '/hello',
       component: Hello,
     },
     {
-      path: "/world",
+      path: '/world',
       component: World,
     },
-  ] satisfies RouteRecordRaw[];
+  ] satisfies RouteRecordRaw[]
   const history = import.meta.server
     ? createMemoryHistory()
-    : createWebHistory();
+    : createWebHistory()
   const router = _createRouter({
     history,
     routes,
-  });
-  return router;
-};
+  })
+  return router
+}

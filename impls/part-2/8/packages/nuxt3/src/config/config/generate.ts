@@ -1,4 +1,4 @@
-import { GlobbyOptions } from 'globby'
+import type { GlobbyOptions } from 'globby'
 
 type GenerateRoute = string | { route: string, payload: any }
 
@@ -7,7 +7,7 @@ type GenerateRoutesFunctionWithCallback = (callback: (err: Error, routes: Genera
 
 export interface GenerateOptions {
   cache?: false | {
-    ignore?: string[] | Function,
+    ignore?: string[] | Function
     globbyOptions?: GlobbyOptions
   }
   concurrency: number
@@ -40,6 +40,6 @@ export default (): GenerateOptions => ({
     base: undefined, // Default: "/_nuxt/static:
     versionBase: undefined, // Default: "_nuxt/static/{version}""
     dir: 'static',
-    version: undefined // Default: "{timeStampSec}"
-  }
+    version: undefined, // Default: "{timeStampSec}"
+  },
 })

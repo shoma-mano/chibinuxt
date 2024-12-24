@@ -1,17 +1,17 @@
-import { resolve } from "path";
+import { resolve } from 'node:path'
 
-import type { Nuxt } from ".";
-import globby from "globby";
+import globby from 'globby'
+import type { Nuxt } from '.'
 
 export async function resolveFiles(
   nuxt: Nuxt,
   pattern: string,
-  srcDir: string
+  srcDir: string,
 ) {
   return (
     await globby(pattern, {
       cwd: srcDir,
       followSymbolicLinks: nuxt.options.build.followSymlinks,
     })
-  ).map((p) => resolve(srcDir, p));
+  ).map(p => resolve(srcDir, p))
 }

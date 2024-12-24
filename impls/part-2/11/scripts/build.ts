@@ -1,11 +1,12 @@
-import { promisify } from 'util'
-import { resolve, relative, dirname } from 'path'
-import Module from 'module'
-import { writeFile, mkdir } from 'fs/promises'
+import { promisify } from 'node:util'
+import { resolve, relative, dirname } from 'node:path'
+import Module from 'node:module'
+import { writeFile, mkdir } from 'node:fs/promises'
 import chalk from 'chalk'
 import consola from 'consola'
 import rimraf from 'rimraf'
-import { RollupOptions, OutputOptions, OutputChunk, rollup } from 'rollup'
+import type { RollupOptions, OutputOptions, OutputChunk } from 'rollup'
+import { rollup } from 'rollup'
 import commonjs from '@rollup/plugin-commonjs'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
@@ -27,13 +28,13 @@ interface BuildContext {
   externals: string[]
 }
 
-async function main () {
+async function main() {
   const args = process.argv.splice(2)
 
   const ctx: BuildContext = {
     rootDir: resolve(args.shift() || '.'),
     entries: [],
-    externals: [...Module.builtinModules]
+    externals: [...Module.builtinModules],
   }
 
   const pkg = require(resolve(ctx.rootDir, 'package.json'))
@@ -60,7 +61,7 @@ async function main () {
         await mkdir(dirname(output)).catch(() => { })
         await writeFile(output, entry.format === 'cjs'
           ? `module.exports = require('jiti')()('${input}')`
-          : `export * from '${input}'`
+          : `export * from '${input}'`,
         )
       }
     }
@@ -91,7 +92,7 @@ ${ctx.entries.map(entry => ' ' + dumpObject(entry)).join('\n')}
       buildEntries.push({
         path: entry.fileName,
         bytes: entry.code.length * 4,
-        exports: entry.exports
+        exports: entry.exports,
       })
     }
   }
@@ -101,12 +102,12 @@ ${ctx.entries.map(entry => ' ' + dumpObject(entry)).join('\n')}
       rootDir: ctx.rootDir,
       srcDir: entry.input,
       distDir: entry.output,
-      format: entry.format
+      format: entry.format,
     })
     buildEntries.push({
       path: entry.output,
       bytes: 0,
-      chunks: writtenFiles.map(p => relative(resolve(ctx.rootDir, entry.output), p))
+      chunks: writtenFiles.map(p => relative(resolve(ctx.rootDir, entry.output), p)),
     })
   }
 
@@ -114,8 +115,8 @@ ${ctx.entries.map(entry => ' ' + dumpObject(entry)).join('\n')}
 ${buildEntries.map(entry => `${chalk.bold(entry.path)}
   size: ${chalk.cyan(entry.bytes ? prettyBytes(entry.bytes) : '-')}
   exports: ${chalk.gray(entry.exports ? entry.exports.join(', ') : '-')}
-  chunks: ${chalk.gray(entry.chunks ? entry.chunks.join(', ') : '-')}`
-  ).join('\n')}`)
+  chunks: ${chalk.gray(entry.chunks ? entry.chunks.join(', ') : '-')}`,
+).join('\n')}`)
 
   const usedDependencies = new Set<string>()
   const unusedDependencies = new Set<string>(Object.keys(pkg.dependencies))
@@ -131,9 +132,9 @@ ${buildEntries.map(entry => `${chalk.bold(entry.path)}
   }
   for (const id of usedDependencies) {
     if (
-      !ctx.externals.includes(id) &&
-      !id.startsWith('chunks/') &&
-      !ctx.externals.includes(id.split('/')[0]) // lodash/get
+      !ctx.externals.includes(id)
+      && !id.startsWith('chunks/')
+      && !ctx.externals.includes(id.split('/')[0]) // lodash/get
     ) {
       implicitDependnecies.add(id)
     }
@@ -146,7 +147,7 @@ ${buildEntries.map(entry => `${chalk.bold(entry.path)}
   }
 }
 
-function resolveEntry (input: string | [string, Partial<BuildEntry>] | Partial<BuildEntry>): BuildEntry {
+function resolveEntry(input: string | [string, Partial<BuildEntry>] | Partial<BuildEntry>): BuildEntry {
   let entry: Partial<BuildEntry>
   if (typeof input === 'string') {
     entry = { name: input }
@@ -161,11 +162,11 @@ function resolveEntry (input: string | [string, Partial<BuildEntry>] | Partial<B
   return entry as BuildEntry
 }
 
-function dumpObject (obj) {
+function dumpObject(obj) {
   return '{ ' + Object.keys(obj).map(key => `${key}: ${JSON.stringify(obj[key])}`).join(', ') + ' }'
 }
 
-function getRollupOptions (ctx: BuildContext): RollupOptions {
+function getRollupOptions(ctx: BuildContext): RollupOptions {
   const extensions = ['.ts', '.mjs', '.js', '.json']
 
   const r = (...path) => resolve(ctx.rootDir, ...path)
@@ -178,10 +179,10 @@ function getRollupOptions (ctx: BuildContext): RollupOptions {
       format: 'cjs',
       chunkFileNames: 'chunks/[hash].js',
       exports: 'auto',
-      preferConst: true
+      preferConst: true,
     },
 
-    external (id) {
+    external(id) {
       if (id[0] === '.' || id.includes('src/')) {
         return false
       }
@@ -191,25 +192,25 @@ function getRollupOptions (ctx: BuildContext): RollupOptions {
     plugins: [
       alias({
         entries: {
-          src: resolve(__dirname, 'src')
-        }
+          src: resolve(__dirname, 'src'),
+        },
       }),
 
       nodeResolve({
-        extensions
+        extensions,
       }),
 
       esbuild({
         target: 'node12',
         loaders: {
-          '.json': 'json'
-        }
+          '.json': 'json',
+        },
       }),
 
       commonjs({
-        extensions
-      })
-    ]
+        extensions,
+      }),
+    ],
   }
 }
 

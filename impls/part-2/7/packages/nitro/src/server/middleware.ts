@@ -1,100 +1,100 @@
-import { resolve, join } from "path";
-import { extname } from "path";
-import { joinURL } from "ufo";
+import { resolve, join, extname } from 'node:path'
+import { joinURL } from 'ufo'
 // @ts-ignore
-import globby from "globby";
-import { watch } from "chokidar";
+import globby from 'globby'
+import { watch } from 'chokidar'
 
 export interface ServerMiddleware {
-  route: string;
-  handle: string;
-  lazy?: boolean; // Default is true
-  promisify?: boolean; // Default is true
+  route: string
+  handle: string
+  lazy?: boolean // Default is true
+  promisify?: boolean // Default is true
 }
 
 function filesToMiddleware(
   files: string[],
   baseDir: string,
   basePath: string,
-  overrides?: Partial<ServerMiddleware>
+  overrides?: Partial<ServerMiddleware>,
 ): ServerMiddleware[] {
   return files
     .map((file) => {
       const route = joinURL(
         basePath,
-        file.substr(0, file.length - extname(file).length)
-      );
-      const handle = resolve(baseDir, file);
+        file.substr(0, file.length - extname(file).length),
+      )
+      const handle = resolve(baseDir, file)
       return {
         route,
         handle,
-      };
+      }
     })
     .sort((a, b) => a.route.localeCompare(b.route))
-    .map((m) => ({ ...m, ...overrides }));
+    .map(m => ({ ...m, ...overrides }))
 }
 
 export function scanMiddleware(
   serverDir: string,
   onChange?: (
     results: ServerMiddleware[],
-    event: "add" | "addDir" | "change" | "unlink" | "unlinkDir",
+    event: 'add' | 'addDir' | 'change' | 'unlink' | 'unlinkDir',
     file: string
-  ) => void
+  ) => void,
 ): Promise<ServerMiddleware[]> {
-  const pattern = "**/*.{js,ts}";
-  const globalDir = resolve(serverDir, "middleware");
-  const apiDir = resolve(serverDir, "api");
+  const pattern = '**/*.{js,ts}'
+  const globalDir = resolve(serverDir, 'middleware')
+  const apiDir = resolve(serverDir, 'api')
 
   const scan = async () => {
-    const globalFiles = await globby(pattern, { cwd: globalDir });
-    const apiFiles = await globby(pattern, { cwd: apiDir });
+    const globalFiles = await globby(pattern, { cwd: globalDir })
+    const apiFiles = await globby(pattern, { cwd: apiDir })
     return [
-      ...filesToMiddleware(globalFiles, globalDir, "/", { route: "/" }),
-      ...filesToMiddleware(apiFiles, apiDir, "/api", { lazy: true }),
-    ];
-  };
-
-  if (typeof onChange === "function") {
-    const watcher = watch([join(globalDir, pattern), join(apiDir, pattern)], {
-      ignoreInitial: true,
-    });
-    watcher.on("all", async (event, file) => {
-      onChange(await scan(), event, file);
-    });
+      ...filesToMiddleware(globalFiles, globalDir, '/', { route: '/' }),
+      ...filesToMiddleware(apiFiles, apiDir, '/api', { lazy: true }),
+    ]
   }
 
-  return scan();
+  if (typeof onChange === 'function') {
+    const watcher = watch([join(globalDir, pattern), join(apiDir, pattern)], {
+      ignoreInitial: true,
+    })
+    watcher.on('all', async (event, file) => {
+      onChange(await scan(), event, file)
+    })
+  }
+
+  return scan()
 }
 
 export function resolveMiddleware(
   serverMiddleware: any[],
-  resolvePath: (string: string) => string
+  resolvePath: (string: string) => string,
 ) {
-  const middleware: ServerMiddleware[] = [];
-  const legacyMiddleware: ServerMiddleware[] = [];
+  const middleware: ServerMiddleware[] = []
+  const legacyMiddleware: ServerMiddleware[] = []
 
   for (let m of serverMiddleware) {
-    if (typeof m === "string") {
-      m = { handler: m };
+    if (typeof m === 'string') {
+      m = { handler: m }
     }
-    const route = m.path || m.route || "/";
-    const handle = m.handler || m.handle;
-    if (typeof handle !== "string" || typeof route !== "string") {
-      legacyMiddleware.push(m);
-    } else {
-      delete m.handler;
-      delete m.path;
+    const route = m.path || m.route || '/'
+    const handle = m.handler || m.handle
+    if (typeof handle !== 'string' || typeof route !== 'string') {
+      legacyMiddleware.push(m)
+    }
+    else {
+      delete m.handler
+      delete m.path
       middleware.push({
         ...m,
         handle: resolvePath(handle),
         route,
-      });
+      })
     }
   }
 
   return {
     middleware,
     legacyMiddleware,
-  };
+  }
 }

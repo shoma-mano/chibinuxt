@@ -3,25 +3,25 @@ import {
   createRouter,
   createWebHistory,
   createMemoryHistory,
-  RouterLink
+  RouterLink,
 } from 'vue-router'
 import type { Plugin } from 'nuxt/app'
 import routes from 'nuxt/build/routes'
 import NuxtPage from './NuxtPage.vue'
 
-export default <Plugin> function router (nuxt) {
+export default <Plugin> function router(nuxt) {
   const { app } = nuxt
 
   app.component('NuxtPage', NuxtPage)
   app.component('NuxtLink', RouterLink)
 
-  const routerHistory = process.client
+  const routerHistory = import.meta.client
     ? createWebHistory()
     : createMemoryHistory()
 
   const router = createRouter({
     history: routerHistory,
-    routes
+    routes,
   })
   app.use(router)
   nuxt.provide('router', router)
@@ -32,11 +32,11 @@ export default <Plugin> function router (nuxt) {
   })
 
   Object.defineProperty(app.config.globalProperties, 'previousRoute', {
-    get: () => previousRoute.value
+    get: () => previousRoute.value,
   })
 
   nuxt.hook('app:created', async () => {
-    if (process.server) {
+    if (import.meta.server) {
       router.push(nuxt.ssrContext.url)
     }
     try {
@@ -44,7 +44,8 @@ export default <Plugin> function router (nuxt) {
       if (!router.currentRoute.value.matched.length) {
         // TODO
       }
-    } catch (err) {
+    }
+    catch (err) {
       // TODO
     }
   })

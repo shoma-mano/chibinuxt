@@ -1,5 +1,5 @@
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 import defu from 'defu'
 import consola from 'consola'
 import dotenv from 'dotenv'
@@ -9,8 +9,8 @@ import destr from 'destr'
 import * as rc from 'rc9'
 import { clearRequireCache, scanRequireTree } from '../utils'
 
-import { LoadOptions } from '../core/load'
-import { CliConfiguration, Configuration } from './options'
+import type { LoadOptions } from '../core/load'
+import type { CliConfiguration, Configuration } from './options'
 import { defaultNuxtConfigFile } from './config'
 
 // @ts-ignore
@@ -26,13 +26,13 @@ export interface EnvConfig {
   expand?: boolean
 }
 
-export async function loadNuxtConfig ({
+export async function loadNuxtConfig({
   rootDir = '.',
   envConfig = {},
   configFile = defaultNuxtConfigFile,
   configContext = {},
   configOverrides = {},
-  createRequire = (module: NodeJS.Module) => isJest ? _createRequire(module.filename) : jiti(module.filename)
+  createRequire = (module: NodeJS.Module) => isJest ? _createRequire(module.filename) : jiti(module.filename),
 }: LoadOptions = {}) {
   rootDir = path.resolve(rootDir)
 
@@ -40,10 +40,12 @@ export async function loadNuxtConfig ({
 
   try {
     configFile = require.resolve(path.resolve(rootDir, configFile))
-  } catch (e) {
+  }
+  catch (e) {
     if (e.code !== 'MODULE_NOT_FOUND') {
       throw (e)
-    } else if (configFile !== defaultNuxtConfigFile) {
+    }
+    else if (configFile !== defaultNuxtConfigFile) {
       consola.fatal('Config file not found: ' + configFile)
     }
     // Skip configFile if cannot resolve
@@ -55,7 +57,7 @@ export async function loadNuxtConfig ({
     dotenv: '.env',
     env: process.env,
     expand: true,
-    ...envConfig
+    ...envConfig,
   }
 
   const env = loadEnv(envConfig, rootDir)
@@ -76,7 +78,8 @@ export async function loadNuxtConfig ({
     if (typeof _config === 'function') {
       try {
         _config = interopDefault(await _config(configContext))
-      } catch (error) {
+      }
+      catch (error) {
         consola.error(error)
         consola.fatal('Error while fetching async configuration')
       }
@@ -105,7 +108,7 @@ export async function loadNuxtConfig ({
     configOverrides,
     options,
     rc.read({ name: '.nuxtrc', dir: options.rootDir }),
-    rc.readUser('.nuxtrc')
+    rc.readUser('.nuxtrc'),
   )
 
   console.log('options after defu', options)
@@ -130,7 +133,7 @@ export async function loadNuxtConfig ({
   return options
 }
 
-function loadEnv (envConfig: EnvConfig, rootDir = process.cwd()) {
+function loadEnv(envConfig: EnvConfig, rootDir = process.cwd()) {
   const env = Object.create(null)
 
   // Read dotenv
@@ -157,19 +160,19 @@ function loadEnv (envConfig: EnvConfig, rootDir = process.cwd()) {
 }
 
 // Based on https://github.com/motdotla/dotenv-expand
-function expand (target: Record<string, string>, source: Record<string, string> = {}, parse = (v: string) => v) {
-  function getValue (key: string) {
+function expand(target: Record<string, string>, source: Record<string, string> = {}, parse = (v: string) => v) {
+  function getValue(key: string) {
     // Source value 'wins' over target value
     return source[key] !== undefined ? source[key] : target[key]
   }
 
-  function interpolate (value: string): string {
+  function interpolate(value: string): string {
     if (typeof value !== 'string') {
       return value
     }
-    const matches = value.match(/(.?\${?(?:[a-zA-Z0-9_:]+)?}?)/g) || []
+    const matches = value.match(/(.?\$\{?[\w:]*\}?)/g) || []
     return parse(matches.reduce((newValue, match) => {
-      const parts = /(.?)\${?([a-zA-Z0-9_:]+)?}?/g.exec(match)
+      const parts = /(.?)\$\{?([\w:]+)?\}?/.exec(match)
       const prefix = parts[1]
 
       let value: string
@@ -178,7 +181,8 @@ function expand (target: Record<string, string>, source: Record<string, string> 
       if (prefix === '\\') {
         replacePart = parts[0]
         value = replacePart.replace('\\$', '$')
-      } else {
+      }
+      else {
         const key = parts[2]
         replacePart = parts[0].substring(prefix.length)
 

@@ -1,7 +1,7 @@
-import { NuxtTemplate } from "./template";
+import type { NuxtTemplate } from './template'
 
 export const entryClientTemplate: NuxtTemplate = {
-  fileName: "entry.client.js",
+  fileName: 'entry.client.js',
   getContents: ({ app, globals, nuxtOptions }) =>
     `
 import { createSSRApp, nextTick } from 'vue'
@@ -30,10 +30,10 @@ async function initApp () {
 initApp().catch((error) => {
   console.error('Error while mounting app:', error) // eslint-disable-line no-console
 })`,
-};
+}
 
 export const entryServerTemplate: NuxtTemplate = {
-  fileName: "entry.server.js",
+  fileName: 'entry.server.js',
   getContents: ({ app }) => `import { createApp } from 'vue'
 import { createNuxt, applyPlugins } from 'nuxt/app/nuxt'
 import plugins from './plugins'
@@ -55,10 +55,10 @@ export default async function createNuxtAppServer (ssrContext = {}) {
    
    return app
 }`,
-};
+}
 
 export const allPluginsTemplate: NuxtTemplate = {
-  fileName: "plugins.js",
+  fileName: 'plugins.js',
   getContents: () => `
     import head from 'nuxt/app/plugins/head'
     import router from 'nuxt/app/plugins/router'
@@ -70,17 +70,17 @@ export const allPluginsTemplate: NuxtTemplate = {
       legacy,
     ]
   `,
-};
+}
 
 export const routesTemplate: NuxtTemplate = {
-  fileName: "routes.js",
+  fileName: 'routes.js',
   getContents: ({ app, nxt }) => `
     export default ${nxt.serialize(app.routes.map(nxt.serializeRoute))}
   `,
-};
+}
 
 export const htmlTemplate: NuxtTemplate = {
-  fileName: "views/app.template.html",
+  fileName: 'views/app.template.html',
   getContents: () => `
     <!DOCTYPE html>
     <html {{ HTML_ATTRS }}>
@@ -94,10 +94,10 @@ export const htmlTemplate: NuxtTemplate = {
       </body>
     </html>
   `,
-};
+}
 
 export const errorTemplate: NuxtTemplate = {
-  fileName: "views/error.html",
+  fileName: 'views/error.html',
   getContents: () => `
     <!DOCTYPE html>
     <html>
@@ -130,4 +130,4 @@ export const errorTemplate: NuxtTemplate = {
     </body>
     </html>
   `,
-};
+}

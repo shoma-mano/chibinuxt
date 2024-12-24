@@ -1,12 +1,11 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { loadNuxt } from './core/load'
 import { build } from './builder'
 
-async function _main () {
+async function _main() {
   const args = process.argv.splice(2)
   const cmd = args[0]
   if (!['dev', 'build'].includes(cmd)) {
-    // eslint-disable-next-line no-console
     console.error('Usage nuxt dev|build [rootDir]')
     process.exit(1)
   }
@@ -22,7 +21,7 @@ async function _main () {
   await build(nuxt)
 }
 
-export function main () {
+export function main() {
   _main()
     .catch((error) => {
       require('consola').fatal(error)

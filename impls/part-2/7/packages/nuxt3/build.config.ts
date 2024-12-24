@@ -1,17 +1,17 @@
-import { defineBuildConfig } from "unbuild";
+import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   declaration: true,
   entries: [
     {
-      input: "src/app",
-      outDir: "dist/app",
-      builder: "mkdist",
-      declaration: "compatible",
+      input: 'src/app',
+      outDir: 'dist/app',
+      builder: 'mkdist',
+      declaration: 'compatible',
     },
     {
-      input: "src/index.ts",
-      builder: "rollup",
+      input: 'src/index.ts',
+      builder: 'rollup',
       declaration: true,
     },
   ],
@@ -19,4 +19,4 @@ export default defineBuildConfig({
     commonjs: {},
     emitCJS: true,
   },
-});
+})

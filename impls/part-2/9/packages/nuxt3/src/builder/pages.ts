@@ -1,7 +1,7 @@
-import { resolve, extname, relative } from 'path'
+import { resolve, extname, relative } from 'node:path'
 import { encodePath } from 'ufo'
-import { NuxtApp } from './app'
-import { Builder } from './builder'
+import type { NuxtApp } from './app'
+import type { Builder } from './builder'
 import { resolveFiles } from './utils'
 
 // Check if name has [slug]
@@ -30,7 +30,7 @@ interface SegmentToken {
   value: string
 }
 
-export async function resolvePagesRoutes (builder: Builder, app: NuxtApp) {
+export async function resolvePagesRoutes(builder: Builder, app: NuxtApp) {
   const pagesDir = resolve(app.dir, app.pages!.dir)
   const pagesPattern = `${app.pages!.dir}/**/*.{${app.extensions.join(',')}}`
   const files = await resolveFiles(builder, pagesPattern, app.dir)
@@ -39,9 +39,9 @@ export async function resolvePagesRoutes (builder: Builder, app: NuxtApp) {
   return generateRoutesFromFiles(files.sort(), pagesDir)
 }
 
-export function generateRoutesFromFiles (
+export function generateRoutesFromFiles(
   files: string[],
-  pagesDir: string
+  pagesDir: string,
 ): NuxtRoute[] {
   const routes: NuxtRoute[] = []
 
@@ -54,7 +54,7 @@ export function generateRoutesFromFiles (
       name: '',
       path: '',
       file,
-      children: []
+      children: [],
     }
 
     // array where routes should be added, useful when adding child routes
@@ -76,11 +76,14 @@ export function generateRoutesFromFiles (
       if (child) {
         parent = child.children
         route.path = ''
-      } else if (segmentName === '404' && isSingleSegment) {
+      }
+      else if (segmentName === '404' && isSingleSegment) {
         route.path += '/:catchAll(.*)*'
-      } else if (segmentName === 'index' && !route.path) {
+      }
+      else if (segmentName === 'index' && !route.path) {
         route.path += '/'
-      } else if (segmentName !== 'index') {
+      }
+      else if (segmentName !== 'index') {
         route.path += getRoutePath(tokens)
         if (isLastSegment && tokens.length === 1 && tokens[0].type === SegmentTokenType.dynamic) {
           route.path += '?'
@@ -94,27 +97,27 @@ export function generateRoutesFromFiles (
   return prepareRoutes(routes)
 }
 
-function getRoutePath (tokens: SegmentToken[]): string {
+function getRoutePath(tokens: SegmentToken[]): string {
   return tokens.reduce((path, token) => {
     return (
-      path +
-      (token.type === SegmentTokenType.dynamic
+      path
+      + (token.type === SegmentTokenType.dynamic
         ? `:${token.value}`
         : encodePath(token.value))
     )
   }, '/')
 }
 
-const PARAM_CHAR_RE = /[\w\d_]/
+const PARAM_CHAR_RE = /\w/
 
-function parseSegment (segment: string) {
+function parseSegment(segment: string) {
   let state = SegmentParserState.initial
   let i = 0
 
   let buffer = ''
   const tokens: SegmentToken[] = []
 
-  function consumeBuffer () {
+  function consumeBuffer() {
     if (!buffer) {
       return
     }
@@ -127,7 +130,7 @@ function parseSegment (segment: string) {
         state === SegmentParserState.static
           ? SegmentTokenType.static
           : SegmentTokenType.dynamic,
-      value: buffer
+      value: buffer,
     })
 
     buffer = ''
@@ -141,7 +144,8 @@ function parseSegment (segment: string) {
         buffer = ''
         if (c === '[') {
           state = SegmentParserState.dynamic
-        } else {
+        }
+        else {
           i--
           state = SegmentParserState.static
         }
@@ -151,7 +155,8 @@ function parseSegment (segment: string) {
         if (c === '[') {
           consumeBuffer()
           state = SegmentParserState.dynamic
-        } else {
+        }
+        else {
           buffer += c
         }
         break
@@ -160,10 +165,11 @@ function parseSegment (segment: string) {
         if (c === ']') {
           consumeBuffer()
           state = SegmentParserState.initial
-        } else if (PARAM_CHAR_RE.test(c)) {
+        }
+        else if (PARAM_CHAR_RE.test(c)) {
           buffer += c
-        } else {
-          // eslint-disable-next-line no-console
+        }
+        else {
           console.log(`Ignored character "${c}" while building param "${buffer}" from "segment"`)
         }
         break
@@ -180,7 +186,7 @@ function parseSegment (segment: string) {
   return tokens
 }
 
-function prepareRoutes (routes: NuxtRoute[], parent?: NuxtRoute) {
+function prepareRoutes(routes: NuxtRoute[], parent?: NuxtRoute) {
   for (const route of routes) {
     // Remove -index
     if (route.name) {

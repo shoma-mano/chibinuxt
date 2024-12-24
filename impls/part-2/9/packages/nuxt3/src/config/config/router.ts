@@ -1,4 +1,4 @@
-import { RouteRecordRaw, RouterScrollBehavior } from 'vue-router'
+import type { RouteRecordRaw, RouterScrollBehavior } from 'vue-router'
 
 type UnionToIntersection<T> = (T extends any ? (k: T) => void : never) extends ((k: infer U) => void) ? U : never
 type RouteConfig = UnionToIntersection<RouteRecordRaw>
@@ -46,5 +46,5 @@ export default (): RouterConfigurationNormalized => ({
   fallback: false,
   prefetchLinks: true,
   prefetchPayloads: true,
-  trailingSlash: undefined
+  trailingSlash: undefined,
 })
