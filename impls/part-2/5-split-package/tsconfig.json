@@ -24,6 +24,6 @@
     "jsxFragmentFactory": "Fragment",
     "lib": ["es2022", "webworker", "dom.iterable"]
   },
-  "include": ["packages/nuxt/src", "packages/nuxt/src/App.vue"],
+  "include": ["packages/nuxt/src", "playground/pages/world.vue", "playground/pages/hello.vue", "playground/App.vue"],
   "exclude": ["dist"]
 }

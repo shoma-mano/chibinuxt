@@ -4,8 +4,8 @@ import {
   createMemoryHistory,
   createWebHistory,
 } from 'vue-router'
-import Hello from './pages/hello.vue'
-import World from './pages/world.vue'
+import Hello from '../../../playground/pages/hello.vue'
+import World from '../../../playground/pages/world.vue'
 
 export const createRouter = () => {
   const routes = [
@@ -18,6 +18,7 @@ export const createRouter = () => {
       component: World,
     },
   ] satisfies RouteRecordRaw[]
+  console.log(import.meta.server)
   const history = import.meta.server
     ? createMemoryHistory()
     : createWebHistory()

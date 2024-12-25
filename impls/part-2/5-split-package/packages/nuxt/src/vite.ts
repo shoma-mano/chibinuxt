@@ -10,13 +10,15 @@ export const build = async () => {
         rollupOptions: {
           output: {
             format: 'esm',
-            preserveModules: true,
             dir: join(import.meta.dirname, 'dist'),
           },
           preserveEntrySignatures: 'exports-only',
           treeshake: false,
         },
         emptyOutDir: false,
+      },
+      define: {
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true',
       },
     } satisfies InlineConfig
 
@@ -29,6 +31,7 @@ export const build = async () => {
           },
         },
       },
+      appType: 'custom',
       define: {
         'import.meta.server': false,
       },
@@ -43,6 +46,7 @@ export const build = async () => {
             entryFileNames: 'entry.server.js',
           },
         },
+        ssr: true,
       },
       define: {
         'import.meta.server': true,
