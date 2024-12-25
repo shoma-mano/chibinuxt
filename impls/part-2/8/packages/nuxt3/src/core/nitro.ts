@@ -2,17 +2,20 @@ import {
   wpfs,
   getNitroContext,
   createDevServer,
-  resolveMiddleware,
   build,
   prepare,
   generate,
 } from '@nuxt/nitro'
+import { dynamicEventHandler } from 'h3'
 import type { Nuxt } from './index'
 
+const devMiddlewareHandler = dynamicEventHandler()
 export function initNitro(nuxt: Nuxt) {
   // Create contexts
   const nitroContext = getNitroContext(nuxt.options, nuxt.options.nitro || {})
   const nitroDevContext = getNitroContext(nuxt.options, { preset: 'dev' })
+  // handler
+  nitroDevContext.viteDevHandler = devMiddlewareHandler
 
   nuxt.server = createDevServer(nitroDevContext)
 
@@ -29,17 +32,6 @@ export function initNitro(nuxt: Nuxt) {
 
   // Expose process.env.NITRO_PRESET
   nuxt.options.env.NITRO_PRESET = nitroContext.preset
-
-  // Resolve middleware
-  nuxt.hooks.hook('modules:done', () => {
-    const { middleware, legacyMiddleware } = resolveMiddleware(
-      nuxt.options.serverMiddleware,
-      nuxt.resolver.resolvePath,
-    )
-    nuxt.server.setLegacyMiddleware(legacyMiddleware)
-    nitroContext.middleware.push(...middleware)
-    nitroDevContext.middleware.push(...middleware)
-  })
 
   // nuxt build/dev
   nuxt.hooks.hook('build:done', async () => {
@@ -62,7 +54,7 @@ export function initNitro(nuxt: Nuxt) {
       compiler.outputFileSystem = wpfs
     })
     nuxt.hooks.hook('server:devMiddleware', (m) => {
-      nuxt.server.setDevMiddleware(m)
+      devMiddlewareHandler.set(m)
     })
   }
 }

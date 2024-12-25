@@ -37,7 +37,10 @@ export const r = function r(...args: string[]) {
   return wp(path.resolve(...args.map(normalize)))
 }
 
-export const relativeTo = function relativeTo(dir: string, ...args: string[]): string {
+export const relativeTo = function relativeTo(
+  dir: string,
+  ...args: string[]
+): string {
   // Keep webpack inline loader intact
   if (args[0].includes('!')) {
     const loaders = args.shift()!.split('!')
@@ -115,9 +118,10 @@ export function isIndexFileAndFolder(pluginFiles: string[]) {
 }
 
 export const getMainModule = () => {
-  return (
-    require.main
-    || (module && ((module as any).main as NodeJS.Module))
-    || module
-  )
+  return []
+  // return (
+  //   require.main ||
+  //   (module && ((module as any).main as NodeJS.Module)) ||
+  //   module
+  // )
 }
