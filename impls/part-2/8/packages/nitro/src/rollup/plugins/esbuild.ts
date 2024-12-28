@@ -69,7 +69,6 @@ export function esbuild(options: Options = {}): Plugin {
 
   return {
     name: 'esbuild',
-
     async transform(code, id) {
       if (!filter(id)) {
         return null
@@ -130,7 +129,8 @@ function printWarnings(
     for (const warning of result.warnings) {
       let message = '[esbuild]'
       if (warning.location) {
-        message += ` (${relative(process.cwd(), id)}:${warning.location.line}:${warning.location.column
+        message += ` (${relative(process.cwd(), id)}:${warning.location.line}:${
+          warning.location.column
         })`
       }
       message += ` ${warning.text}`

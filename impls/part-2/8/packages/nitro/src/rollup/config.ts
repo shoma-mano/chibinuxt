@@ -1,50 +1,28 @@
-import { join, resolve, dirname } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import type { InputOptions, OutputOptions } from 'rollup'
 import defu from 'defu'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import alias from '@rollup/plugin-alias'
-import type { Preset } from '@nuxt/un'
 import * as un from '@nuxt/un'
 
 import type { NitroContext } from '../context'
-import { resolvePath, MODULE_DIR } from '../utils'
+import { resolvePath } from '../utils'
 
 import { externals } from './plugins/externals'
 import { esbuild } from './plugins/esbuild'
+import { dirnames, staticAssets } from './plugins/static'
+import { middleware } from './plugins/middleware'
 
 export type RollupConfig = InputOptions & { output: OutputOptions }
-
 export const getRollupConfig = (nitroContext: NitroContext) => {
   const extensions: string[] = ['.ts', '.mjs', '.js', '.json', '.node']
 
   const nodePreset = nitroContext.node === false ? un.nodeless : un.node
 
-  const builtinPreset: Preset = {
-    alias: {
-      // General
-      'debug': 'un/npm/debug',
-      'depd': 'un/npm/depd',
-      // Vue 2
-      'encoding': 'un/mock/proxy',
-      'he': 'un/mock/proxy',
-      'resolve': 'un/mock/proxy',
-      'source-map': 'un/mock/proxy',
-      'lodash.template': 'un/mock/proxy',
-      'serialize-javascript': 'un/mock/proxy',
-      // Vue 3
-      '@babel/parser': 'un/mock/proxy',
-      '@vue/compiler-core': 'un/mock/proxy',
-      '@vue/compiler-dom': 'un/mock/proxy',
-      '@vue/compiler-ssr': 'un/mock/proxy',
-    },
-  }
-
-  const env = un.env(nodePreset, builtinPreset, nitroContext.env)
-
-  delete env.alias['node-fetch'] // FIX ME
+  const env = un.env(nodePreset, {}, nitroContext.env)
 
   const rollupConfig: RollupConfig = {
-    input: resolvePath(nitroContext, nitroContext.entry),
+    input: resolvePath(nitroContext, nitroContext.entry!),
     output: {
       dir: nitroContext.output.serverDir,
       entryFileNames: 'index.js',
@@ -56,7 +34,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
       exports: 'auto',
       intro: '',
       outro: '',
-      preferConst: true,
       sourcemap: nitroContext.sourceMap,
       sourcemapExcludeSources: true,
       sourcemapPathTransform(relativePath, sourcemapPath) {
@@ -66,13 +43,15 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     external: env.external,
     plugins: [],
     onwarn(warning, rollupWarn) {
-      if (!['CIRCULAR_DEPENDENCY', 'EVAL'].includes(warning.code)) {
+      if (!['CIRCULAR_DEPENDENCY', 'EVAL'].includes(warning.code!)) {
         rollupWarn(warning)
       }
     },
   }
 
-  if (!rollupConfig.plugins) return
+  if (!Array.isArray(rollupConfig.plugins)) {
+    return
+  }
 
   // ESBuild
   rollupConfig.plugins.push(
@@ -81,6 +60,18 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     }),
   )
 
+  // Static
+  rollupConfig.plugins.push(dirnames())
+  rollupConfig.plugins.push(staticAssets(nitroContext))
+
+  // Middleware
+  rollupConfig.plugins.push(
+    middleware(() => {
+      return nitroContext.serveStatic ? [{ route: '/', handle: '~runtime/server/static' }] : [{ route: '/', handle: '~runtime/server/static' }]
+    }),
+  )
+
+  // Alias Plugin
   rollupConfig.plugins.push(
     alias({
       entries: {
@@ -90,16 +81,9 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
     }),
   )
 
-  const moduleDirectories = [
-    resolve(nitroContext._nuxt.rootDir, 'node_modules'),
-    resolve(MODULE_DIR, 'node_modules'),
-    resolve(MODULE_DIR, '../node_modules'),
-    'node_modules',
-  ]
-
   // Externals Plugin
   if (nitroContext.externals) {
-    const external = defu(nitroContext.externals as any, {
+    const externalOption = defu(nitroContext.externals as any, {
       outDir: nitroContext.output.serverDir,
       ignore: [
         nitroContext._internal.runtimeDir,
@@ -107,11 +91,12 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
         ...nitroContext.middleware.map(m => m.handle),
         nitroContext._nuxt.serverDir,
       ],
+      trace: true,
       traceOptions: {
         base: nitroContext._nuxt.rootDir,
       },
     })
-    rollupConfig.plugins.push(externals(external))
+    rollupConfig.plugins.push(externals(externalOption))
   }
 
   // https://github.com/rollup/plugins/tree/master/packages/node-resolve
@@ -120,7 +105,6 @@ export const getRollupConfig = (nitroContext: NitroContext) => {
       extensions,
       preferBuiltins: true,
       rootDir: nitroContext._nuxt.rootDir,
-      moduleDirectories,
       mainFields: ['main'], // Force resolve CJS (@vue/runtime-core ssrUtils)
     }),
   )

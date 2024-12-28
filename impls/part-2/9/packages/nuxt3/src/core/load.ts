@@ -12,9 +12,9 @@ const OVERRIDES = {
 export interface LoadOptions {
   for?: keyof typeof OVERRIDES
   ready?: boolean
-
+  envConfig?: Record<string, any>
   rootDir?: string
-  configFile?: string
+  configFile?: string | undefined
   configContext?: Record<string, any>
   configOverrides?: Record<string, any>
   createRequire?: (module: NodeJS.Module) => NodeJS.Require
@@ -25,8 +25,8 @@ export async function loadNuxt(loadOptions: LoadOptions | LoadOptions['for']) {
   if (typeof loadOptions === 'string') {
     loadOptions = { for: loadOptions }
   }
-  const { ready = true } = loadOptions
-  const _for = loadOptions.for || 'dry'
+  const { ready = true } = loadOptions as any
+  const _for = loadOptions!.for || 'dry'
 
   // Get overrides
   const override = OVERRIDES[_for]
@@ -36,13 +36,9 @@ export async function loadNuxt(loadOptions: LoadOptions | LoadOptions['for']) {
     throw new Error('Unsupported for: ' + _for)
   }
 
-  // Load Config
-  // const config = await loadNuxtConfig(loadOptions)
   const config = {
     rootDir: path.resolve('.'),
   }
-  console.log('config', config)
-  // delete config._envConfig
 
   // Apply config overrides
   Object.assign(config, override)
@@ -50,7 +46,7 @@ export async function loadNuxt(loadOptions: LoadOptions | LoadOptions['for']) {
   // Initiate Nuxt
   const nuxt = createNuxt(config)
   if (ready) {
-    await nuxt.ready()
+    await nuxt.init()
   }
 
   return nuxt

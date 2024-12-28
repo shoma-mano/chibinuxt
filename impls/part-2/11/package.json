@@ -9,8 +9,7 @@
     "stub": "pnpm -r stub",
     "play": "yarn nuxt dev playground",
     "lint": "eslint --ext .vue,.ts,.js .",
-    "test": "yarn lint",
-    "postinstall": "yarn stub"
+    "test": "yarn lint"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.2",

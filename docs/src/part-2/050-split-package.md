@@ -1,244 +1,152 @@
 # 1-5 Split Package
 
-In this section, we'll split the package we created in last section into nuxt and nitro.
-Furthermore, we'll make it possible to use them in playground.  
-Full Code is available at [5-split-package](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/5-split-package)
+In this section, we'll split the package we created in the last section into `nuxt` and `nitro`.
+Furthermore, we'll create a playground to make it possible to use `nuxt` and `nitro` in the playground.
+The full code is available at [5-split-package](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/5-split-package).
+
+::: warning How to separate packages?
+We will use `pnpm workspace` to manage packages as Nuxt3 does.
+If you are not familiar with `pnpm workspace`, here are the key points to understand:
+
+- It allows you to install packages in the same repository without publishing them to the npm registry.
+- To install another package in the same repository using the workspace protocol, you need to set the package as a workspace in `pnpm-workspace.yaml`. The location of `pnpm-workspace.yaml` is recognized as the workspace root.
+- Once you set a package as a workspace, you can install it by adding `workspace:package-name` to `package.json`.
+  :::
+
+## Directory structure outline
+
+Please refer to [5-split-package](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/5-split-package) for more details.
+
+`pnpm-workspace.yaml`
+
+```yaml
+packages:
+  - packages/*
+  - playground
+```
+
+**Directory structure outline**
+
+```sh
+.
+├── packages
+│   ├── nitro
+│   │    ├── package.json
+│   │    └── src
+│   │        ├── dev.ts
+│   │        ├── index.ts
+│   │        └── render.ts
+│   └── nuxt
+│       ├── package.json
+│       └── src
+│           ├── bin.ts
+│           ├── dist
+│           ├── entry.client.ts
+│           ├── entry.server.ts
+│           ├── main.ts
+│           ├── router.ts
+│           ├── type.d.ts
+│           └── vite.ts
+├── playground
+│   ├── package.json
+│   ├── App.vue
+│   └── pages
+└── pnpm-workspace.yaml
+```
 
 ## About Nitro
 
-Actually, the render feature and server feature we created in previous sections is responsible for Nitro, and Nitro is currently separated into a different repository now. But in chibinuxt, we will make also nitro in the same repository to make “what people think as Nuxt”. (When Nuxt3 became monorepo for the first time, nitro was in the same repository, and [it had only nuxt and nitro](https://github.com/nuxt/nuxt/tree/a16e13b1de918c7c9e7fec3185fef83b96489783).)
+The render and server features we created in previous sections are actually part of Nitro. Nitro is currently separated into a different repository. However, in chibinuxt, we will include Nitro in the same repository to create what people think of as Nuxt. (When Nuxt3 first became a monorepo, Nitro was in the same repository, and [it only had Nuxt and Nitro](https://github.com/nuxt/nuxt/tree/a16e13b1de918c7c9e7fec3185fef83b96489783).)
 
-## Render Feature(Nitro)
+## Tell nitro where to find the entry file
 
-For separating render feature into nitro, we need to tell nitro where to find the entry file. We will use `process.env.DIST_DIR` to specify the directory where the entry file is located for now.
+##### package: `nuxt`
 
-`render.ts`
+To separate the render feature into Nitro, we need to tell Nitro where to find the entry file. We will use `process.env.DIST_DIR` to specify the directory where the entry file is located for now.
 
-```ts{3,17}
-const setupRenderer = async () => {
-  const createApp = await import(
-    join(process.env.DIST_DIR!, "entry.server.js")
-  ).then((m) => m.default);
-  renderer = createRenderer(createApp, {
-    renderToString,
-    manifest: {},
-  });
-};
+`main.ts`
 
-export const renderMiddleware = defineEventHandler(async (event) => {
-  if (!renderer) await setupRenderer();
-
-  const { req, res } = event.node;
-  if (req.url === "/entry.client.js") {
-    const code = readFileSync(
-      join(process.env.DIST_DIR!, "entry.client.js"),
-      "utf-8"
-    );
-    res.setHeader("Content-Type", "application/javascript");
-    res.end(code);
-  }
-
-  const rendered = await renderer.renderToString({ url: req.url });
-  const data = renderHTML(rendered);
-  res.setHeader("Content-Type", "text/html;charset=UTF-8");
-  res.end(data, "utf-8");
-});
-```
-
-## Server Feature(Nitro)
-
-For nuxt to enable to use server created in Nitro, expose `getServer` function in Nitro.
-
-`server.ts`
-
-```ts
-export const getServer = () => {
-  const app = createApp();
-  app.use(renderMiddleware);
-
-  const server = createServer(toNodeListener(app));
-  return server;
-};
-```
-
-````sh
-
-`pages/hello.vue`
-
-```vue
-<script setup lang="ts"></script>
-<template>
-  <h1>Hello,</h1>
-</template>
-````
-
-`pages/world.vue`
-
-```vue
-<script setup lang="ts"></script>
-<template>
-  <h1>World!</h1>
-</template>
-```
-
-`App.vue`
-
-```vue
-<script lang="ts" setup>
-import { RouterView, RouterLink } from "vue-router";
-</script>
-<template>
-  <main>
-    <RouterView></RouterView>
-    <RouterLink to="/hello">Go to Hello</RouterLink>
-    <RouterLink to="/world">Go to World</RouterLink>
-  </main>
-</template>
-```
-
-## Next, create a router.ts
-
-We will make feature to automatically make routes from pages directory in the future, but we need to define routes manually for now.
-In Sever Side, we can not use createWebHistory, so we need switch history based on `import.meta.server`.
-
-`router.ts`
-
-```ts
-import {
-  type RouteRecordRaw,
-  createRouter as _createRouter,
-  createMemoryHistory,
-  createWebHistory,
-} from "vue-router";
-import Hello from "./pages/hello.vue";
-import World from "./pages/world.vue";
-
-export const createRouter = () => {
-  const routes = [
-    {
-      path: "/hello",
-      component: Hello,
-    },
-    {
-      path: "/world",
-      component: World,
-    },
-  ] satisfies RouteRecordRaw[];
-  const history = import.meta.server
-    ? createMemoryHistory()
-    : createWebHistory();
-  const router = _createRouter({
-    history,
-    routes,
-  });
-  return router;
-};
-```
-
-## Add build config to enable to use import.meta.server
-
-`vite.ts`
-
-```ts{10-13,24-27}
-const clientConfig = mergeConfig(defaultConfig, {
-  build: {
-    rollupOptions: {
-      input: join(import.meta.dirname, "entry.client.ts"),
-      output: {
-        entryFileNames: "entry.client.js",
-      },
-    },
-  },
-  define: {
-    "import.meta.server": false,
-  },
-} satisfies InlineConfig);
-
-const severConfig = mergeConfig(defaultConfig, {
-  build: {
-    rollupOptions: {
-      input: join(import.meta.dirname, "entry.server.ts"),
-      output: {
-        entryFileNames: "entry.server.js",
-      },
-    },
-  },
-  define: {
-    "import.meta.server": true,
-  },
-} satisfies InlineConfig);
-```
-
-`type.d.ts`
-
-This is necessary to avoid type error, because `import.meta.server` is not defined in default.
-
-```ts
-interface ImportMeta {
-  server: boolean;
+```ts{3}
+export const main = async () => {
+  await build()
+  process.env.DIST_DIR = join(import.meta.dirname, 'dist')
+  const server = createDevServer()
+  server.listen()
 }
 ```
 
-## Install router in entry.server.ts and entry.client.ts
+## Create nuxi
 
-`entry.server.ts`
+##### package: `nuxt`
 
-We need to push initial URL manually in server side.
-And router.isReady is necessary to avoid hydration error.
-Will explain about ctx later.
+To make it possible for users to access nuxt, we will create nuxi as a interface to nuxt.
+nuxi is sometimes thought of as a short name for Nuxt CLI, but it also means [Nuxt Interface](https://github.com/nuxt/cli/discussions/7).
 
-```ts
-export default async (ctx: { url: string }) => {
-  const app = createApp(App);
-  const router = createRouter();
-  router.push(ctx.url);
-  await router.isReady();
-  app.use(router);
-  return app;
-};
+`package.json`
+
+```json
+"bin": {
+  "nuxi": "src/bin.ts"
+},
 ```
 
-`entry.client.ts`
-
-On client side, the router automatically picks up initial location from the URL, so we don't need to push the URL manually.
+`bin.ts`
 
 ```ts
-const initApp = async () => {
-  const router = createRouter();
-  await router.isReady();
-  const app = createSSRApp(App);
-  app.use(router);
-  app.mount("#__nuxt");
-};
+#!/usr/bin/env -S npx tsx
+import { main } from './main'
+
+main()
 ```
 
-## Pass SSR Context when renderToString is called
+we use tsx for shebang in `bin.ts` for now to execute typescript directly from playground.
 
-The `renderToString` function receives the SSR context as the first argument and passes that context to the `createApp` function we provided to `createRenderer`. ([source code](https://github.com/nuxt-contrib/vue-bundle-renderer/blob/801bf02375155ec111b78148157f10435f71c972/src/runtime.ts#L259))
-This is the context we received in `entry.server.ts`. So let's modify `render.ts` to pass the context.
+## Change entry file path in nitro
+
+##### package: `nitro`
+
+nitro needs to use the entry file path specified by nuxt. So we need to change the entry file path in nitro.
 
 `render.ts`
 
-```ts{14}
-export const renderMiddleware = defineEventHandler(async (event) => {
-  if (!renderer) await setupRenderer();
-
-  const { req, res } = event.node;
-  if (req.url === "/entry.client.js") {
-    const code = readFileSync(
-      join(import.meta.dirname, "dist/entry.client.js"),
-      "utf-8"
-    );
-    res.setHeader("Content-Type", "application/javascript");
-    res.end(code);
-  }
-
-  const rendered = await renderer.renderToString({ url: req.url });
-  const data = renderHTML(rendered);
-  res.setHeader("Content-Type", "text/html;charset=UTF-8");
-  res.end(data, "utf-8");
-});
+```ts{2}
+const createApp = await import(
+  join(process.env.DIST_DIR!, "entry.server.js")
+).then((m) => m.default);
 ```
+
+```ts{2}
+const code = readFileSync(
+  join(process.env.DIST_DIR!, "entry.client.js"),
+  "utf-8",
+);
+```
+
+## Expose `createDevServer` function from nitro to nuxt
+
+For nuxt to enable to use server created in Nitro, expose `createDevServer` function in Nitro.
+
+package: `nitro`  
+file: `dev.ts`
+
+```ts
+export const createDevServer = () => {
+  const listen = () => {
+    const app = createApp()
+    app.use(renderMiddleware)
+    const server = createServer(toNodeListener(app))
+    server.listen(3030, () => {
+      console.log('Server is running on http://localhost:3030')
+    })
+  }
+  return { listen }
+}
+```
+
+## Create playground to try nuxt and nitro
+
+The playground is a place where users can develop their applications using Nuxt and Nitro without needing to know how they work internally.
+In other words, it is a place for developing web applications using Nuxt, just like how we usually develop web applications with Nuxt.
 
 ## Run the server
 

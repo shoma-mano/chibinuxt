@@ -1,1 +1,1 @@
-export { getServer } from './server'
+export { createDevServer } from './dev'

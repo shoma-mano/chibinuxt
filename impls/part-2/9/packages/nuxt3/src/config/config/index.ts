@@ -8,7 +8,6 @@ import render from './render'
 import router from './router'
 import server from './server'
 import cli from './cli'
-import type { GenerateOptions } from './generate'
 import generate from './generate'
 
 export const defaultNuxtConfigFile = 'nuxt.config'
@@ -25,8 +24,8 @@ export const getDefaultNuxtConfig = () =>
     server: server({ env: process.env }) as ReturnType<typeof server> | boolean,
     cli: cli(),
     generate: generate(),
-    export: undefined as undefined | GenerateOptions,
+    export: undefined as undefined | any,
     telemetry: undefined as undefined | boolean,
-  })
+  } as any)
 
 export type DefaultConfiguration = ReturnType<typeof getDefaultNuxtConfig>

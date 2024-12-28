@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import defu from 'defu'
-import type { Builder } from './builder'
+import type { Nuxt } from '../core'
 import type { NuxtRoute } from './pages'
 import { resolvePagesRoutes } from './pages'
 import type { NuxtPlugin } from './plugins'
@@ -20,11 +20,9 @@ export interface NuxtApp {
 
 // Scan project structure
 export async function createApp(
-  builder: Builder,
+  nuxt: Nuxt,
   options: Partial<NuxtApp> = {},
 ): Promise<NuxtApp> {
-  const { nuxt } = builder
-
   // Create base app object
   const app: NuxtApp = defu(options, {
     dir: nuxt.options.srcDir,
@@ -46,7 +44,7 @@ export async function createApp(
 
   // Resolve pages/
   if (app.pages) {
-    app.routes.push(...(await resolvePagesRoutes(builder, app)))
+    app.routes.push(...(await resolvePagesRoutes(nuxt, app)))
   }
   if (app.routes.length) {
     // Add 404 page is not added
@@ -70,7 +68,7 @@ export async function createApp(
   }
 
   // Resolve plugins/
-  app.plugins = await resolvePlugins(builder, app)
+  app.plugins = await resolvePlugins(nuxt, app)
 
   return app
 }
