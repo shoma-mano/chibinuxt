@@ -1,7 +1,6 @@
 import { createSSRApp } from 'vue'
-import App from '../../../playground/App.vue'
-
-import { createRouter } from './router'
+import App from '../../../../playground/App.vue'
+import { createRouter } from '../pages/router'
 
 const initApp = async () => {
   const router = createRouter()

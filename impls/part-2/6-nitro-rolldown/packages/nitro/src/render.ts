@@ -8,7 +8,7 @@ let renderer: ReturnType<typeof createRenderer>
 const setupRenderer = async () => {
   const createApp = await import(
     join(import.meta.dirname, '../../../nuxt/src/dist/entry.server.js')
-  ).then(m => m.default)
+  ).then((m) => m.default)
   renderer = createRenderer(createApp, {
     renderToString,
     manifest: {},
@@ -30,7 +30,6 @@ export const renderMiddleware = defineEventHandler(async (event) => {
 
   const rendered = await renderer.renderToString({ url: req.url })
   const data = renderHTML(rendered)
-  console.log('rendered',data)
   res.setHeader('Content-Type', 'text/html;charset=UTF-8')
   res.end(data, 'utf-8')
 })

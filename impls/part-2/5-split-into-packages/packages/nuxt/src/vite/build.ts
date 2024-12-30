@@ -10,7 +10,7 @@ export const build = async () => {
         rollupOptions: {
           output: {
             format: 'esm',
-            dir: join(import.meta.dirname, 'dist'),
+            dir: join(import.meta.dirname, '../dist'),
           },
           preserveEntrySignatures: 'exports-only',
           treeshake: false,
@@ -25,7 +25,7 @@ export const build = async () => {
     const clientConfig = mergeConfig(defaultConfig, {
       build: {
         rollupOptions: {
-          input: join(import.meta.dirname, 'entry.client.ts'),
+          input: join(import.meta.dirname, '../app/entry.client.ts'),
           output: {
             entryFileNames: 'entry.client.js',
           },
@@ -41,7 +41,7 @@ export const build = async () => {
     const severConfig = mergeConfig(defaultConfig, {
       build: {
         rollupOptions: {
-          input: join(import.meta.dirname, 'entry.server.ts'),
+          input: join(import.meta.dirname, '../app/entry.server.ts'),
           output: {
             entryFileNames: 'entry.server.js',
           },
@@ -55,8 +55,7 @@ export const build = async () => {
     await _build(severConfig)
 
     console.log('Build completed successfully!')
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Build failed:', error)
     process.exit(1)
   }

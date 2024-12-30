@@ -55,6 +55,9 @@ importers:
       nuxt:
         specifier: workspace:*
         version: link:../packages/nuxt
+      vue:
+        specifier: 3.5.13
+        version: 3.5.13
 
 packages:
 

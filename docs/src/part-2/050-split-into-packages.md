@@ -44,15 +44,16 @@ In other words, it is a place for developing web applications using Nuxt, just l
 
 To separate the render feature into Nitro, we need to tell Nitro where to find the entry file. We will use `process.env.DIST_DIR` to specify the directory where the entry file is located for now.
 
-`main.ts`
+`nuxt.ts`
 
 ```ts{3}
-export const main = async () => {
+export const loadNuxt = async () => {
   await build()
-  process.env.DIST_DIR = join(import.meta.dirname, 'dist')
+  process.env.DIST_DIR = join(import.meta.dirname, '../dist')
   const server = createDevServer()
-  server.listen()
+  return { server }
 }
+
 ```
 
 ## Create nuxi
@@ -74,9 +75,14 @@ nuxi is sometimes thought of as a short name for Nuxt CLI, but it also means [Nu
 
 ```ts
 #!/usr/bin/env -S npx tsx
-import { main } from './main'
 
-main()
+import { loadNuxt } from './core/nuxt'
+
+const main = async () => {
+  const nuxt = await loadNuxt()
+  nuxt.server.listen()
+}
+main().catch(console.error)
 ```
 
 we use tsx for shebang in `bin.ts` for now to execute typescript directly from playground.
@@ -85,21 +91,21 @@ we use tsx for shebang in `bin.ts` for now to execute typescript directly from p
 
 ##### package: `nuxt`
 
-We need to change the path of `App.vue` and the pages directory path in nuxt.
+Since `App.vue` is located in the playground and not in the same directory, we need to update the paths for `App.vue` and the pages directory.
 We will fix it later, but for now, we will hard code the path to the playground.
 
 `entry.server.ts`  
 `entry.client.ts`
 
 ```ts
-import App from '../../../playground/App.vue'
+import App from '../../../../playground/App.vue'
 ```
 
 `router.ts`
 
 ```ts
-import Hello from '../../../playground/pages/hello.vue'
-import World from '../../../playground/pages/world.vue'
+import Hello from '../../../../playground/pages/hello.vue'
+import World from '../../../../playground/pages/world.vue'
 ```
 
 ## Change entry file path in nitro
