@@ -38,7 +38,9 @@ export default defineConfig({
       {
         text: 'Part Ⅱ',
         base: '/part-2/',
-        items: [{ text: '050-split-package', link: '050-split-package' }],
+        items: [
+          { text: '050-split-into-packages', link: '050-split-into-packages' },
+        ],
       },
     ],
 

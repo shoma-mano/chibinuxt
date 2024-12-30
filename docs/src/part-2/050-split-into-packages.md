@@ -1,8 +1,8 @@
-# 1-5 Split Package
+# 2-1 Split Package
 
 In this section, we'll split the package we created in the last section into `nuxt` and `nitro`.
 Furthermore, we'll create a playground to make it possible to use `nuxt` and `nitro` in the playground.
-The full code is available at [5-split-package](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/5-split-package).
+The full code is available at [5-split-into-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-split-into-packages).
 
 ::: warning How to separate packages?
 We will use `pnpm workspace` to manage packages as Nuxt3 does.
@@ -16,10 +16,10 @@ If you are not familiar with `pnpm workspace`, here are the key points to unders
 ## What we don't cover here
 
 - **About Directory structure**  
-  Please refer to [5-split-package](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/5-split-package).
+  Please refer to [5-split-into-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-split-into-packages).
 
 - **About Each package's dependencies**  
-  We don't explain what dependencies are listed in each package's `package.json` here, so please refer to [5-split-package](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/5-split-package). If you have a question about why `vue` must be installed in `playground`, we explain it in the [Deep Dive](#deep-dive) section.
+  We don't explain what dependencies are listed in each package's `package.json` here, so please refer to [5-split-into-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-split-into-packages). If you have a question about why `vue` must be installed in `playground`, we explain it in the [Deep Dive](#deep-dive) section.
 
 ## Before we start
 
