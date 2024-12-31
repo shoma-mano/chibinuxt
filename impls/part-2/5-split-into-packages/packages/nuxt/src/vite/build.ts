@@ -1,6 +1,7 @@
 import { join } from 'node:path'
 import { build as _build, mergeConfig, type InlineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { distDir } from '../dir'
 
 export const build = async () => {
   try {
@@ -10,7 +11,7 @@ export const build = async () => {
         rollupOptions: {
           output: {
             format: 'esm',
-            dir: join(import.meta.dirname, '../dist'),
+            dir: join(distDir, 'app'),
           },
           preserveEntrySignatures: 'exports-only',
           treeshake: false,

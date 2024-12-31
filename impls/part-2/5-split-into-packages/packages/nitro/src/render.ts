@@ -7,7 +7,7 @@ import { defineEventHandler } from 'h3'
 let renderer: ReturnType<typeof createRenderer>
 const setupRenderer = async () => {
   const createApp = await import(
-    join(process.env.DIST_DIR!, 'entry.server.js')
+    join(process.env.APP_DIST_DIR!, 'entry.server.js')
   ).then(m => m.default)
   renderer = createRenderer(createApp, {
     renderToString,
@@ -15,13 +15,13 @@ const setupRenderer = async () => {
   })
 }
 
-export const renderMiddleware = defineEventHandler(async (event) => {
+export const renderMiddleware = defineEventHandler(async event => {
   if (!renderer) await setupRenderer()
 
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
     const code = readFileSync(
-      join(process.env.DIST_DIR!, 'entry.client.js'),
+      join(process.env.APP_DIST_DIR!, 'entry.client.js'),
       'utf-8',
     )
     res.setHeader('Content-Type', 'application/javascript')

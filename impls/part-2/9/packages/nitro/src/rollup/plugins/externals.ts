@@ -1,6 +1,9 @@
-import { isAbsolute, relative } from 'node:path'
+import { dirname, isAbsolute, relative, resolve } from 'node:path'
+import { cpSync, existsSync, mkdir, mkdirSync } from 'node:fs'
 import type { Plugin } from 'rollup'
-import type { NodeFileTraceOptions } from '@vercel/nft'
+import { nodeFileTrace, type NodeFileTraceOptions } from '@vercel/nft'
+import { normalizeid, resolvePath } from 'mlly'
+import { isDirectory } from '../../utils'
 
 export interface NodeExternalsOptions {
   ignore?: string[]
@@ -12,35 +15,66 @@ export interface NodeExternalsOptions {
 
 export function externals(opts: NodeExternalsOptions): Plugin {
   const resolvedExternals = {}
+
+  const _resolveCache = new Map()
+  const _resolve = async (id: string): Promise<string> => {
+    // console.log("resolving", id);
+    if (id.startsWith('\0')) {
+      return id
+    }
+    // let resolved = _resolveCache.get(id);
+    // if (resolved) {
+    //   return resolved;
+    // }
+    const resolved = await resolvePath(id, {
+      url: [
+        ...(opts.moduleDirectories || []),
+        '/Users/mano/my-oss/nuxts/chibinuxt/impls/part-2/6/packages/nitro/node_modules',
+      ],
+    })
+
+    // _resolveCache.set(id, resolved);
+    return resolved
+  }
+
   return {
     name: 'node-externals',
-    resolveId(id) {
+    async resolveId(originalId, importer, options) {
       // Internals
-      if (id.startsWith('\x00') || id.includes('?')) {
+      if (originalId.startsWith('\x00') || originalId.includes('?')) {
         return null
       }
 
       // Resolve relative paths and exceptions
-      if (id.startsWith('.') || opts.ignore!.find(i => id.startsWith(i))) {
+      if (
+        originalId.startsWith('.')
+        || opts.ignore!.find(i => originalId.startsWith(i))
+      ) {
         return null
       }
 
-      // for (const dir of opts.moduleDirectories) {
-      //   if (id.startsWith(dir)) {
-      //     id = id.substr(dir.length + 1);
-      //     break;
-      //   }
-      // }
+      // Resolve id using rollup resolver
+      const resolved = (await this.resolve(originalId, importer, options)) || {
+        id: originalId,
+      }
 
-      try {
-        (resolvedExternals as any)[id] = require.resolve(id, {
-          paths: opts.moduleDirectories,
+      if (!resolved.id) {
+        console.log('resolved.id is null', originalId, importer, options)
+      }
+
+      if (
+        !isAbsolute(resolved.id)
+        || !existsSync(resolved.id)
+        || (await isDirectory(resolved.id))
+      ) {
+        resolved.id = await _resolve(resolved.id).catch((err) => {
+          return resolved.id
         })
       }
-      catch (_err) {}
 
       return {
-        id: isAbsolute(id) ? relative(opts.outDir!, id) : id,
+        ...resolved,
+        id: isAbsolute(resolved.id) ? normalizeid(resolved.id) : resolved.id,
         external: true,
       }
     },

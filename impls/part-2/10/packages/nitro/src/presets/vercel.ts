@@ -1,4 +1,4 @@
-import { resolve } from 'upath'
+import { resolve } from 'node:path'
 import { extendPreset, writeFile } from '../utils'
 import type { NitroPreset, NitroContext } from '../context'
 import { node } from './node'
@@ -10,9 +10,7 @@ export const vercel: NitroPreset = extendPreset(node, {
     serverDir: '{{ output.dir }}/functions/node/server',
     publicDir: '{{ output.dir }}/static',
   },
-  ignore: [
-    'vercel.json',
-  ],
+  ignore: ['vercel.json'],
   hooks: {
     async 'nitro:compiled'(ctx: NitroContext) {
       await writeRoutes(ctx)
@@ -45,5 +43,8 @@ async function writeRoutes({ output }: NitroContext) {
     },
   ]
 
-  await writeFile(resolve(output.dir, 'config/routes.json'), JSON.stringify(routes, null, 2))
+  await writeFile(
+    resolve(output.dir, 'config/routes.json'),
+    JSON.stringify(routes, null, 2),
+  )
 }

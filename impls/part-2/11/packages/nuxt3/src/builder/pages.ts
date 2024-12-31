@@ -1,7 +1,7 @@
 import { resolve, extname, relative } from 'node:path'
 import { encodePath } from 'ufo'
+import type { Nuxt } from '../core'
 import type { NuxtApp } from './app'
-import type { Builder } from './builder'
 import { resolveFiles } from './utils'
 
 // Check if name has [slug]
@@ -30,10 +30,10 @@ interface SegmentToken {
   value: string
 }
 
-export async function resolvePagesRoutes(builder: Builder, app: NuxtApp) {
+export async function resolvePagesRoutes(nuxt: Nuxt, app: NuxtApp) {
   const pagesDir = resolve(app.dir, app.pages!.dir)
   const pagesPattern = `${app.pages!.dir}/**/*.{${app.extensions.join(',')}}`
-  const files = await resolveFiles(builder, pagesPattern, app.dir)
+  const files = await resolveFiles(nuxt, pagesPattern, app.dir)
 
   // Sort to make sure parent are listed first
   return generateRoutesFromFiles(files.sort(), pagesDir)
@@ -72,7 +72,9 @@ export function generateRoutesFromFiles(
       route.name += (route.name && '-') + segmentName
 
       // ex: parent.vue + parent/child.vue
-      const child = parent.find(parentRoute => parentRoute.name === route.name)
+      const child = parent.find(
+        parentRoute => parentRoute.name === route.name,
+      )
       if (child) {
         parent = child.children
         route.path = ''
@@ -85,7 +87,11 @@ export function generateRoutesFromFiles(
       }
       else if (segmentName !== 'index') {
         route.path += getRoutePath(tokens)
-        if (isLastSegment && tokens.length === 1 && tokens[0].type === SegmentTokenType.dynamic) {
+        if (
+          isLastSegment
+          && tokens.length === 1
+          && tokens[0].type === SegmentTokenType.dynamic
+        ) {
           route.path += '?'
         }
       }
@@ -170,7 +176,9 @@ function parseSegment(segment: string) {
           buffer += c
         }
         else {
-          console.log(`Ignored character "${c}" while building param "${buffer}" from "segment"`)
+          console.log(
+            `Ignored character "${c}" while building param "${buffer}" from "segment"`,
+          )
         }
         break
     }

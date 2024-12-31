@@ -13,10 +13,7 @@
       "path": "./packages/nuxt3"
     },
     {
-      "path": "./playgrounds/nitro-playground"
-    },
-    {
-      "path": "./playgrounds/nuxt-playground"
+      "path": "./playground"
     }
   ]
 }

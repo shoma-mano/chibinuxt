@@ -15,7 +15,14 @@ export default createConfigForNuxt({
       'vue/multi-word-component-names': 'off',
     },
   })
+
+  .override('nuxt/typescript/rules', {
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  })
+
   // Generate type definitions for the eslint config
-  .onResolved((configs) => {
+  .onResolved(configs => {
     return typegen(configs)
   })

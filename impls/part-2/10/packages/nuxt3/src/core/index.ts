@@ -1,3 +1,2 @@
-export { Nuxt } from './nuxt'
-export { default as Resolver } from './resolver'
+export type { Nuxt } from './nuxt'
 export { loadNuxt } from './load'

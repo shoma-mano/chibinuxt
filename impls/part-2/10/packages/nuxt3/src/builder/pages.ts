@@ -1,8 +1,8 @@
 import { resolve, extname, relative } from 'node:path'
 import { encodePath } from 'ufo'
 import type { Nuxt } from '../core'
+import { resolveFiles } from '../core/resolver'
 import type { NuxtApp } from './app'
-import { resolveFiles } from './utils'
 
 // Check if name has [slug]
 export interface NuxtRoute {
@@ -31,9 +31,12 @@ interface SegmentToken {
 }
 
 export async function resolvePagesRoutes(nuxt: Nuxt, app: NuxtApp) {
-  const pagesDir = resolve(app.dir, app.pages!.dir)
-  const pagesPattern = `${app.pages!.dir}/**/*.{${app.extensions.join(',')}}`
-  const files = await resolveFiles(nuxt, pagesPattern, app.dir)
+  const pagesDir = resolve(app.dir, 'pages')
+  const files = await resolveFiles(
+    nuxt,
+    'pages/**/*.{js,mjs,ts,tsx,vue,jsx}',
+    app.dir,
+  )
 
   // Sort to make sure parent are listed first
   return generateRoutesFromFiles(files.sort(), pagesDir)

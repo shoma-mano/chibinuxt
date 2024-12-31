@@ -15,7 +15,7 @@ export default <Plugin> function router(nuxt) {
   app.component('NuxtPage', NuxtPage)
   app.component('NuxtLink', RouterLink)
 
-  const routerHistory = import.meta.client
+  const routerHistory = !import.meta.server
     ? createWebHistory()
     : createMemoryHistory()
 
@@ -37,10 +37,10 @@ export default <Plugin> function router(nuxt) {
 
   nuxt.hook('app:created', async () => {
     if (import.meta.server) {
-      // router.push(nuxt.ssrContext.url);
+      router.push(nuxt.ssrContext.url)
     }
     try {
-      // await router.isReady()
+      await router.isReady()
       if (!router.currentRoute.value.matched.length) {
         // TODO
       }
