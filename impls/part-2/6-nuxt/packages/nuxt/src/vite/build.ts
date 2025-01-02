@@ -3,7 +3,7 @@ import { build as _build, mergeConfig, type InlineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import type { Nuxt } from '../core/nuxt'
 
-export const build = async (nuxt: Nuxt) => {
+export const bundle = async (nuxt: Nuxt) => {
   try {
     const defaultConfig = {
       plugins: [vue()],
@@ -11,7 +11,7 @@ export const build = async (nuxt: Nuxt) => {
         rollupOptions: {
           output: {
             format: 'esm',
-            dir: join(import.meta.dirname, '../dist'),
+            dir: nuxt.options?.appDir,
           },
           preserveEntrySignatures: 'exports-only',
           treeshake: false,

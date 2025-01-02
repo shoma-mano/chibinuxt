@@ -13,12 +13,14 @@ export default createConfigForNuxt({
   .append({
     rules: {
       'vue/multi-word-component-names': 'off',
+      '@stylistic/arrow-parens': 'off',
     },
   })
 
   .override('nuxt/typescript/rules', {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
   })
 

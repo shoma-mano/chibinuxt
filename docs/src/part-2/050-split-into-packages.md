@@ -27,7 +27,7 @@ These are each package's overview.
 
 ### nitro
 
-The render and server features we created in previous sections are actually part of Nitro. Nitro is currently separated into a different repository. However, in chibinuxt, we will include Nitro in the same repository to create **what people think of as Nuxt**. (When Nuxt3 first became a monorepo, Nitro was in the same repository, and [it only had Nuxt and Nitro](https://github.com/nuxt/nuxt/tree/a16e13b1de918c7c9e7fec3185fef83b96489783).)
+The server features we created in previous sections are actually part of Nitro. Nitro is currently separated into a different repository. However, in chibinuxt, we will include Nitro in the same repository to create **what people think of as Nuxt**. (When Nuxt3 first became a monorepo, Nitro was in the same repository, and [it only had Nuxt and Nitro](https://github.com/nuxt/nuxt/tree/a16e13b1de918c7c9e7fec3185fef83b96489783).)
 
 ### nuxt
 

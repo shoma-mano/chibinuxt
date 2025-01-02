@@ -1,8 +1,10 @@
 import { createServer } from 'node:http'
 import { createApp, toNodeListener } from 'h3'
-import { renderMiddleware } from './render'
+import { renderMiddleware } from '../../runtime/render'
+import type { Nitro } from '../../types/nitro'
 
-export const createDevServer = () => {
+// we don't use nitro for now
+export const createDevServer = (nitro: Nitro) => {
   const listen = () => {
     const app = createApp()
     app.use(renderMiddleware)
