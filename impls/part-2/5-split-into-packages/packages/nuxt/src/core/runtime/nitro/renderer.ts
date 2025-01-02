@@ -1,11 +1,11 @@
 import { join } from 'node:path'
-import { readFileSync } from 'node:fs'
+import { defineRenderer } from 'nitro'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
-import { defineEventHandler } from 'h3'
 
 let renderer: ReturnType<typeof createRenderer>
-const setupRenderer = async () => {
+const getRenderer = async () => {
+  if (renderer) return renderer
   const createApp = await import(
     join(process.env.APP_DIST_DIR!, 'entry.server.js')
   ).then(m => m.default)
@@ -13,26 +13,19 @@ const setupRenderer = async () => {
     renderToString,
     manifest: {},
   })
+  return renderer
 }
 
-export const renderMiddleware = defineEventHandler(async event => {
-  if (!renderer) await setupRenderer()
-
-  const { req, res } = event.node
-  if (req.url === '/entry.client.js') {
-    const code = readFileSync(
-      join(process.env.APP_DIST_DIR!, 'entry.client.js'),
-      'utf-8',
-    )
-    res.setHeader('Content-Type', 'application/javascript')
-    res.end(code)
-  }
-
-  const rendered = await renderer.renderToString({ url: req.url })
-  const data = renderHTML(rendered)
-  res.setHeader('Content-Type', 'text/html;charset=UTF-8')
-  res.end(data, 'utf-8')
-})
+export const setupRenderer = () => {
+  defineRenderer(async event => {
+    const renderer = await getRenderer()
+    const { req, res } = event.node
+    const rendered = await renderer.renderToString({ url: req.url })
+    const data = renderHTML(rendered)
+    res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+    res.end(data, 'utf-8')
+  })
+}
 
 type Rendered = {
   html: string
@@ -59,15 +52,15 @@ interface HtmlTemplateParams {
 }
 function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
   return `
-<!DOCTYPE html>
-<html>
-<head>
-  ${HEAD}
-</head>
-<body>
-  <div id="__nuxt">${APP}</div>
-  <script type="module" src="/entry.client.js"></script>
-</body>
-</html>
-  `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    ${HEAD}
+  </head>
+  <body>
+    <div id="__nuxt">${APP}</div>
+    <script type="module" src="/entry.client.js"></script>
+  </body>
+  </html>
+    `
 }

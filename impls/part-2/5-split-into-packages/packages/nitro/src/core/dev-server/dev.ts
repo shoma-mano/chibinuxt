@@ -1,6 +1,6 @@
 import { createServer } from 'node:http'
 import { createApp, toNodeListener } from 'h3'
-import { renderMiddleware } from './render'
+import { renderMiddleware } from '../../runtime/render'
 
 export const createDevServer = () => {
   const listen = () => {
