@@ -38,22 +38,145 @@ The `nuxt` package is responsible for transpiling SFCs to JavaScript files that 
 The `playground` package is a place where users can develop their applications using Nuxt and Nitro without needing to know how they work internally.
 In other words, it is a place for developing web applications using Nuxt, just like how we usually develop web applications with Nuxt.
 
-## Tell nitro where to find the entry file
+## Setup Renderer
+
+##### package: `nitro`
+
+To mirror original, we will implement `createDevServer` and `defineRenderer` in `nitro` package.
+
+`server.ts`
+
+```ts
+export const createDevServer = () => {
+  const listen = () => {
+    const app = createApp()
+    app.use(renderMiddleware)
+    const server = createServer(toNodeListener(app))
+    server.listen(3030, () => {
+      console.log('Server is running on http://localhost:3030')
+    })
+  }
+  return { listen }
+}
+```
+
+`renderer.ts`
+
+```ts
+import { join } from 'node:path'
+import { readFileSync } from 'node:fs'
+import { defineEventHandler } from 'h3'
+import type { H3Event } from 'h3'
+
+let renderer: Renderer
+type Renderer = (event: H3Event) => Promise<void>
+export const defineRenderer = async (_renderer: Renderer) => {
+  renderer = _renderer
+}
+
+export const renderMiddleware = defineEventHandler(async event => {
+  const { req, res } = event.node
+  if (req.url === '/entry.client.js') {
+    const code = readFileSync(
+      join(process.env.APP_DIST_DIR!, 'entry.client.js'),
+      'utf-8',
+    )
+    res.setHeader('Content-Type', 'application/javascript')
+    res.end(code)
+  }
+  await renderer(event)
+})
+```
 
 ##### package: `nuxt`
 
-To separate the render feature into Nitro, we need to tell Nitro where to find the entry file. We will use `process.env.DIST_DIR` to specify the directory where the entry file is located for now.
+To call defineRenderHandler, create `setupRenderer` function in `nuxt` package.
+
+`render.ts`
+
+```ts
+import { join } from 'node:path'
+import { defineRenderHandler } from 'nitro'
+import { createRenderer } from 'vue-bundle-renderer/runtime'
+import { renderToString } from 'vue/server-renderer'
+
+let renderer: ReturnType<typeof createRenderer>
+const getRenderer = async () => {
+  if (renderer) return renderer
+  const createApp = await import(
+    join(process.env.APP_DIST_DIR!, 'entry.server.js')
+  ).then(m => m.default)
+  renderer = createRenderer(createApp, {
+    renderToString,
+    manifest: {},
+  })
+  return renderer
+}
+
+export const setupRenderer = () => {
+  defineRenderHandler(async event => {
+    const renderer = await getRenderer()
+    const { req, res } = event.node
+    const rendered = await renderer.renderToString({ url: req.url })
+    const data = renderHTML(rendered)
+    res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+    res.end(data, 'utf-8')
+  })
+}
+
+type Rendered = {
+  html: string
+  renderResourceHeaders: () => Record<string, string>
+  renderResourceHints: () => string
+  renderStyles: () => string
+  renderScripts: () => string
+}
+function renderHTML({
+  html,
+  renderResourceHints,
+  renderStyles,
+  renderScripts,
+}: Rendered) {
+  return htmlTemplate({
+    HEAD: renderResourceHints() + renderStyles(),
+    APP: html + renderScripts(),
+  })
+}
+
+interface HtmlTemplateParams {
+  HEAD: string
+  APP: string
+}
+function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
+  return `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    ${HEAD}
+  </head>
+  <body>
+    <div id="__nuxt">${APP}</div>
+    <script type="module" src="/entry.client.js"></script>
+  </body>
+  </html>
+    `
+}
+```
+
+Call `setupRenderer` in `nuxt.ts`.
+And this is temporary way, but We will use `process.env.APP_DIST_DIR` to specify the directory where the entry file is located for now.
 
 `nuxt.ts`
 
-```ts{3}
+```ts{4}
 export const loadNuxt = async () => {
-  await build()
-  process.env.DIST_DIR = join(import.meta.dirname, '../dist')
+  await bundle()
+  // this is temporary way
+  process.env.APP_DIST_DIR = join(distDir, 'app')
+  setupRenderer()
   const server = createDevServer()
   return { server }
 }
-
 ```
 
 ## Create nuxi
@@ -106,49 +229,6 @@ import App from '../../../../playground/App.vue'
 ```ts
 import Hello from '../../../../playground/pages/hello.vue'
 import World from '../../../../playground/pages/world.vue'
-```
-
-## Change entry file path in nitro
-
-##### package: `nitro`
-
-nitro needs to use the entry file path specified by nuxt. So we need to change the entry file path in nitro.
-
-`render.ts`
-
-```ts{2}
-const createApp = await import(
-  join(process.env.DIST_DIR!, "entry.server.js")
-).then((m) => m.default);
-```
-
-```ts{2}
-const code = readFileSync(
-  join(process.env.DIST_DIR!, "entry.client.js"),
-  "utf-8",
-);
-```
-
-## Expose `createDevServer` function from nitro to nuxt
-
-##### package: `nitro`
-
-For nuxt to enable to use server created in Nitro, expose `createDevServer` function in Nitro.
-
-`dev.ts`
-
-```ts
-export const createDevServer = () => {
-  const listen = () => {
-    const app = createApp()
-    app.use(renderMiddleware)
-    const server = createServer(toNodeListener(app))
-    server.listen(3030, () => {
-      console.log('Server is running on http://localhost:3030')
-    })
-  }
-  return { listen }
-}
 ```
 
 ## Move App.vue and pages directory to playground

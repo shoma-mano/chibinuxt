@@ -1,2 +1,2 @@
-export { createDevServer } from './core/dev-server/dev'
-export { defineRenderer } from './runtime/render'
+export { createDevServer } from './core/dev-server/server'
+export { defineRenderHandler } from './runtime/render'

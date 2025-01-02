@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { defineRenderer } from 'nitro'
+import { defineRenderHandler } from 'nitro'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
 
@@ -17,7 +17,7 @@ const getRenderer = async () => {
 }
 
 export const setupRenderer = () => {
-  defineRenderer(async event => {
+  defineRenderHandler(async event => {
     const renderer = await getRenderer()
     const { req, res } = event.node
     const rendered = await renderer.renderToString({ url: req.url })

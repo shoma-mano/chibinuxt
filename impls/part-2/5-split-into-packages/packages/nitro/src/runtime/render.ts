@@ -3,9 +3,9 @@ import { readFileSync } from 'node:fs'
 import { defineEventHandler } from 'h3'
 import type { H3Event } from 'h3'
 
-let renderer: Renderer
-type Renderer = (event: H3Event) => Promise<void>
-export const defineRenderer = async (_renderer: Renderer) => {
+let renderer: RenderHandler
+type RenderHandler = (event: H3Event) => Promise<void>
+export const defineRenderHandler = async (_renderer: RenderHandler) => {
   renderer = _renderer
 }
 
