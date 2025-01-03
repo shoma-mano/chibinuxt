@@ -6,11 +6,12 @@ import dotenv from 'dotenv'
 import jiti from 'jiti'
 import _createRequire from 'create-require'
 import destr from 'destr'
+// @ts-ignore
 import * as rc from 'rc9'
 import { clearRequireCache, scanRequireTree } from '../utils'
 
 import type { LoadOptions } from '../core/load'
-import type { CliConfiguration, Configuration } from './options'
+import type { CliConfiguration } from '../core/options'
 import { defaultNuxtConfigFile } from './config'
 
 // @ts-ignore
@@ -32,7 +33,8 @@ export async function loadNuxtConfig({
   configFile = defaultNuxtConfigFile,
   configContext = {},
   configOverrides = {},
-  createRequire = (module: NodeJS.Module) => isJest ? _createRequire(module.filename) : jiti(module.filename),
+  createRequire = (module: NodeJS.Module) =>
+    isJest ? _createRequire(module.filename) : jiti(module.filename),
 }: LoadOptions = {}) {
   rootDir = path.resolve(rootDir)
 
@@ -41,15 +43,15 @@ export async function loadNuxtConfig({
   try {
     configFile = require.resolve(path.resolve(rootDir, configFile))
   }
-  catch (e) {
+  catch (e: any) {
     if (e.code !== 'MODULE_NOT_FOUND') {
-      throw (e)
+      throw e
     }
     else if (configFile !== defaultNuxtConfigFile) {
       consola.fatal('Config file not found: ' + configFile)
     }
     // Skip configFile if cannot resolve
-    configFile = undefined
+    configFile = undefined as any
   }
 
   // Load env
@@ -73,7 +75,8 @@ export async function loadNuxtConfig({
     // Clear cache
     clearRequireCache(configFile)
     const _require = createRequire(module)
-    let _config: Configuration | ((ctx: Record<string, any>) => Promise<Configuration>) = interopDefault(_require(configFile) || {})
+    let _config: any | ((ctx: Record<string, any>) => Promise<any>)
+      = interopDefault(_require(configFile) || {})
 
     if (typeof _config === 'function') {
       try {
@@ -111,12 +114,12 @@ export async function loadNuxtConfig({
     rc.readUser('.nuxtrc'),
   )
 
-  console.log('options after defu', options)
-
   // Load env to options._env
   options._env = env
   options._envConfig = envConfig
-  if (configContext) { configContext.env = env }
+  if (configContext) {
+    configContext.env = env
+  }
 
   // Expand and interpolate runtimeConfig from _env
   if (envConfig.expand) {
@@ -146,9 +149,9 @@ function loadEnv(envConfig: EnvConfig, rootDir = process.cwd()) {
   }
 
   // Apply process.env
-  if (!envConfig.env._applied) {
+  if (!envConfig.env!._applied) {
     Object.assign(env, envConfig.env)
-    envConfig.env._applied = true
+    envConfig.env!._applied = true
   }
 
   // Interpolate env
@@ -160,7 +163,11 @@ function loadEnv(envConfig: EnvConfig, rootDir = process.cwd()) {
 }
 
 // Based on https://github.com/motdotla/dotenv-expand
-function expand(target: Record<string, string>, source: Record<string, string> = {}, parse = (v: string) => v) {
+function expand(
+  target: Record<string, string>,
+  source: Record<string, string> = {},
+  parse = (v: string) => v,
+) {
   function getValue(key: string) {
     // Source value 'wins' over target value
     return source[key] !== undefined ? source[key] : target[key]
@@ -171,29 +178,31 @@ function expand(target: Record<string, string>, source: Record<string, string> =
       return value
     }
     const matches = value.match(/(.?\$\{?[\w:]*\}?)/g) || []
-    return parse(matches.reduce((newValue, match) => {
-      const parts = /(.?)\$\{?([\w:]+)?\}?/.exec(match)
-      const prefix = parts[1]
+    return parse(
+      matches.reduce((newValue, match) => {
+        const parts = /(.?)\$\{?([\w:]+)?\}?/.exec(match)
+        const prefix = parts?.[1]
 
-      let value: string
-      let replacePart: string
+        let value: string
+        let replacePart: string
 
-      if (prefix === '\\') {
-        replacePart = parts[0]
-        value = replacePart.replace('\\$', '$')
-      }
-      else {
-        const key = parts[2]
-        replacePart = parts[0].substring(prefix.length)
+        if (prefix === '\\') {
+          replacePart = parts![0]
+          value = replacePart.replace('\\$', '$')
+        }
+        else {
+          const key = parts![2]
+          replacePart = parts![0].substring(prefix!.length)
 
-        value = getValue(key)
+          value = getValue(key)
 
-        // Resolve recursive interpolations
-        value = interpolate(value)
-      }
+          // Resolve recursive interpolations
+          value = interpolate(value)
+        }
 
-      return newValue.replace(replacePart, value)
-    }, value))
+        return newValue.replace(replacePart, value)
+      }, value),
+    )
   }
 
   for (const key in target) {

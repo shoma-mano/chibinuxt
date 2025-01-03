@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 </script>
+
 <template>
   <div>
     <RouterView />
-    <router-link to="/hello">
+    <RouterLink to="/hello">
       Go to Hello
-    </router-link>
-    <router-link to="/world">
+    </RouterLink>
+    <RouterLink to="/world">
       Go to World
-    </router-link>
+    </RouterLink>
   </div>
 </template>

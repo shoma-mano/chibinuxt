@@ -1,7 +1,10 @@
-import { join } from 'upath'
-import fsExtra from 'fs-extra'
+import { join } from 'node:path'
+import fsExtra from 'node:fs'
 
+// @ts-ignore
 export const wpfs = {
-  ...fsExtra,
-  join,
+  // @ts-ignore
+  ...(fsExtra as any),
+  // @ts-ignore
+  join: join as any,
 }

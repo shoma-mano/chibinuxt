@@ -21,9 +21,6 @@ export async function clearDirectory(directoryPath: string): Promise<void> {
         unlinkSync(fullPath)
       }
     }
-    console.log(
-      `ディレクトリ '${directoryPath}' 内のファイルが削除されました。`,
-    )
   }
   catch (error: any) {
     console.error(

@@ -1,8 +1,9 @@
 import { resolve } from 'node:path'
-import { mkdirp, writeFile } from 'fs-extra'
+import { mkdir, writeFile } from 'node:fs/promises'
 import vue from '@vitejs/plugin-vue'
 import consola from 'consola'
 import * as vite from 'vite'
+import { defineEventHandler } from 'h3'
 import type { Nuxt } from '../../core/nuxt'
 
 interface ViteBuildContext {
@@ -19,6 +20,9 @@ export async function bundle(nuxt: Nuxt) {
       logLevel: 'warn',
       resolve: {
         alias: {
+          '#root': nuxt.options.rootDir,
+          '#app': nuxt.options.appDir,
+          '#build': nuxt.options.buildDir,
           'nuxt/app': nuxt.options.appDir,
           'nuxt/build': nuxt.options.buildDir,
           '~': nuxt.options.srcDir,
@@ -30,11 +34,16 @@ export async function bundle(nuxt: Nuxt) {
       build: {
         emptyOutDir: false,
       },
+      define: {
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
+      },
     },
   }
 
-  await mkdirp(nuxt.options.buildDir)
-  await mkdirp(resolve(nuxt.options.buildDir, '.vite/temp'))
+  await mkdir(nuxt.options.buildDir, { recursive: true })
+  await mkdir(resolve(nuxt.options.buildDir, '.vite/temp'), {
+    recursive: true,
+  })
 
   const callBuild = async (fn, name) => {
     try {
@@ -73,6 +82,7 @@ async function buildClient(ctx: ViteBuildContext) {
         input: resolve(ctx.nuxt.options.buildDir, './entry.client.js'),
       },
     },
+    appType: 'custom',
     server: {
       middlewareMode: true,
     },
@@ -80,14 +90,23 @@ async function buildClient(ctx: ViteBuildContext) {
 
   if (ctx.nuxt.options.dev) {
     const viteServer = await vite.createServer(clientConfig)
-    await ctx.nuxt.hooks.callHook('server:devMiddleware', (req, res, next) => {
-      // Workaround: vite devmiddleware modifies req.url
-      const originalURL = req.url
-      viteServer.middlewares.handle(req, res, (err) => {
-        req.url = originalURL
-        next(err)
-      })
-    })
+    ctx.nuxt.hooks.callHook(
+      'server:devMiddleware',
+      defineEventHandler(async (event) => {
+        // Workaround: vite devmiddleware modifies req.url
+        const _originalPath = event.node.req.url
+        await new Promise((resolve, reject) => {
+          viteServer.middlewares.handle(
+            event.node.req,
+            event.node.res,
+            (err) => {
+              event.node.req.url = _originalPath
+              err ? reject(err) : resolve(null)
+            },
+          )
+        })
+      }),
+    )
   }
   else {
     await vite.build(clientConfig)
@@ -105,19 +124,23 @@ async function buildServer(ctx: ViteBuildContext) {
       outDir: 'dist/server',
       ssr: true,
       rollupOptions: {
-        input: resolve(ctx.nuxt.options.buildDir, './entry.server.js'),
+        input: resolve(ctx.nuxt.options.buildDir, './entry.server.mjs'),
+        output: {
+          format: 'esm',
+          entryFileNames: '[name].mjs',
+        },
       },
     },
   } as vite.InlineConfig)
-  console.log('serverConfig', serverConfig)
 
   const serverDist = resolve(ctx.nuxt.options.buildDir, 'dist/server')
-  await mkdirp(serverDist)
+  await mkdir(serverDist, { recursive: true })
   await writeFile(resolve(serverDist, 'client.manifest.json'), 'false')
   await writeFile(
     resolve(serverDist, 'server.js'),
-    'const entry = require("./entry.server.js"); module.exports = entry.default || entry;',
+    `const entry = import('${ctx.nuxt.options.buildDir}/dist/server/entry.server.mjs').then((m) => m.default);export default entry;`,
   )
+  console.log('server entry created')
 
   await vite.build(serverConfig)
 

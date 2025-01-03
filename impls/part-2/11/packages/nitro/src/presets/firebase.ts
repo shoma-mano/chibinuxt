@@ -1,10 +1,11 @@
-import { join, relative, resolve } from 'upath'
-import { existsSync, readJSONSync } from 'fs-extra'
+import { join, relative, resolve } from 'node:path'
+import { existsSync } from 'node:fs'
 import consola from 'consola'
 import globby from 'globby'
 
 import { writeFile } from '../utils'
 import type { NitroPreset, NitroContext } from '../context'
+import { readJSONSync } from '../utils/fs-utils'
 
 export const firebase: NitroPreset = {
   entry: '{{ _internal.runtimeDir }}/entries/firebase',
@@ -15,7 +16,10 @@ export const firebase: NitroPreset = {
   },
 }
 
-async function writeRoutes({ output: { publicDir, serverDir }, _nuxt: { rootDir } }: NitroContext) {
+async function writeRoutes({
+  output: { publicDir, serverDir },
+  _nuxt: { rootDir },
+}: NitroContext) {
   if (!existsSync(join(rootDir, 'firebase.json'))) {
     const firebase = {
       functions: {
@@ -35,7 +39,10 @@ async function writeRoutes({ output: { publicDir, serverDir }, _nuxt: { rootDir 
         },
       ],
     }
-    await writeFile(resolve(rootDir, 'firebase.json'), JSON.stringify(firebase))
+    await writeFile(
+      resolve(rootDir, 'firebase.json'),
+      JSON.stringify(firebase),
+    )
   }
 
   const jsons = await globby(`${serverDir}/node_modules/**/package.json`)
@@ -51,7 +58,8 @@ async function writeRoutes({ output: { publicDir, serverDir }, _nuxt: { rootDir 
 
   let nodeVersion = '12'
   try {
-    const currentNodeVersion = readJSONSync(join(rootDir, 'package.json')).engines.node
+    const currentNodeVersion = readJSONSync(join(rootDir, 'package.json'))
+      .engines.node
     if (['12', '10'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }

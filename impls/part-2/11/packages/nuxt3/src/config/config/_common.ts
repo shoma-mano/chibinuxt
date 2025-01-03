@@ -1,11 +1,9 @@
 import type { WatchOptions as ChokidarWatchOptions } from 'chokidar'
 import type express from 'express'
-import type { configHooksT } from 'hookable'
 import type ignore from 'ignore'
 import capitalize from 'lodash/capitalize'
 import env from 'std-env'
 import type { Configuration as WebpackConfiguration } from 'webpack'
-import type Hookable from 'hookable'
 import type { Target, Mode } from '../../utils'
 import { TARGETS, MODES } from '../../utils'
 
@@ -25,17 +23,27 @@ interface ExtendFunctionContext {
   // loaders: NuxtOptionsLoaders
 }
 
-type ExtendFunction = (config: WebpackConfiguration, ctx: ExtendFunctionContext) => void
+type ExtendFunction = (
+  config: WebpackConfiguration,
+  ctx: ExtendFunctionContext
+) => void
 
-interface NuxtHooks extends configHooksT {
-
+interface NuxtHooks {
   build?: {
     before?(builder: any, buildOptions: any): void
     compile?(params: { name: 'client' | 'server', compiler: any }): void
-    compiled?(params: { name: 'client' | 'server', compiler: any, stats: any }): void
+    compiled?(params: {
+      name: 'client' | 'server'
+      compiler: any
+      stats: any
+    }): void
     done?(builder: any): void
     extendRoutes?(routes: any, resolve: any): void
-    templates?(params: { templateFiles: any, templateVars: any, resolve: any }): void
+    templates?(params: {
+      templateFiles: any
+      templateVars: any
+      resolve: any
+    }): void
   }
   close?(nuxt: any): void
   error?(error: Error): void
@@ -75,11 +83,17 @@ interface ModuleThis {
   [key: string]: any // TBD
 }
 
-export type ModuleHandler<T = any> = (this: ModuleThis, moduleOptions: T) => Promise<void> | void
+export type ModuleHandler<T = any> = (
+  this: ModuleThis,
+  moduleOptions: T
+) => Promise<void> | void
 
 export type NuxtModule = string | ModuleHandler | [string | ModuleHandler, any]
 
-export type ServerMiddleware = string | { path: string, prefix?: boolean, handler: string | express.NextFunction } | express.NextFunction
+export type ServerMiddleware =
+  | string
+  | { path: string, prefix?: boolean, handler: string | express.NextFunction }
+  | express.NextFunction
 
 interface CommonConfiguration {
   _majorVersion: number
@@ -93,7 +107,16 @@ interface CommonConfiguration {
   createRequire?: (module: NodeJS.Module) => NodeJS.Require
   debug?: boolean
   dev: boolean
-  dir: { [key in 'app' | 'assets' | 'layouts' | 'middleware' | 'pages' | 'static' | 'store']: string }
+  dir: {
+    [key in
+    | 'app'
+    | 'assets'
+    | 'layouts'
+    | 'middleware'
+    | 'pages'
+    | 'static'
+    | 'store']: string;
+  }
   editor: undefined
   env: NodeJS.ProcessEnv
   extensions: string[]
@@ -114,8 +137,12 @@ interface CommonConfiguration {
   mode: Mode
   modern?: boolean | 'client' | 'server'
   modules: NuxtModule[]
-  privateRuntimeConfig: Record<string, any> | ((env: NodeJS.ProcessEnv) => Record<string, any>)
-  publicRuntimeConfig: Record<string, any> | ((env: NodeJS.ProcessEnv) => Record<string, any>)
+  privateRuntimeConfig:
+    | Record<string, any>
+    | ((env: NodeJS.ProcessEnv) => Record<string, any>)
+  publicRuntimeConfig:
+    | Record<string, any>
+    | ((env: NodeJS.ProcessEnv) => Record<string, any>)
   serverMiddleware: Array<ServerMiddleware> | Record<string, express.Handler>
   ssr: boolean
   target: Target
@@ -174,9 +201,7 @@ export default (): CommonConfiguration => ({
   srcDir: undefined,
   buildDir: '.nuxt',
   vite: false,
-  modulesDir: [
-    'node_modules',
-  ],
+  modulesDir: ['node_modules'],
   appDir: APP_DIR,
   dir: {
     assets: 'assets',
@@ -188,16 +213,22 @@ export default (): CommonConfiguration => ({
     store: 'store',
   },
   extensions: [],
-  styleExtensions: ['css', 'pcss', 'postcss', 'styl', 'stylus', 'scss', 'sass', 'less'],
+  styleExtensions: [
+    'css',
+    'pcss',
+    'postcss',
+    'styl',
+    'stylus',
+    'scss',
+    'sass',
+    'less',
+  ],
   alias: {},
 
   // Ignores
   ignoreOptions: undefined,
   ignorePrefix: '_',
-  ignore: [
-    '**/*.test.*',
-    '**/*.spec.*',
-  ],
+  ignore: ['**/*.test.*', '**/*.spec.*'],
 
   // Watch
   watch: [],
