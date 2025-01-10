@@ -5,6 +5,6 @@ import { setupRenderer } from './runtime/nitro/renderer'
 export const initNitro = async (nuxt: Nuxt) => {
   const nitro = await createNitro()
   nuxt.server = createDevServer(nitro)
-  setupRenderer()
+  await setupRenderer(nuxt)
   return nitro
 }

@@ -19,5 +19,6 @@ export const renderMiddleware = defineEventHandler(async event => {
     res.setHeader('Content-Type', 'application/javascript')
     res.end(code)
   }
+  console.log('renderer', renderer)
   await renderer(event)
 })

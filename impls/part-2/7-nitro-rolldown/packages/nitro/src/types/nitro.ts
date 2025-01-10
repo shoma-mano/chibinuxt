@@ -6,5 +6,14 @@ export interface Nitro {
 
 export interface NitroOptions {
   entry: string
+  output?: {
+    serverDir?: string
+  }
 }
-export interface NitroConfig extends DeepPartial<NitroOptions> {}
+export interface NitroConfig extends DeepPartial<NitroOptions> {
+  preset?: string
+}
+
+export interface NitroPreset extends NitroConfig {
+  name: string
+}

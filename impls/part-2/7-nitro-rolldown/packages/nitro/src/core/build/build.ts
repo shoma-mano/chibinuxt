@@ -7,6 +7,6 @@ export const build = async (nitro: Nitro) => {
   const rolldownConfig = getRolldownConfig(nitro)
   const bundle = await rolldown(rolldownConfig)
   await bundle.write({
-    file: join(import.meta.dirname, 'dist/index.js'),
+    file: join(nitro.options.output!.serverDir!, 'index.js'),
   })
 }

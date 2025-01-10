@@ -1,6 +1,7 @@
 import { join } from 'node:path'
 import type { Hookable } from 'hookable'
 import { createHooks } from 'hookable'
+import { build } from 'nitro'
 import { bundle } from '../vite/build'
 import { distDir } from '../dir'
 import type { NuxtHooks } from '../schema'
@@ -40,9 +41,9 @@ export const loadNuxt = async () => {
   const options = loadNuxtConfig()
   options.appDir = join(distDir, 'app')
   const nuxt = createNuxt(options)
-  const nitro = initNitro(nuxt)
+  const nitro = await initNitro(nuxt)
   await bundle(nuxt)
-  // await nuxt.callHook('build:done')
+  await build(nitro)
 
   // this is temporary workaround
   process.env.APP_DIST_DIR = options.appDir

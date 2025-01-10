@@ -5,7 +5,7 @@ import type { Nitro } from '../../types/nitro'
 
 export const createDevServer = (nitro: Nitro) => {
   const listen = () => {
-    execSync(`node ${join(import.meta.dirname, 'dist/index.js')}`, {
+    execSync(`node ${join(nitro.options.output!.serverDir!, 'index.js')}`, {
       stdio: 'inherit',
     })
   }

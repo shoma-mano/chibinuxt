@@ -5,7 +5,10 @@
   "description": "",
   "exports": {
     ".": {
-      "import": "./src/index.ts"
+      "import": "./src/core/index.ts"
+    },
+    "./runtime": {
+      "import": "./src/runtime/index.ts"
     }
   },
   "scripts": {
