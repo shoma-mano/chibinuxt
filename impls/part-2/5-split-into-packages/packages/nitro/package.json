@@ -5,7 +5,10 @@
   "description": "",
   "exports": {
     ".": {
-      "import": "./src/index.ts"
+      "import": "./src/core/index.ts"
+    },
+    "./runtime": {
+      "import": "./src/runtime/index.ts"
     }
   },
   "scripts": {
@@ -20,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^22.10.1"
+    "@types/node": "^22.10.1",
+    "unbuild": "^3.2.0"
   }
 }

@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { defineRenderHandler } from 'nitro'
+import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
 
