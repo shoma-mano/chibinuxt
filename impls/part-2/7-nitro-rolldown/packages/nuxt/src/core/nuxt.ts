@@ -1,6 +1,9 @@
 import { join } from 'node:path'
+import type { Hookable } from 'hookable'
+import { createHooks } from 'hookable'
 import { bundle } from '../vite/build'
 import { distDir } from '../dir'
+import type { NuxtHooks } from '../schema'
 import { initNitro } from './nitro'
 
 type NuxtOptions = {
@@ -11,6 +14,9 @@ export type Nuxt = {
   server?: any
   options?: NuxtOptions
   ready?: () => Promise<void>
+  hooks: Hookable<NuxtHooks>
+  hook: Nuxt['hooks']['hook']
+  callHook: Nuxt['hooks']['callHook']
 }
 
 const loadNuxtConfig = (): NuxtOptions => {
@@ -19,7 +25,12 @@ const loadNuxtConfig = (): NuxtOptions => {
 }
 
 const createNuxt = (options: NuxtOptions): Nuxt => {
+  const hooks = createHooks<NuxtHooks>()
+
   const nuxt: Nuxt = {
+    callHook: hooks.callHook,
+    hooks,
+    hook: hooks.hook,
     options,
   }
   return nuxt
@@ -29,8 +40,10 @@ export const loadNuxt = async () => {
   const options = loadNuxtConfig()
   options.appDir = join(distDir, 'app')
   const nuxt = createNuxt(options)
-  initNitro(nuxt)
+  const nitro = initNitro(nuxt)
   await bundle(nuxt)
+  // await nuxt.callHook('build:done')
+
   // this is temporary workaround
   process.env.APP_DIST_DIR = options.appDir
   return nuxt

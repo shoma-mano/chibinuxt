@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { rolldown } from 'rolldown'
+import { rolldown, watch } from 'rolldown'
 import { getRolldownConfig } from './rolldown/config'
 
 export const buildNitro = async () => {
