@@ -18,6 +18,7 @@ const renderer = createRenderer(_interopDefault(createApp), {
 })
 
 export const renderMiddleware = defineEventHandler(async (event) => {
+  console.log('renderMiddleware')
   const { req, res } = event.node
   let url = req.url
   if (!url) return
@@ -36,6 +37,7 @@ export const renderMiddleware = defineEventHandler(async (event) => {
     url,
   }
   const rendered = await renderer.renderToString(ssrContext)
+  console.log('rendered', rendered)
   // TODO: nuxt3 should not reuse `nuxt` property for different purpose!
   const payload
     = ssrContext.payload /* nuxt 3 */ || ssrContext.nuxt /* nuxt 2 */
@@ -54,6 +56,7 @@ export const renderMiddleware = defineEventHandler(async (event) => {
     res.setHeader('Content-Type', 'text/html;charset=UTF-8')
   }
 
+  console.log('data', data)
   res.end(data, 'utf-8')
 })
 
@@ -67,6 +70,8 @@ function renderHTML(payload, rendered, ssrContext) {
     headTags = '',
     headAttrs = '',
   } = (ssrContext.head && ssrContext.head()) || {}
+
+  console.log('script', rendered.renderScripts())
 
   return htmlTemplate({
     HTML_ATTRS: htmlAttrs,

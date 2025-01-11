@@ -1,7 +1,7 @@
+import fse from 'node:fs'
+import { join, resolve } from 'node:path'
 import consola from 'consola'
-import fse from 'fs-extra'
 import globby from 'globby'
-import { join, resolve } from 'upath'
 import { writeFile } from '../utils'
 import type { NitroPreset, NitroContext } from '../context'
 
@@ -57,22 +57,25 @@ async function writeRoutes({ output: { serverDir, publicDir } }: NitroContext) {
     }),
   )
 
-  const otherFiles = await globby([join(publicDir, '**/*.html'), join(publicDir, '*.html')])
+  const otherFiles = await globby([
+    join(publicDir, '**/*.html'),
+    join(publicDir, '*.html'),
+  ])
   otherFiles.forEach((file) => {
     if (file.endsWith('index.html')) {
       return
     }
     const route = file.slice(prefix, -5)
-    const existingRouteIndex = routes.findIndex(_route => _route.route === route)
+    const existingRouteIndex = routes.findIndex(
+      _route => _route.route === route,
+    )
     if (existingRouteIndex > -1) {
       routes.splice(existingRouteIndex, 1)
     }
-    routes.unshift(
-      {
-        route,
-        serve: file.slice(prefix),
-      },
-    )
+    routes.unshift({
+      route,
+      serve: file.slice(prefix),
+    })
   })
 
   const functionDefinition = {
@@ -94,9 +97,15 @@ async function writeRoutes({ output: { serverDir, publicDir } }: NitroContext) {
     ],
   }
 
-  await writeFile(resolve(serverDir, 'function.json'), JSON.stringify(functionDefinition))
+  await writeFile(
+    resolve(serverDir, 'function.json'),
+    JSON.stringify(functionDefinition),
+  )
   await writeFile(resolve(serverDir, '../host.json'), JSON.stringify(host))
-  await writeFile(resolve(publicDir, 'routes.json'), JSON.stringify({ routes }))
+  await writeFile(
+    resolve(publicDir, 'routes.json'),
+    JSON.stringify({ routes }),
+  )
   if (!indexFileExists) {
     await writeFile(indexPath, '')
   }

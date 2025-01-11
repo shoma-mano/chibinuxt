@@ -13,7 +13,7 @@ function _interopDefault(e) {
 }
 
 const renderer = createRenderer(_interopDefault(createApp), {
-  clientManifest: _interopDefault(clientManifest),
+  // clientManifest: _interopDefault(clientManifest),
   renderToString,
 })
 
@@ -34,6 +34,7 @@ export async function renderMiddleware(req, res) {
     )
   }
 
+  console.log('req.context', req.context)
   const ssrContext = {
     url,
     ...(req.context || {}),

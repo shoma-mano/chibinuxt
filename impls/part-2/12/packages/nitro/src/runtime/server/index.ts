@@ -1,11 +1,16 @@
-import { createApp, useBase } from 'h3'
+import { createApp, defineEventHandler, toNodeListener } from 'h3'
+import { renderMiddleware } from '../app/render'
 
 const app = createApp({
   onError: () => 'error',
 })
 
-app.use(() => import('../app/render').then(e => e.renderMiddleware), {
-  lazy: true,
-})
+app.use(
+  defineEventHandler((event) => {
+    console.log('event!!!')
+  }),
+)
 
-export const handle = useBase(process.env.ROUTER_BASE, app)
+app.use(renderMiddleware)
+
+export const handle = toNodeListener(app)

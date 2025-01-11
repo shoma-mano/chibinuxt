@@ -1,16 +1,18 @@
 import { Worker } from 'node:worker_threads'
 import { resolve } from 'node:path'
-import { stat, statSync } from 'node:fs'
+import { statSync } from 'node:fs'
 import {
   createApp,
   defineEventHandler,
   dynamicEventHandler,
+  fromNodeMiddleware,
   toNodeListener,
 } from 'h3'
 import { debounce } from 'perfect-debounce'
 // @ts-ignore
 import chokidar from 'chokidar'
 import { listen } from 'listhen'
+import serveStatic from 'serve-static'
 import type { Listener } from 'listhen'
 import { createProxyServer } from 'httpxy'
 import type { NitroContext } from '../context'
@@ -18,6 +20,18 @@ import type { NitroContext } from '../context'
 export function createDevServer(nitroContext: NitroContext) {
   // App
   const app = createApp()
+
+  // _nuxt and static
+  app.use(
+    nitroContext._nuxt.publicPath,
+    fromNodeMiddleware(
+      serveStatic(resolve(nitroContext._nuxt.buildDir, 'dist/client')),
+    ),
+  )
+  app.use(
+    nitroContext._nuxt.routerBase,
+    fromNodeMiddleware(serveStatic(resolve(nitroContext._nuxt.staticDir))),
+  )
 
   // Dynamic Middlwware
   const legacyMiddleware = createDynamicMiddleware()
@@ -36,8 +50,6 @@ export function createDevServer(nitroContext: NitroContext) {
     nitroContext.output.serverDir,
     'index.js',
   )
-  console.log('serverDir', nitroContext.output.serverDir)
-  console.log('[worker] entry:', workerEntry)
   let pendingWorker: Worker | null
   let activeWorker: Worker
   let workerAddress: string | null
@@ -47,7 +59,6 @@ export function createDevServer(nitroContext: NitroContext) {
       workerAddress = null
       pendingWorker = null
     }
-    console.log('entry file', workerEntry)
     if (!statSync(workerEntry).isFile) {
       throw new Error('Entry not found: ' + workerEntry)
     }
@@ -152,11 +163,6 @@ function createDynamicMiddleware() {
         middleware = input
         return
       }
-      // const app = await import("connect").then((c) => c.default());
-      // for (const m of input) {
-      //   app.use(m.path || m.route || "/", m.handler || m.handle);
-      // }
-      // middleware = app;
     },
     middleware: (req: any, res: any, next: any) =>
       middleware ? middleware(req, res, next) : next(),

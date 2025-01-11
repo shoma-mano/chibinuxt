@@ -74,6 +74,7 @@ async function buildClient(ctx: ViteBuildContext) {
     define: {
       'process.server': false,
       'process.client': true,
+      'import.meta.server': false,
     },
     build: {
       outDir: 'dist/client',
@@ -119,6 +120,7 @@ async function buildServer(ctx: ViteBuildContext) {
       'process.server': true,
       'process.client': false,
       'window': undefined,
+      'import.meta.server': true,
     },
     build: {
       outDir: 'dist/server',

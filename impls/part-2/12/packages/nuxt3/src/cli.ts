@@ -18,13 +18,13 @@ async function _main() {
     await nuxt.server.listen(3000, { name: 'Nuxt' })
   }
 
+  // console.log("Building...");
   await build(nuxt)
 }
 
 export function main() {
-  _main()
-    .catch((error) => {
-      require('consola').fatal(error)
-      require('exit')(2)
-    })
+  _main().catch((error) => {
+    console.error(error)
+    require('exit')(2)
+  })
 }
