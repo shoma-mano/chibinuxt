@@ -4,8 +4,8 @@ import {
   createMemoryHistory,
   createWebHistory,
 } from 'vue-router'
-import Hello from '../../../../playground/pages/hello.vue'
-import World from '../../../../playground/pages/world.vue'
+import Hello from '../../../../../playground/pages/hello.vue'
+import World from '../../../../../playground/pages/world.vue'
 
 export const createRouter = () => {
   const routes = [

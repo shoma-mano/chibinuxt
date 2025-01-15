@@ -1,6 +1,6 @@
 import { createSSRApp } from 'vue'
 import App from '../../../../playground/App.vue'
-import { createRouter } from '../pages/router'
+import { createRouter } from './plugins/router'
 
 export default async (ctx: { url: string }) => {
   const app = createSSRApp(App)

@@ -1,5 +1,4 @@
-#!/usr/bin/env -S npx tsx
-
+#!/usr/bin/env node
 import { loadNuxt } from './core/nuxt'
 
 const main = async () => {

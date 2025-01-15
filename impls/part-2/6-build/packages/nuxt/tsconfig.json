@@ -27,11 +27,5 @@
       "nuxt/vite": ["./src/vite"]
     }
   },
-  "include": [
-    "packages/nuxt/src",
-    "playground/pages/world.vue",
-    "playground/pages/hello.vue",
-    "playground/App.vue"
-  ],
   "exclude": ["dist"]
 }
