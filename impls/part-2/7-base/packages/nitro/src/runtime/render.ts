@@ -1,6 +1,6 @@
 import { join } from 'node:path'
 import { readFileSync } from 'node:fs'
-import { defineEventHandler } from 'h3'
+import { eventHandler } from 'h3'
 import type { H3Event } from 'h3'
 
 let renderer: Renderer
@@ -9,7 +9,7 @@ export const defineRenderer = async (_renderer: Renderer) => {
   renderer = _renderer
 }
 
-export const renderMiddleware = defineEventHandler(async event => {
+export const renderMiddleware = eventHandler(async event => {
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
     const code = readFileSync(

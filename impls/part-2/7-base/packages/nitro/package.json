@@ -5,11 +5,14 @@
   "description": "",
   "exports": {
     ".": {
-      "import": "./src/index.ts"
+      "import": "./dist/core/index.mjs"
+    },
+    "./runtime": {
+      "import": "./dist/runtime/index.mjs"
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepack": "unbuild"
   },
   "dependencies": {
     "h3": "^1.13.0",
@@ -20,6 +23,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^22.10.1"
+    "@types/node": "^22.10.1",
+    "unbuild": "^3.3.1"
   }
 }

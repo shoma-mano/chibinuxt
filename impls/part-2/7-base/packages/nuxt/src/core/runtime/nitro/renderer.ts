@@ -1,14 +1,16 @@
 import { join } from 'node:path'
-import { defineRenderer } from 'nitro'
+import { defineRenderer } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
 import type { Nuxt } from '../../nuxt'
 
+let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async (nuxt: Nuxt) => {
+  if (renderer) return renderer
   const createApp = await import(
     join(nuxt.options!.appDir!, 'entry.server.js')
   ).then(m => m.default)
-  const renderer = createRenderer(createApp, {
+  renderer = createRenderer(createApp, {
     renderToString,
     manifest: {},
   })
@@ -16,8 +18,8 @@ const getRenderer = async (nuxt: Nuxt) => {
 }
 
 export const setupRenderer = async (nuxt: Nuxt) => {
-  const renderer = await getRenderer(nuxt)
   defineRenderer(async event => {
+    const renderer = await getRenderer(nuxt)
     const { req, res } = event.node
     const rendered = await renderer.renderToString({ url: req.url })
     const data = renderHTML(rendered)

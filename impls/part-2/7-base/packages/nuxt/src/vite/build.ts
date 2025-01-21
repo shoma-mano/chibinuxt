@@ -26,7 +26,7 @@ export const bundle = async (nuxt: Nuxt) => {
     const clientConfig = mergeConfig(defaultConfig, {
       build: {
         rollupOptions: {
-          input: join(import.meta.dirname, '../app/entry.client.ts'),
+          input: join(import.meta.dirname, '../app/entry.client.js'),
           output: {
             entryFileNames: 'entry.client.js',
           },
@@ -42,7 +42,7 @@ export const bundle = async (nuxt: Nuxt) => {
     const severConfig = mergeConfig(defaultConfig, {
       build: {
         rollupOptions: {
-          input: join(import.meta.dirname, '../app/entry.server.ts'),
+          input: join(import.meta.dirname, '../app/entry.server.js'),
           output: {
             entryFileNames: 'entry.server.js',
           },

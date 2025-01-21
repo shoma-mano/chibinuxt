@@ -1,0 +1,7 @@
+{
+  "name": "chibinuxt",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm --filter './packages/**' prepack"
+  }
+}

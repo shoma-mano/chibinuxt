@@ -1,6 +1,5 @@
-#!/usr/bin/env -S npx tsx
-
-import { loadNuxt } from './core/nuxt'
+#!/usr/bin/env node
+import { loadNuxt } from './'
 
 const main = async () => {
   const nuxt = await loadNuxt()
