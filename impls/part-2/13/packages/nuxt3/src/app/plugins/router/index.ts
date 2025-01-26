@@ -26,21 +26,21 @@ export default <Plugin> function router(nuxt) {
   app.use(router)
   nuxt.provide('router', router)
 
-  const previousRoute = shallowRef(router.currentRoute.value)
-  router.afterEach((_to, from) => {
-    previousRoute.value = from
-  })
+  // const previousRoute = shallowRef(router.currentRoute.value);
+  // router.afterEach((_to, from) => {
+  //   previousRoute.value = from;
+  // });
 
-  Object.defineProperty(app.config.globalProperties, 'previousRoute', {
-    get: () => previousRoute.value,
-  })
+  // Object.defineProperty(app.config.globalProperties, "previousRoute", {
+  //   get: () => previousRoute.value,
+  // });
 
   nuxt.hook('app:created', async () => {
     if (import.meta.server) {
-      router.push(nuxt.ssrContext.url)
+      // router.push(nuxt.ssrContext.url);
     }
     try {
-      await router.isReady()
+      // await router.isReady()
       if (!router.currentRoute.value.matched.length) {
         // TODO
       }

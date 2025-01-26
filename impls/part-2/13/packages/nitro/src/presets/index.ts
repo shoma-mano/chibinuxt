@@ -1,4 +1,3 @@
-export * from './azure_functions'
 export * from './azure'
 export * from './browser'
 export * from './cloudflare'

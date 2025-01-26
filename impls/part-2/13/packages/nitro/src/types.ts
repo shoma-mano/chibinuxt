@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { $Fetch } from 'ohmyfetch'
 
 declare global {

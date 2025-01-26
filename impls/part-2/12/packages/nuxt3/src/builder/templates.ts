@@ -8,7 +8,7 @@ export const entryClientTemplate: NuxtTemplate = {
 import { createSSRApp, nextTick } from 'vue'
 import { createNuxt, applyPlugins } from 'nuxt/app/nuxt'
 import plugins from './plugins'
-import App from '${app.main}'
+import App from '/Users/mano/my-oss/nuxts/chibinuxt/impls/part-2/6/playground/app.vue'
   
 async function initApp () {
   const app = createSSRApp(App)
@@ -38,7 +38,7 @@ export const entryServerTemplate: NuxtTemplate = {
   getContents: ({ app }) => `import { createApp } from 'vue'
 import { createNuxt, applyPlugins } from 'nuxt/app/nuxt'
 import plugins from './plugins'
-import App from '${app.main}'
+import App from '/Users/mano/my-oss/nuxts/chibinuxt/impls/part-2/6/playground/app.vue'
 
 export default async function createNuxtAppServer (ssrContext = {}) {
    const app = createApp(App)

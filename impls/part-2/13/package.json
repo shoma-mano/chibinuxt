@@ -2,6 +2,7 @@
   "name": "nuxt-framework",
   "private": "true",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "link": "lerna link",
     "nuxt": "jiti ./scripts/nuxt",

@@ -26,9 +26,7 @@ export async function bundle(nuxt: Nuxt) {
         },
       },
       clearScreen: false,
-      plugins: [
-        vue({}),
-      ],
+      plugins: [vue({})],
       build: {
         emptyOutDir: false,
       },
@@ -111,11 +109,15 @@ async function buildServer(ctx: ViteBuildContext) {
       },
     },
   } as vite.InlineConfig)
+  console.log('serverConfig', serverConfig)
 
   const serverDist = resolve(ctx.nuxt.options.buildDir, 'dist/server')
   await mkdirp(serverDist)
   await writeFile(resolve(serverDist, 'client.manifest.json'), 'false')
-  await writeFile(resolve(serverDist, 'server.js'), 'const entry = require("./entry.server.js"); module.exports = entry.default || entry;')
+  await writeFile(
+    resolve(serverDist, 'server.js'),
+    'const entry = require("./entry.server.js"); module.exports = entry.default || entry;',
+  )
 
   await vite.build(serverConfig)
 
