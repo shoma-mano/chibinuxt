@@ -1,9 +1,11 @@
+import { resolve } from 'node:path'
 import { createDevServer, createNitro } from 'nitro'
+import { distDir } from '../dir'
 import type { Nuxt } from './nuxt'
-import { setupRenderer } from './runtime/nitro/renderer'
 
 export const initNitro = async (nuxt: Nuxt) => {
-  const nitro = createNitro()
-  nuxt.server = createDevServer(nitro)
-  await setupRenderer(nuxt)
+  const nitro = await createNitro({
+    renderer: resolve(distDir, 'core/runtime/nitro/renderer.js'),
+  })
+  nuxt.server = await createDevServer(nitro)
 }

@@ -1,3 +1,7 @@
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 
-export const distDir = join(import.meta.dirname, '../')
+let _distDir = join(import.meta.dirname)
+if (_distDir.match(/(chunks|shared)$/)) {
+  _distDir = dirname(_distDir)
+}
+export const distDir = _distDir

@@ -1,5 +1,16 @@
+import type { DeepPartial } from './utils'
+
 export interface Nitro {
   options: NitroOptions
 }
 
-export interface NitroOptions {}
+export interface NitroOptions {
+  entry: string
+  renderer?: string
+  output?: {
+    serverDir?: string
+  }
+}
+export interface NitroConfig extends DeepPartial<NitroOptions> {
+  preset?: string
+}
