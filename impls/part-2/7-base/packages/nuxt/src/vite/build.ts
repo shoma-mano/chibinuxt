@@ -28,7 +28,7 @@ export const bundle = async (nuxt: Nuxt) => {
         rollupOptions: {
           input: join(import.meta.dirname, '../app/entry.client.js'),
           output: {
-            entryFileNames: 'entry.client.js',
+            entryFileNames: '_entry.client.js',
           },
         },
       },
@@ -44,7 +44,7 @@ export const bundle = async (nuxt: Nuxt) => {
         rollupOptions: {
           input: join(import.meta.dirname, '../app/entry.server.js'),
           output: {
-            entryFileNames: 'entry.server.js',
+            entryFileNames: '_entry.server.js',
           },
         },
         ssr: true,
