@@ -1,6 +1,6 @@
 import { createServer } from 'node:http'
 import { createApp, toNodeListener } from 'h3'
-import { renderMiddleware } from '../../runtime/render'
+import { renderMiddleware } from '../../runtime/internal/render'
 import type { Nitro } from '../../types/nitro'
 
 // we don't use nitro for now
