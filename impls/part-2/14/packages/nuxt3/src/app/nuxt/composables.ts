@@ -1,5 +1,5 @@
 import { getCurrentInstance } from 'vue'
-import type { Nuxt } from 'nuxt/app'
+import type { Nuxt } from '.'
 
 let currentNuxtInstance: Nuxt | null
 

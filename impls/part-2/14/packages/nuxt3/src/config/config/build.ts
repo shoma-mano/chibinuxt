@@ -2,21 +2,27 @@ import env from 'std-env'
 import type { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
 import type { TransformOptions, PluginItem } from '@babel/core'
+// @ts-ignore
 import type { Options as AutoprefixerOptions } from 'autoprefixer'
 import type { Options as FileLoaderOptions } from 'file-loader'
 import type { Options as HtmlMinifierOptions } from 'html-minifier'
 import type * as Less from 'less'
+// @ts-ignore
 import type { Options as SassOptions } from 'sass'
 import type { Plugin as PostcssPlugin } from 'postcss'
 import type { Options as PugOptions } from 'pug'
+// @ts-ignore
 import type { TerserPluginOptions } from 'terser-webpack-plugin'
 import type { VueLoaderOptions } from 'vue-loader'
 import type {
-  Configuration as WebpackConfiguration, WebpackPluginFunction,
-
+  Configuration as WebpackConfiguration,
+  WebpackPluginFunction,
 } from 'webpack'
 import type { Options as WebpackDevMiddlewareOptions } from 'webpack-dev-middleware'
-import type { MiddlewareOptions as WebpackHotMiddlewareOptions, ClientOptions as WebpackHotMiddlewareClientOptions } from 'webpack-hot-middleware'
+import type {
+  MiddlewareOptions as WebpackHotMiddlewareOptions,
+  ClientOptions as WebpackHotMiddlewareClientOptions,
+} from 'webpack-hot-middleware'
 
 interface WebpackEnv {
   isClient: boolean
@@ -34,21 +40,43 @@ interface Warning {
   name: string
 }
 
-interface BabelOptions extends Pick<TransformOptions, Exclude<keyof TransformOptions, 'presets' | 'plugins'>> {
+interface BabelOptions
+  extends Pick<
+    TransformOptions,
+    Exclude<keyof TransformOptions, 'presets' | 'plugins'>
+  > {
   cacheCompression?: boolean
   cacheDirectory?: boolean
   cacheIdentifier?: string
   customize?: string | null
-  presets?: ((env: BabelPresetEnv & WebpackEnv, defaultPreset: [string, object]) => PluginItem[] | void) | PluginItem[] | null
-  plugins?: ((env: BabelPresetEnv & WebpackEnv) => NonNullable<TransformOptions['plugins']>) | TransformOptions['plugins']
+  presets?:
+    | ((
+      env: BabelPresetEnv & WebpackEnv,
+      defaultPreset: [string, object]
+    ) => PluginItem[] | void)
+    | PluginItem[]
+    | null
+  plugins?:
+    | ((
+      env: BabelPresetEnv & WebpackEnv
+    ) => NonNullable<TransformOptions['plugins']>)
+    | TransformOptions['plugins']
 }
 
 type CssLoaderUrlFunction = (url: string, resourcePath: string) => boolean
-type CssLoaderImportFunction = (parsedImport: string, resourcePath: string) => boolean
+type CssLoaderImportFunction = (
+  parsedImport: string,
+  resourcePath: string
+) => boolean
 type CssLoaderMode = 'global' | 'local'
 interface CssLoaderModulesOptions {
   context?: string
-  getLocalIdent?: (context: string, localIdentName: string, localName: string, options: CssLoaderModulesOptions) => string
+  getLocalIdent?: (
+    context: string,
+    localIdentName: string,
+    localName: string,
+    options: CssLoaderModulesOptions
+  ) => string
   hashPrefix?: string
   localIdentName?: string
   localIdentRegExp?: string | RegExp
@@ -57,7 +85,12 @@ interface CssLoaderModulesOptions {
 interface CssLoaderOptions {
   import?: boolean | CssLoaderImportFunction
   importLoaders?: number
-  localsConvention?: 'asIs' | 'camelCase' | 'camelCaseOnly' | 'dashes' | 'dashesOnly'
+  localsConvention?:
+    | 'asIs'
+    | 'camelCase'
+    | 'camelCaseOnly'
+    | 'dashes'
+    | 'dashesOnly'
   modules?: boolean | CssLoaderMode | CssLoaderModulesOptions
   onlyLocals?: boolean
   sourceMap?: boolean
@@ -86,18 +119,32 @@ interface PostcssVariableMap {
 }
 
 interface PostcssConfiguration {
-  order?: PostcssOrderPreset | string[] | ((names: string[], presets: PostcssOrderPresetFunctions) => string[])
-  plugins?: {
-    [key: string]: false | { [key: string]: any }
-  } | ((loader: any) => PostcssPlugin[]) | Array<[string | PostcssPlugin, any] | string | PostcssPlugin>
+  order?:
+    | PostcssOrderPreset
+    | string[]
+    | ((names: string[], presets: PostcssOrderPresetFunctions) => string[])
+  plugins?:
+    | {
+      [key: string]: false | { [key: string]: any }
+    }
+    | ((loader: any) => PostcssPlugin[])
+    | Array<[string | PostcssPlugin, any] | string | PostcssPlugin>
   preset?: {
     autoprefixer?: false | AutoprefixerOptions
     browsers?: string
-    exportTo?: string | string[] | Partial<PostcssVariableMap> | ((map: PostcssVariableMap) => Partial<PostcssVariableMap>)
+    exportTo?:
+      | string
+      | string[]
+      | Partial<PostcssVariableMap>
+      | ((map: PostcssVariableMap) => Partial<PostcssVariableMap>)
     features?: {
       [key: string]: boolean | { [key: string]: any }
     }
-    importFrom?: string | string[] | Partial<PostcssVariableMap> | (() => Partial<PostcssVariableMap>)
+    importFrom?:
+      | string
+      | string[]
+      | Partial<PostcssVariableMap>
+      | (() => Partial<PostcssVariableMap>)
     insertAfter?: { [key: string]: PostcssPlugin }
     insertBefore?: { [key: string]: PostcssPlugin }
     preserve?: boolean
@@ -173,7 +220,9 @@ export default () => ({
   cssSourceMap: undefined as undefined | boolean,
   devMiddleware: {} as WebpackDevMiddlewareOptions,
   devtools: undefined as undefined | boolean,
-  extend: null as null | ((
+  extend: null as
+  | null
+  | ((
     config: WebpackConfiguration,
     ctx: {
       loaders: Loaders
@@ -191,12 +240,22 @@ export default () => ({
    * Customize bundle filenames.
    */
   filenames: {
-    app: ({ isDev, isModern }: WebpackEnv) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[name].[contenthash:7]${isModern ? '.modern' : ''}.js`,
-    chunk: ({ isDev, isModern }: WebpackEnv) => isDev ? `[name]${isModern ? '.modern' : ''}.js` : `[name].[contenthash:7]${isModern ? '.modern' : ''}.js`,
-    css: ({ isDev }: WebpackEnv) => isDev ? '[name].css' : '[name].[contenthash:7].css',
-    img: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'img/[name].[contenthash:7].[ext]',
-    font: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'fonts/[name].[contenthash:7].[ext]',
-    video: ({ isDev }: WebpackEnv) => isDev ? '[path][name].[ext]' : 'videos/[name].[contenthash:7].[ext]',
+    app: ({ isDev, isModern }: WebpackEnv) =>
+      isDev
+        ? `[name]${isModern ? '.modern' : ''}.js`
+        : `[name].[contenthash:7]${isModern ? '.modern' : ''}.js`,
+    chunk: ({ isDev, isModern }: WebpackEnv) =>
+      isDev
+        ? `[name]${isModern ? '.modern' : ''}.js`
+        : `[name].[contenthash:7]${isModern ? '.modern' : ''}.js`,
+    css: ({ isDev }: WebpackEnv) =>
+      isDev ? '[name].css' : '[name].[contenthash:7].css',
+    img: ({ isDev }: WebpackEnv) =>
+      isDev ? '[path][name].[ext]' : 'img/[name].[contenthash:7].[ext]',
+    font: ({ isDev }: WebpackEnv) =>
+      isDev ? '[path][name].[ext]' : 'fonts/[name].[contenthash:7].[ext]',
+    video: ({ isDev }: WebpackEnv) =>
+      isDev ? '[path][name].[ext]' : 'videos/[name].[contenthash:7].[ext]',
   },
   /**
    * By default, the build process does not scan files inside symlinks. This boolean includes them, thus allowing usage of symlinks inside folders such as the "pages" folder, for example.
@@ -209,7 +268,9 @@ export default () => ({
    */
   friendlyErrors: true,
   hardSource: false,
-  hotMiddleware: {} as WebpackHotMiddlewareOptions & { client?: WebpackHotMiddlewareClientOptions },
+  hotMiddleware: {} as WebpackHotMiddlewareOptions & {
+    client?: WebpackHotMiddlewareClientOptions
+  },
   html: {
     /**
      * Configuration for the [html-minifier plugin](https://github.com/kangax/html-minifier) used to minify HTML files created during the build process (will be applied for all modes).
@@ -359,11 +420,12 @@ export default () => ({
    */
   terser: {} as TerserPluginOptions | boolean,
   // Name of NPM packages to be transpiled
-  transpile: [] as Array<string | RegExp | ((context: WebpackEnv) => string | RegExp | undefined)>,
+  transpile: [] as Array<
+    string | RegExp | ((context: WebpackEnv) => string | RegExp | undefined)
+  >,
   warningIgnoreFilters: [] as Array<(warn: Warning) => boolean>,
   /**
    * You can provide your custom files to watch and regenerate after changes. This feature is specially useful for using with modules.
    */
   watch: [] as string[],
-
 })

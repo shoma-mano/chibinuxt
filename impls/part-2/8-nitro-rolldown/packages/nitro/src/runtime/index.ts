@@ -1,1 +1,1 @@
-export { defineRenderer } from './internal/render'
+export { defineRenderHandler } from './internal/render'

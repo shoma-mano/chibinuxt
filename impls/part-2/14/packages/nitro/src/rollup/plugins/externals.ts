@@ -21,7 +21,7 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       }
 
       // Resolve relative paths and exceptions
-      if (id.startsWith('.') || opts.ignore.find(i => id.startsWith(i))) {
+      if (id.startsWith('.') || opts.ignore!.find(i => id.startsWith(i))) {
         return null
       }
 
@@ -33,14 +33,14 @@ export function externals(opts: NodeExternalsOptions): Plugin {
       // }
 
       try {
-        resolvedExternals[id] = require.resolve(id, {
+        (resolvedExternals as any)[id] = require.resolve(id, {
           paths: opts.moduleDirectories,
         })
       }
       catch (_err) {}
 
       return {
-        id: isAbsolute(id) ? relative(opts.outDir, id) : id,
+        id: isAbsolute(id) ? relative(opts.outDir!, id) : id,
         external: true,
       }
     },

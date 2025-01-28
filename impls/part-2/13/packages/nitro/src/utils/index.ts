@@ -95,7 +95,7 @@ export function detectTarget() {
 
 export async function isDirectory(path: string) {
   try {
-    return (await fse.stat(path)).isDirectory()
+    return statSync(path).isDirectory()
   }
   catch (_err) {
     return false

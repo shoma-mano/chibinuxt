@@ -30,19 +30,22 @@ export async function generate(nitroContext: NitroContext) {
   consola.start('Generating public...')
 
   const clientDist = resolve(nitroContext._nuxt.buildDir, 'dist/client')
-  if (await isDirectory(clientDist)) {
-    await cpSync(
-      clientDist,
-      join(nitroContext.output.publicDir, nitroContext._nuxt.publicPath),
-    )
-  }
+  cpSync(
+    clientDist,
+    join(nitroContext.output.publicDir, nitroContext._nuxt.publicPath),
+    {
+      recursive: true,
+    },
+  )
 
   const staticDir = resolve(
     nitroContext._nuxt.srcDir,
     nitroContext._nuxt.staticDir,
   )
   if (await isDirectory(staticDir)) {
-    cpSync(staticDir, nitroContext.output.publicDir)
+    cpSync(staticDir, nitroContext.output.publicDir, {
+      recursive: true,
+    })
   }
 
   consola.success(
