@@ -7,6 +7,9 @@
     "nuxi": "dist/bin.mjs"
   },
   "exports": {
+    ".": {
+      "import": "./dist/index.mjs"
+    },
     "./vite": {
       "import": "./dist/vite/index.mjs"
     }

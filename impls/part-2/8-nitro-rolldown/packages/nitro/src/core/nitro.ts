@@ -1,5 +1,5 @@
-import { loadOptions } from '../config/loader'
-import type { Nitro, NitroConfig } from '../types/nitro'
+import type { Nitro, NitroConfig } from 'nitro/types'
+import { loadOptions } from './config/loader'
 
 export const createNitro = async (config: NitroConfig = {}) => {
   const options = await loadOptions(config)

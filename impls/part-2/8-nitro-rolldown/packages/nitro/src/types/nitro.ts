@@ -14,3 +14,7 @@ export interface NitroOptions {
 export interface NitroConfig extends DeepPartial<NitroOptions> {
   preset?: string
 }
+
+export interface NitroPreset extends NitroConfig {
+  name: string
+}

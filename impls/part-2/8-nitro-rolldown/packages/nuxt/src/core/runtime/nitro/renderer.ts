@@ -3,8 +3,8 @@ import { readFileSync } from 'node:fs'
 import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
-import { distDir } from '../../../index.mjs'
 
+const distDir = join(import.meta.dirname, '../../')
 let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async () => {
   if (renderer) return renderer

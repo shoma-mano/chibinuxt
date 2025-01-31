@@ -1,6 +1,6 @@
 import { loadConfig } from 'c12'
-import type { NitroConfig, NitroOptions } from '../types/nitro'
-import { resolvePreset } from '../presets/resolve'
+import { resolvePreset } from 'nitro/presets'
+import type { NitroConfig, NitroOptions } from 'nitro/types'
 
 export const loadOptions = async (
   config: NitroConfig,
