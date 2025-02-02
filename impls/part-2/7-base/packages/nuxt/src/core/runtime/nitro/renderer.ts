@@ -3,14 +3,13 @@ import { readFileSync } from 'node:fs'
 import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
-import { distDir } from '../../../index.mjs'
 
 let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async () => {
   if (renderer) return renderer
-  const createApp = await import(join(distDir, 'app', '_entry.server.js')).then(
-    m => m.default,
-  )
+  const createApp = await import(
+    join(process.env.APP_DIST_DIR!, '_entry.server.js')
+  ).then(m => m.default)
   renderer = createRenderer(createApp, {
     renderToString,
     manifest: {},
@@ -21,7 +20,10 @@ const getRenderer = async () => {
 export default defineRenderHandler(async event => {
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
-    const code = readFileSync(join(distDir, 'app', '_entry.client.js'), 'utf-8')
+    const code = readFileSync(
+      join(process.env.APP_DIST_DIR!, '_entry.client.js'),
+      'utf-8',
+    )
     res.setHeader('Content-Type', 'application/javascript')
     res.end(code)
     return { statusCode: 200, statusMessage: 'OK', headers: {} }

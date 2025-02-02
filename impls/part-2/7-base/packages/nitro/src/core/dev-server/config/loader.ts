@@ -1,4 +1,4 @@
-import type { NitroConfig, NitroOptions } from '../types/nitro'
+import type { NitroConfig, NitroOptions } from 'nitro/types'
 
 export const loadOptions = async (
   config: NitroConfig,
