@@ -28,10 +28,10 @@ const createNuxt = (options: NuxtOptions): Nuxt => {
 export const loadNuxt = async () => {
   const options = loadNuxtConfig()
   options.appDir = join(distDir, 'app')
+  // this is temporary workaround for telling renderer where to find the distDir
+  process.env.APP_DIST_DIR = options.appDir
   const nuxt = createNuxt(options)
   await initNitro(nuxt)
   await bundle(nuxt)
-  // this is temporary workaround
-  process.env.APP_DIST_DIR = options.appDir
   return nuxt
 }

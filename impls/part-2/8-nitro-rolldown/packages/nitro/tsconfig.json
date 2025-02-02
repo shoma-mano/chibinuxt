@@ -27,7 +27,8 @@
       // Types
       "nitro/types": ["./src/types"],
       "nitro/runtime": ["./src/runtime"],
-      "nitro/rolldown": ["./src/rolldown"]
+      "nitro/rolldown": ["./src/rolldown"],
+      "#nitro-internal-virtual/*": ["./src/types/virtual/*"]
     }
   },
   "exclude": ["dist"]

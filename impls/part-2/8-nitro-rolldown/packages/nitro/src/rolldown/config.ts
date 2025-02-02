@@ -31,16 +31,15 @@ export const getRolldownConfig = (nitro: Nitro) => {
       '#nitro-internal-virtual/server-handlers': () => {
         const handlers = [
           {
-            route: '**',
+            route: '/**',
             handler: nitro.options.renderer,
           },
         ]
-        console.log('nitro.options.renderer', nitro.options.renderer)
         return `
         import renderer from '${nitro.options.renderer}'
 
         export const handlers = [
-        // ${handlers.map(h => `{route: '${h.route}', handler: ${h.handler}}`).join(',')}
+          ${handlers.map(h => `{route: '${h.route}', handler: renderer}`).join(',')}
         ]
       `
       },
