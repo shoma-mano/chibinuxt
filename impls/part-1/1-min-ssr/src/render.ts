@@ -1,7 +1,7 @@
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
 import { h, createApp } from 'vue'
-import { defineEventHandler } from 'h3'
+import { eventHandler } from 'h3'
 
 const _createApp = () => {
   const app = createApp({
@@ -13,7 +13,7 @@ const renderer = createRenderer(_createApp, {
   renderToString,
   manifest: {},
 })
-export const renderMiddleware = defineEventHandler(async (event) => {
+export const renderMiddleware = eventHandler(async event => {
   const { res } = event.node
   const rendered = await renderer.renderToString({})
   const data = renderHTML(rendered)
