@@ -1,3 +1,4 @@
+import type { NitroDevEventHandler } from './handlers'
 import type { DeepPartial } from './utils'
 
 export interface Nitro {
@@ -7,6 +8,7 @@ export interface Nitro {
 export interface NitroOptions {
   entry: string
   renderer?: string
+  devHandlers: NitroDevEventHandler[]
   output?: {
     serverDir?: string
   }

@@ -11,10 +11,21 @@ export const loadOptions = async (
 
 const _loadUserConfig = async (configOverrides: NitroConfig = {}) => {
   const presetOverride = configOverrides.preset || 'nitro-dev'
-  const preset = resolvePreset(presetOverride)
+  // const preset = resolvePreset(presetOverride)
   const loadedConfig = await loadConfig<NitroConfig>({
-    overrides: configOverrides,
-    defaults: preset,
+    extend: { extendKey: ['preset'] },
+    overrides: {
+      ...configOverrides,
+      preset: presetOverride,
+    },
+    resolve(id) {
+      const config = resolvePreset(id)
+      if (config) {
+        return {
+          config,
+        }
+      }
+    },
   })
   return loadedConfig.config as NitroOptions
 }
