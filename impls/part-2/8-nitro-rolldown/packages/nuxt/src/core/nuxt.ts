@@ -33,8 +33,5 @@ export const loadNuxt = async () => {
   const nitro = await initNitro(nuxt)
   await bundle(nuxt)
   await build(nitro)
-
-  // this is temporary workaround
-  process.env.APP_DIST_DIR = options.appDir
   return nuxt
 }

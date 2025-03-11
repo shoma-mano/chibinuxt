@@ -5,7 +5,6 @@ import { handlers } from '#nitro-internal-virtual/server-handlers'
 function createNitroApp(): NitroApp {
   const h3App = createApp()
   const router = createRouter()
-  console.log('handlers', handlers)
   handlers.forEach(({ route, handler }) => {
     router.use(route, handler)
   })

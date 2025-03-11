@@ -18,6 +18,4 @@ export async function buildServer(ctx: ViteBuildContext) {
     },
   } satisfies UserConfig)
   await build(severConfig)
-
-  console.log('Build completed successfully!')
 }
