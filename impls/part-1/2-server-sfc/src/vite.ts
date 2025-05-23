@@ -17,6 +17,7 @@ export const build = async () => {
           preserveEntrySignatures: 'exports-only',
           treeshake: false,
         },
+        minify: false,
       },
     })
     console.log('Build completed successfully!')
