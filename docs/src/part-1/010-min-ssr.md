@@ -10,7 +10,8 @@ So, let's create a renderer using `vue-bundle-renderer/runtime`.
 
 `render.ts`
 
-```ts typescript
+```ts
+import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from "vue/server-renderer";
 import { h, createApp } from "vue";
 
