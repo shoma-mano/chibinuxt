@@ -12,6 +12,7 @@ export const defineRenderHandler = async (_renderer: RenderHandler) => {
 export const renderMiddleware = defineEventHandler(async event => {
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
+    // temporary specified environment variable
     const code = readFileSync(
       join(process.env.APP_DIST_DIR!, 'entry.client.js'),
       'utf-8',

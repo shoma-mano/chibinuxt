@@ -1,1 +1,1 @@
-client 側もビルドして vue が動くようにする
+initNitro、createNuxtなどを実装して、本家に近づける
