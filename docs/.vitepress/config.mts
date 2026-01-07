@@ -35,6 +35,7 @@ export default defineConfig({
         base: '/part-2/',
         items: [
           { text: '2-1 SPLIT PKG', link: '050-split-into-packages' },
+          { text: '2-2 BUILD', link: '060-build' },
         ],
       },
     ],

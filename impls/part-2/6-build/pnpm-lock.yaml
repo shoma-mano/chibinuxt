@@ -6,6 +6,8 @@ settings:
 
 importers:
 
+  .: {}
+
   packages/nitro:
     dependencies:
       h3:

@@ -377,8 +377,8 @@ code {
 
 /* ===== SELECTION ===== */
 ::selection {
-  background: var(--retro-green);
-  color: #0f172a;
+  background: var(--retro-cyan);
+  color: #ffffff;
 }
 
 /* ===== SUBTLE RETRO ACCENTS ===== */

@@ -5,7 +5,7 @@ Full Code is available at [3-client-sfc](https://github.com/shoma-mano/chibinuxt
 
 ## First, create a entry.client.ts
 
-`entry.client.ts`
+[`entry.client.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/3-client-sfc/src/entry.client.ts)
 
 ```ts
 import { createSSRApp } from 'vue'
@@ -22,7 +22,7 @@ initApp().catch(console.error)
 
 We will use `mergeConfig` to merge defaultConfig and config specific to client and server as it is used in Nuxt.
 
-`vite.ts`
+[`vite.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/3-client-sfc/src/vite.ts)
 
 ```ts
 import { join } from 'node:path'
@@ -81,7 +81,7 @@ export const build = async () => {
 
 ## Add a id and script to html to mount the app in client side
 
-`render.ts`
+[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/3-client-sfc/src/render.ts)
 
 ```ts{9-10}
 function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
@@ -102,7 +102,7 @@ function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
 
 ## Serve client.entry.js script in specific route request
 
-`render.ts`
+[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/3-client-sfc/src/render.ts)
 
 ```ts{5-12}
 export const renderMiddleware = defineEventHandler(async (event) => {

@@ -39,7 +39,7 @@ The `playground` package is a place where users can develop their applications u
 
 To mirror original, we will implement `createDevServer` and `defineRenderer` in `nitro` package.
 
-`server.ts`
+[`server.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nitro/src/core/dev-server/server.ts)
 
 ```ts
 export const createDevServer = () => {
@@ -55,7 +55,7 @@ export const createDevServer = () => {
 }
 ```
 
-`renderer.ts`
+[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nitro/src/runtime/render.ts)
 
 ```ts
 import { join } from 'node:path'
@@ -87,11 +87,11 @@ export const renderMiddleware = defineEventHandler(async event => {
 
 To call `defineRenderHandler`, create `setupRenderer` function in `nuxt` package.
 
-`render.ts`
+[`renderer.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/core/runtime/nitro/renderer.ts)
 
 ```ts
 import { join } from 'node:path'
-import { defineRenderHandler } from 'nitro'
+import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
 
@@ -161,13 +161,13 @@ function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
 Call `setupRenderer` in `nuxt.ts`.
 And this is temporary way, but We will use `process.env.APP_DIST_DIR` to specify the directory where the entry file is located for now.
 
-`nuxt.ts`
+[`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/core/nuxt.ts)
 
-```ts{4}
+```ts{3}
 export const loadNuxt = async () => {
-  await bundle()
   // this is temporary way
-  process.env.APP_DIST_DIR = join(distDir, 'app')
+  process.env.APP_DIST_DIR = join(import.meta.dirname, '../../../../playground/.nitro')
+  await bundle()
   setupRenderer()
   const server = createDevServer()
   return { server }
@@ -181,7 +181,7 @@ export const loadNuxt = async () => {
 To make it possible for users to access nuxt, we will create nuxi as a interface to nuxt.
 nuxi is sometimes thought of as a short name for Nuxt CLI, but it also means [Nuxt Interface](https://github.com/nuxt/cli/discussions/7).
 
-`package.json`
+[`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/package.json)
 
 ```json
 "bin": {
@@ -189,10 +189,10 @@ nuxi is sometimes thought of as a short name for Nuxt CLI, but it also means [Nu
 },
 ```
 
-`bin.ts`
+[`bin.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/bin.ts)
 
 ```ts
-#!/usr/bin/env -S npx tsx
+#!/usr/bin/env bun
 
 import { loadNuxt } from './core/nuxt'
 
@@ -203,7 +203,7 @@ const main = async () => {
 main().catch(console.error)
 ```
 
-we use tsx for shebang in `bin.ts` for now to execute typescript directly from playground.
+we use bun for shebang in `bin.ts` for now to execute typescript directly from playground.
 
 ## Change App.vue path and pages directory path
 
@@ -212,18 +212,18 @@ we use tsx for shebang in `bin.ts` for now to execute typescript directly from p
 Since `App.vue` is located in the playground and not in the same directory, we need to update the paths for `App.vue` and the pages directory.
 We will fix it later, but for now, we will hard code the path to the playground.
 
-`entry.server.ts`  
-`entry.client.ts`
+[`entry.server.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/app/entry.server.ts)
+[`entry.client.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/app/entry.client.ts)
 
 ```ts
 import App from '../../../../playground/App.vue'
 ```
 
-`router.ts`
+[`router.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/app/plugins/router.ts)
 
 ```ts
-import Hello from '../../../../playground/pages/hello.vue'
-import World from '../../../../playground/pages/world.vue'
+import Hello from '../../../../../playground/pages/hello.vue'
+import World from '../../../../../playground/pages/world.vue'
 ```
 
 ## Move App.vue and pages directory to playground

@@ -8,7 +8,7 @@ Full code is available at [1-min-ssr](https://github.com/shoma-mano/chibinuxt/tr
 SSR can be achieved with just `vue`, but Nuxt uses `vue-bundle-renderer/runtime` to create a SSR Renderer.
 So, let's create a renderer using `vue-bundle-renderer/runtime`.
 
-`render.ts`
+[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/1-min-ssr/src/render.ts)
 
 ```ts
 import { createRenderer } from 'vue-bundle-renderer/runtime'
@@ -32,7 +32,7 @@ const renderer = createRenderer(_createApp, {
 
 Nitro uses `h3` as HTTP server, so let's create a h3 middleware that return HTML renderd by vue ssr renderer.
 
-`render.ts`
+[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/1-min-ssr/src/render.ts)
 
 ```ts
 export const renderMiddleware = eventHandler(async event => {
@@ -85,7 +85,7 @@ function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
 
 Finally, let's register the render middleware to the h3.
 
-`main.ts`
+[`main.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/1-min-ssr/src/main.ts)
 
 ```ts
 import { createServer } from 'node:http'
