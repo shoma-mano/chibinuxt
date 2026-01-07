@@ -2,6 +2,8 @@
   "name": "chibinuxt",
   "license": "MIT",
   "scripts": {
-    "build": "pnpm --filter './packages/**' prepack"
+    "start": "pnpm build && pnpm install && pnpm dev",
+    "build": "pnpm --filter './packages/**' prepack",
+    "dev": "cd ./playground && pnpm dev"
   }
 }
