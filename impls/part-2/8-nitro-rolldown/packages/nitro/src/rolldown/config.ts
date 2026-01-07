@@ -25,7 +25,7 @@ export const getRolldownConfig = (nitro: Nitro) => {
   }) as _RolldownOptions
 
   // externals (file:// URL で解決)
-  // パスに変換する事で、.nitroからnitroのパッケージ内にあるモジュールを解決できるようにする
+  // module名からパスに変換する事で、playground/.nitro/devからnitroのパッケージ内にあるモジュールを解決できるようにする
   const externalModules = ['vue-bundle-renderer/runtime', 'vue/server-renderer']
   config.plugins.push({
     name: 'nitro-externals',
