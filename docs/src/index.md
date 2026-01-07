@@ -168,7 +168,7 @@ features:
 }
 
 .getting-started {
-  max-width: 1100px;
+  max-width: 1152px;
   margin: 60px auto 0;
   padding: 0 24px;
 }
@@ -191,6 +191,7 @@ features:
 .getting-started :deep(div[class*="language-"]) {
   border-radius: 8px;
 }
+
 </style>
 
 <div class="getting-started">

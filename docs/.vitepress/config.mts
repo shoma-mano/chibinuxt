@@ -14,8 +14,7 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'HOME', link: '/' },
-      { text: 'PLAY', link: '/part-1/010-min-ssr' },
+      { text: 'Guide', link: '/part-1/010-min-ssr' },
     ],
 
     logo: '/image.png',
