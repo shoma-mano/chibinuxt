@@ -27,5 +27,8 @@ const _loadUserConfig = async (configOverrides: NitroConfig = {}) => {
       }
     },
   })
-  return loadedConfig.config as NitroOptions
+  const options = loadedConfig.config as NitroOptions
+  // Initialize devHandlers if not set
+  options.devHandlers = options.devHandlers || []
+  return options
 }

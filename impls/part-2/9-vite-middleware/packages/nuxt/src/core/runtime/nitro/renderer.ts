@@ -5,6 +5,8 @@ import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
 
 const distDir = process.env.DIST_DIR!
+const isDev = !!process.env.NUXT_DEV
+
 let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async () => {
   if (renderer) return renderer
@@ -20,7 +22,7 @@ const getRenderer = async () => {
 
 export default defineRenderHandler(async event => {
   const { req, res } = event.node
-  if (req.url === '/entry.client.js') {
+  if (!isDev && req.url === '/entry.client.js') {
     const code = readFileSync(join(distDir, 'app', '_entry.client.js'), 'utf-8')
     res.setHeader('Content-Type', 'application/javascript')
     res.end(code)
@@ -28,7 +30,7 @@ export default defineRenderHandler(async event => {
   }
   const renderer = await getRenderer()
   const rendered = await renderer.renderToString({ url: req.url })
-  const body = renderHTML(rendered)
+  const body = renderHTML(rendered, isDev)
   res.setHeader('Content-Type', 'text/html;charset=UTF-8')
   return {
     body,
@@ -47,27 +49,35 @@ function renderHTML({
   renderResourceHints,
   renderStyles,
   renderScripts,
-}: Rendered) {
+}: Rendered, isDev: boolean) {
   return htmlTemplate({
     HEAD: renderResourceHints() + renderStyles(),
     APP: html + renderScripts(),
+    isDev,
   })
 }
 
 interface HtmlTemplateParams {
   HEAD: string
   APP: string
+  isDev: boolean
 }
-function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
+function htmlTemplate({ HEAD, APP, isDev }: HtmlTemplateParams): string {
+  // In dev mode, use Vite's client entry path
+  const clientEntry = isDev
+    ? '/@fs' + join(distDir, '../src/app/entry.client.ts')
+    : '/entry.client.js'
+
   return `
   <!DOCTYPE html>
   <html>
   <head>
+    ${isDev ? '<script type="module" src="/@vite/client"></script>' : ''}
     ${HEAD}
   </head>
   <body>
     <div id="__nuxt">${APP}</div>
-    <script type="module" src="/entry.client.js"></script>
+    <script type="module" src="${clientEntry}"></script>
   </body>
   </html>
     `

@@ -18,7 +18,7 @@ export const bundle = async (nuxt: Nuxt) => {
         rollupOptions: {
           output: {
             format: 'esm',
-            dir: nuxt.options?.appDir,
+            dir: nuxt.options.appDir,
           },
           preserveEntrySignatures: 'exports-only',
           treeshake: false,

@@ -1,6 +1,7 @@
 import { defineConfig, type RolldownOptions, type Plugin } from 'rolldown'
 import type { Nitro } from 'nitro/types'
 import * as unenv from 'unenv'
+import { resolvePath, normalizeid } from 'mlly'
 import { virtual } from './plugins/virtual'
 
 export const getRolldownConfig = (nitro: Nitro) => {
@@ -15,8 +16,6 @@ export const getRolldownConfig = (nitro: Nitro) => {
       'node:http',
       'node:fs',
       'node:path',
-      'vue-bundle-renderer/runtime',
-      'vue/server-renderer',
       ...env.external,
     ],
     plugins: [],
@@ -24,6 +23,19 @@ export const getRolldownConfig = (nitro: Nitro) => {
       __VUE_OPTIONS_API__: 'true',
     },
   }) as _RolldownOptions
+
+  // externals (file:// URL で解決)
+  // パスに変換する事で、.nitroからnitroのパッケージ内にあるモジュールを解決できるようにする
+  const externalModules = ['vue-bundle-renderer/runtime', 'vue/server-renderer']
+  config.plugins.push({
+    name: 'nitro-externals',
+    async resolveId(id) {
+      if (externalModules.includes(id)) {
+        const resolved = await resolvePath(id, { url: import.meta.url })
+        return { id: normalizeid(resolved), external: true }
+      }
+    },
+  })
 
   // handlers
   config.plugins.push(

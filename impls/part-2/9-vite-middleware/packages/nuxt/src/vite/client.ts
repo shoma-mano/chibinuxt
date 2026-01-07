@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { mergeConfig, type UserConfig, build } from 'vite'
+import { mergeConfig, type UserConfig, build, createServer, type Connect } from 'vite'
 import type { ViteBuildContext } from './build'
 
 export async function buildClient(ctx: ViteBuildContext) {
@@ -17,5 +17,34 @@ export async function buildClient(ctx: ViteBuildContext) {
       'import.meta.server': false,
     },
   } satisfies UserConfig)
-  await build(clientConfig)
+
+  if (ctx.nuxt.options.dev) {
+    // Dev mode: create Vite dev server as middleware
+    const devConfig = mergeConfig(clientConfig, {
+      server: {
+        middlewareMode: true,
+        hmr: {
+          // Use separate port for HMR WebSocket since httpServer is created later
+          protocol: 'ws',
+          host: 'localhost',
+          port: 24678,
+          clientPort: 24678,
+        },
+      },
+    })
+    const viteServer = await createServer(devConfig)
+
+    const viteMiddleware: Connect.NextHandleFunction = (req, res, next) => {
+      viteServer.middlewares.handle(req, res, next)
+    }
+
+    await ctx.nuxt.callHook('server:devMiddleware', viteMiddleware)
+
+    ctx.nuxt.hook('close', async () => {
+      await viteServer.close()
+    })
+  } else {
+    // Production mode: build
+    await build(clientConfig)
+  }
 }
