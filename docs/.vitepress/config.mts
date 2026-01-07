@@ -3,50 +3,46 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'chibinuxt',
-  description: 'A VitePress Site',
+  description: 'Build Your Own Nuxt - A Retro Adventure',
   srcDir: 'src',
-  head: [['link', { rel: 'icon', type: 'image/png', href: '/image.png' }]],
+  head: [
+    ['link', { rel: 'icon', type: 'image/png', href: '/image.png' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    ['link', { href: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap', rel: 'stylesheet' }],
+  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Play', link: '/part-1/010-min-ssr' },
+      { text: 'HOME', link: '/' },
+      { text: 'PLAY', link: '/part-1/010-min-ssr' },
     ],
 
     logo: '/image.png',
 
     sidebar: [
       {
-        text: 'Part I',
+        text: 'WORLD 1',
         base: '/part-1/',
         items: [
-          { text: '010-min-ssr', link: '010-min-ssr' },
-          {
-            text: '020-server-sfc',
-            link: '020-server-sfc',
-          },
-          {
-            text: '030-client-sfc',
-            link: '030-client-sfc',
-          },
-          {
-            text: '040-router',
-            link: '040-router',
-          },
+          { text: '1-1 MIN SSR', link: '010-min-ssr' },
+          { text: '1-2 SERVER SFC', link: '020-server-sfc' },
+          { text: '1-3 CLIENT SFC', link: '030-client-sfc' },
+          { text: '1-4 ROUTER', link: '040-router' },
         ],
       },
       {
-        text: 'Part Ⅱ',
+        text: 'WORLD 2',
         base: '/part-2/',
         items: [
-          { text: '050-split-into-packages', link: '050-split-into-packages' },
+          { text: '2-1 SPLIT PKG', link: '050-split-into-packages' },
         ],
       },
     ],
 
     footer: {
-      copyright: `Copyright © 2024-${new Date().getFullYear()} shoma`,
-      message: 'Released under the MIT License.',
+      copyright: `© 2024-${new Date().getFullYear()} SHOMA`,
+      message: 'GAME OVER? TRY AGAIN!',
     },
 
     socialLinks: [
