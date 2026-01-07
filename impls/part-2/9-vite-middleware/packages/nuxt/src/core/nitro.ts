@@ -5,12 +5,8 @@ import { distDir } from '../dir'
 import type { Nuxt } from './nuxt'
 
 export const initNitro = async (nuxt: Nuxt) => {
-  const rendererPath = nuxt.options.dev
-    ? resolve(distDir, 'core/runtime/nitro/dev-renderer.js')
-    : resolve(distDir, 'core/runtime/nitro/renderer.js')
-
   const nitro = await createNitro({
-    renderer: rendererPath,
+    renderer: resolve(distDir, 'core/runtime/nitro/renderer.js'),
   })
 
   // Hook to register dev middleware
