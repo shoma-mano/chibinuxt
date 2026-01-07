@@ -5,13 +5,7 @@ The full code is available at [6-build](https://github.com/shoma-mano/chibinuxt/
 
 ## Why do we need a build step?
 
-In the previous section, we ran `npx nuxi` directly with TypeScript files using `bun` as a shebang. While this works for development, it has several problems:
-
-1. **Performance**: Running TypeScript directly with bun adds overhead for transpilation on every execution.
-2. **Dependency resolution**: When the nuxt package is installed as a dependency, the internal structure and paths need to be properly resolved.
-3. **Production readiness**: Published npm packages should ship pre-built JavaScript files, not raw TypeScript.
-
-In actual Nuxt, the framework is pre-built before being published, and users run the compiled JavaScript. We'll mirror this approach using `unbuild`.
+In actual Nuxt, the framework is pre-built using [unbuild](https://github.com/unjs/unbuild) before being published. We'll mirror this approach to make chibinuxt closer to the real Nuxt.
 
 ## Implementing the build step
 
