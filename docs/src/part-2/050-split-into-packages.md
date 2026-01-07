@@ -15,11 +15,7 @@ If you are not familiar with `pnpm workspace`, here are the key points to unders
 
 ## What we don't cover here
 
-- **About Directory structure**
-  Please refer to [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-packages).
-
-- **About Each package's dependencies**
-  We don't explain what dependencies are listed in each package's `package.json` here, so please refer to [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-packages). If you have a question about why `vue` must be installed in `playground`, we explain it in the [Deep Dive](#deep-dive) section.
+We don't cover the directory structure or each package's dependencies in this section. Please refer to [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-packages) for details.
 
 ## Before we start
 
@@ -36,7 +32,6 @@ The `nuxt` package is responsible for transpiling SFCs to JavaScript files that 
 ### playground
 
 The `playground` package is a place where users can develop their applications using Nuxt and Nitro without needing to know how they work internally.
-In other words, it is a place for developing web applications using Nuxt, just like how we usually develop web applications with Nuxt.
 
 ## Setup Renderer
 
