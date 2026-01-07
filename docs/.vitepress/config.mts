@@ -42,7 +42,6 @@ export default defineConfig({
 
     footer: {
       copyright: `© 2024-${new Date().getFullYear()} SHOMA`,
-      message: 'GAME OVER? TRY AGAIN!',
     },
 
     socialLinks: [

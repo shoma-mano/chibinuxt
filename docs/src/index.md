@@ -25,7 +25,7 @@ features:
     icon:
       src: /satake-risu.png
     details: Implement HMR and Dev Server integration
-  - title: Modules
+  - title: Nuxt Modules
     icon:
       src: /satake-nezumi.png
     details: Explore how the module system works
@@ -86,17 +86,73 @@ features:
 
 .VPFeature .title {
   margin-top: 0 !important;
-  font-size: 18px !important;
+  font-size: 20px !important;
 }
 
 #VPContent {
   margin-top: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
+}
+
+.VPHome {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .VPHero {
   padding-top: 180px !important;
-  margin-bottom: 15px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.VPHero::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(0, 220, 130, 0.25) 0%, transparent 60%);
+  animation: pulse 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.VPHero::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 65%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(54, 228, 218, 0.2) 0%, transparent 60%);
+  animation: float 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-40px, 30px);
+    opacity: 0.9;
+  }
 }
 
 @media (min-width: 640px) {
@@ -113,7 +169,7 @@ features:
 
 .getting-started {
   max-width: 1100px;
-  margin: 60px auto;
+  margin: 60px auto 0;
   padding: 0 24px;
 }
 
