@@ -22,7 +22,7 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: 'WORLD 1',
+        text: 'PART 1',
         base: '/part-1/',
         items: [
           { text: '1-1 MIN SSR', link: '010-min-ssr' },
@@ -32,7 +32,7 @@ export default defineConfig({
         ],
       },
       {
-        text: 'WORLD 2',
+        text: 'PART 2',
         base: '/part-2/',
         items: [
           { text: '2-1 SPLIT PKG', link: '050-split-into-packages' },

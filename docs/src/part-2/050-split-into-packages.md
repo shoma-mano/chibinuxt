@@ -2,7 +2,7 @@
 
 In this section, we'll split the package we created in the last section into `nuxt` and `nitro`.
 Furthermore, we'll create a playground to make it possible to use `nuxt` and `nitro` in the playground.
-The full code is available at [5-split-into-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-split-into-packages).
+The full code is available at [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-packages).
 
 ::: warning How to separate packages?
 We will use `pnpm workspace` to manage packages as Nuxt3 does.
@@ -15,11 +15,11 @@ If you are not familiar with `pnpm workspace`, here are the key points to unders
 
 ## What we don't cover here
 
-- **About Directory structure**  
-  Please refer to [5-split-into-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-split-into-packages).
+- **About Directory structure**
+  Please refer to [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-packages).
 
-- **About Each package's dependencies**  
-  We don't explain what dependencies are listed in each package's `package.json` here, so please refer to [5-split-into-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-split-into-packages). If you have a question about why `vue` must be installed in `playground`, we explain it in the [Deep Dive](#deep-dive) section.
+- **About Each package's dependencies**
+  We don't explain what dependencies are listed in each package's `package.json` here, so please refer to [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-packages). If you have a question about why `vue` must be installed in `playground`, we explain it in the [Deep Dive](#deep-dive) section.
 
 ## Before we start
 
@@ -68,9 +68,9 @@ import { readFileSync } from 'node:fs'
 import { defineEventHandler } from 'h3'
 import type { H3Event } from 'h3'
 
-let renderer: Renderer
-type Renderer = (event: H3Event) => Promise<void>
-export const defineRenderer = async (_renderer: Renderer) => {
+let renderer: RenderHandler
+type RenderHandler = (event: H3Event) => Promise<void>
+export const defineRenderHandler = async (_renderer: RenderHandler) => {
   renderer = _renderer
 }
 
@@ -90,7 +90,7 @@ export const renderMiddleware = defineEventHandler(async event => {
 
 ##### package: `nuxt`
 
-To call defineRenderHandler, create `setupRenderer` function in `nuxt` package.
+To call `defineRenderHandler`, create `setupRenderer` function in `nuxt` package.
 
 `render.ts`
 

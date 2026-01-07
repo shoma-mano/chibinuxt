@@ -1,6 +1,6 @@
 # 1-4 Router
 
-In this section, we'll integrate Vue Router to enable SSR based on the URL and client-side routing.  
+In this section, we'll integrate Vue Router to enable SSR based on the URL and client-side routing.
 Full Code is available at [4-router](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/4-router)
 
 ## First, create routes in pages directory and add links in App.vue
@@ -27,7 +27,7 @@ Full Code is available at [4-router](https://github.com/shoma-mano/chibinuxt/tre
 
 ```vue
 <script lang="ts" setup>
-import { RouterView, RouterLink } from "vue-router";
+import { RouterView, RouterLink } from 'vue-router'
 </script>
 <template>
   <main>
@@ -51,30 +51,30 @@ import {
   createRouter as _createRouter,
   createMemoryHistory,
   createWebHistory,
-} from "vue-router";
-import Hello from "./pages/hello.vue";
-import World from "./pages/world.vue";
+} from 'vue-router'
+import Hello from './pages/hello.vue'
+import World from './pages/world.vue'
 
 export const createRouter = () => {
   const routes = [
     {
-      path: "/hello",
+      path: '/hello',
       component: Hello,
     },
     {
-      path: "/world",
+      path: '/world',
       component: World,
     },
-  ] satisfies RouteRecordRaw[];
+  ] satisfies RouteRecordRaw[]
   const history = import.meta.server
     ? createMemoryHistory()
-    : createWebHistory();
+    : createWebHistory()
   const router = _createRouter({
     history,
     routes,
-  });
-  return router;
-};
+  })
+  return router
+}
 ```
 
 ## Add build config to enable to use import.meta.server
@@ -85,30 +85,30 @@ export const createRouter = () => {
 const clientConfig = mergeConfig(defaultConfig, {
   build: {
     rollupOptions: {
-      input: join(import.meta.dirname, "entry.client.ts"),
+      input: join(import.meta.dirname, 'entry.client.ts'),
       output: {
-        entryFileNames: "entry.client.js",
+        entryFileNames: 'entry.client.js',
       },
     },
   },
   define: {
-    "import.meta.server": false,
+    'import.meta.server': false,
   },
-} satisfies InlineConfig);
+} satisfies InlineConfig)
 
 const severConfig = mergeConfig(defaultConfig, {
   build: {
     rollupOptions: {
-      input: join(import.meta.dirname, "entry.server.ts"),
+      input: join(import.meta.dirname, 'entry.server.ts'),
       output: {
-        entryFileNames: "entry.server.js",
+        entryFileNames: 'entry.server.js',
       },
     },
   },
   define: {
-    "import.meta.server": true,
+    'import.meta.server': true,
   },
-} satisfies InlineConfig);
+} satisfies InlineConfig)
 ```
 
 `type.d.ts`
@@ -117,7 +117,7 @@ This is necessary to avoid type error, because `import.meta.server` is not defin
 
 ```ts
 interface ImportMeta {
-  server: boolean;
+  server: boolean
 }
 ```
 
@@ -131,13 +131,13 @@ Will explain about ctx later.
 
 ```ts
 export default async (ctx: { url: string }) => {
-  const app = createApp(App);
-  const router = createRouter();
-  router.push(ctx.url);
-  await router.isReady();
-  app.use(router);
-  return app;
-};
+  const app = createSSRApp(App)
+  const router = createRouter()
+  router.push(ctx.url)
+  await router.isReady()
+  app.use(router)
+  return app
+}
 ```
 
 `entry.client.ts`
@@ -146,12 +146,13 @@ On client side, the router automatically picks up initial location from the URL,
 
 ```ts
 const initApp = async () => {
-  const router = createRouter();
-  await router.isReady();
-  const app = createSSRApp(App);
-  app.use(router);
-  app.mount("#__nuxt");
-};
+  const router = createRouter()
+  const app = createSSRApp(App)
+  app.use(router)
+  await router.isReady()
+  app.mount('#__nuxt')
+}
+initApp().catch(console.error)
 ```
 
 ## Pass SSR Context when renderToString is called
@@ -163,23 +164,23 @@ This is the context we received in `entry.server.ts`. So let's modify `render.ts
 
 ```ts{14}
 export const renderMiddleware = defineEventHandler(async (event) => {
-  if (!renderer) await setupRenderer();
+  if (!renderer) await setupRenderer()
 
-  const { req, res } = event.node;
-  if (req.url === "/entry.client.js") {
+  const { req, res } = event.node
+  if (req.url === '/entry.client.js') {
     const code = readFileSync(
-      join(import.meta.dirname, "dist/entry.client.js"),
-      "utf-8"
-    );
-    res.setHeader("Content-Type", "application/javascript");
-    res.end(code);
+      join(import.meta.dirname, 'dist/entry.client.js'),
+      'utf-8',
+    )
+    res.setHeader('Content-Type', 'application/javascript')
+    res.end(code)
   }
 
-  const rendered = await renderer.renderToString({ url: req.url });
-  const data = renderHTML(rendered);
-  res.setHeader("Content-Type", "text/html;charset=UTF-8");
-  res.end(data, "utf-8");
-});
+  const rendered = await renderer.renderToString({ url: req.url })
+  const data = renderHTML(rendered)
+  res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+  res.end(data, 'utf-8')
+})
 ```
 
 ## Run the server
