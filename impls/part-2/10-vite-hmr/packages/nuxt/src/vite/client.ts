@@ -29,11 +29,17 @@ export async function buildClient(ctx: ViteBuildContext) {
   } satisfies UserConfig)
 
   if (ctx.nuxt.options.dev) {
-    // Dev mode: create Vite dev server as middleware (no HMR yet)
+    // Dev mode: create Vite dev server as middleware
     const devConfig = mergeConfig(clientConfig, {
       server: {
         middlewareMode: true,
-        hmr: false,
+        hmr: {
+          // Use separate port for HMR WebSocket since httpServer is created later
+          protocol: 'ws',
+          host: 'localhost',
+          port: 24678,
+          clientPort: 24678,
+        },
       },
     })
     const viteServer = await createServer(devConfig)
@@ -47,8 +53,7 @@ export async function buildClient(ctx: ViteBuildContext) {
     ctx.nuxt.hook('close', async () => {
       await viteServer.close()
     })
-  }
-  else {
+  } else {
     // Production mode: build
     await build(clientConfig)
   }

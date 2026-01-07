@@ -47,6 +47,7 @@ function renderHTML({
   <!DOCTYPE html>
   <html>
   <head>
+    <script type="module" src="/@vite/client"></script>
     ${renderResourceHints()}
     ${renderStyles()}
   </head>

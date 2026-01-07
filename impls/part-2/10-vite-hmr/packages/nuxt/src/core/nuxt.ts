@@ -64,6 +64,8 @@ export const loadNuxt = async () => {
   const nuxt = createNuxt(options)
   const nitro = await initNitro(nuxt)
   await bundle(nuxt)
+
   await build(nitro)
+
   return nuxt
 }
