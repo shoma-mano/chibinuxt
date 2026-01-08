@@ -5,7 +5,7 @@ Furthermore, we'll create a playground to make it possible to use `nuxt` and `ni
 The full code is available at [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/5-packages).
 
 ::: warning How to separate packages?
-We will use `pnpm workspace` to manage packages as Nuxt3 does.
+We will use `pnpm workspace` to manage packages as Nuxt 4 does.
 If you are not familiar with `pnpm workspace`, here are the key points to understand:
 
 - It allows you to install packages in the same repository without publishing them to the npm registry.

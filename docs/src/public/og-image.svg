@@ -1,0 +1,149 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="leaf-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ade80"/>
+      <stop offset="100%" style="stop-color:#16a34a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#0f172a"/>
+
+  <!-- Pixel grid pattern (subtle) -->
+  <defs>
+    <pattern id="pixel-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <rect width="20" height="20" fill="transparent"/>
+      <rect width="1" height="1" fill="#1e293b"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#pixel-grid)" opacity="0.5"/>
+
+  <!-- Decorative pixel blocks - left side -->
+  <rect x="40" y="200" width="16" height="16" fill="#4ade80" opacity="0.3"/>
+  <rect x="60" y="220" width="16" height="16" fill="#22d3ee" opacity="0.2"/>
+  <rect x="80" y="180" width="16" height="16" fill="#4ade80" opacity="0.2"/>
+  <rect x="40" y="400" width="16" height="16" fill="#22d3ee" opacity="0.2"/>
+  <rect x="70" y="420" width="16" height="16" fill="#4ade80" opacity="0.3"/>
+
+  <!-- Decorative pixel blocks - right side -->
+  <rect x="1140" y="200" width="16" height="16" fill="#4ade80" opacity="0.3"/>
+  <rect x="1120" y="230" width="16" height="16" fill="#22d3ee" opacity="0.2"/>
+  <rect x="1100" y="190" width="16" height="16" fill="#4ade80" opacity="0.2"/>
+  <rect x="1140" y="400" width="16" height="16" fill="#22d3ee" opacity="0.2"/>
+  <rect x="1110" y="380" width="16" height="16" fill="#4ade80" opacity="0.3"/>
+
+  <!-- Nuxt Leaf (Pixel art style) - centered above text -->
+  <g transform="translate(540, 80) scale(0.25)">
+    <!-- Main leaf shape with pixels -->
+    <rect x="220" y="0" width="40" height="40" fill="#1e293b"/>
+    <rect x="260" y="0" width="40" height="40" fill="#1e293b"/>
+    <rect x="180" y="40" width="40" height="40" fill="#1e293b"/>
+    <rect x="220" y="40" width="40" height="40" fill="#4ade80"/>
+    <rect x="260" y="40" width="40" height="40" fill="#4ade80"/>
+    <rect x="300" y="40" width="40" height="40" fill="#1e293b"/>
+    <rect x="140" y="80" width="40" height="40" fill="#1e293b"/>
+    <rect x="180" y="80" width="40" height="40" fill="#4ade80"/>
+    <rect x="220" y="80" width="40" height="40" fill="#6ee7a0"/>
+    <rect x="260" y="80" width="40" height="40" fill="#4ade80"/>
+    <rect x="300" y="80" width="40" height="40" fill="#4ade80"/>
+    <rect x="340" y="80" width="40" height="40" fill="#1e293b"/>
+    <rect x="60" y="120" width="40" height="40" fill="#1e293b"/>
+    <rect x="100" y="120" width="40" height="40" fill="#4ade80"/>
+    <rect x="140" y="120" width="40" height="40" fill="#4ade80"/>
+    <rect x="180" y="120" width="40" height="40" fill="#6ee7a0"/>
+    <rect x="220" y="120" width="40" height="40" fill="#4ade80"/>
+    <rect x="260" y="120" width="40" height="40" fill="#6ee7a0"/>
+    <rect x="300" y="120" width="40" height="40" fill="#4ade80"/>
+    <rect x="340" y="120" width="40" height="40" fill="#4ade80"/>
+    <rect x="380" y="120" width="40" height="40" fill="#1e293b"/>
+    <rect x="420" y="120" width="40" height="40" fill="#1e293b"/>
+    <rect x="20" y="160" width="40" height="40" fill="#1e293b"/>
+    <rect x="60" y="160" width="40" height="40" fill="#4ade80"/>
+    <rect x="100" y="160" width="40" height="40" fill="#16a34a"/>
+    <rect x="140" y="160" width="40" height="40" fill="#4ade80"/>
+    <rect x="180" y="160" width="40" height="40" fill="#4ade80"/>
+    <rect x="220" y="160" width="40" height="40" fill="#6ee7a0"/>
+    <rect x="260" y="160" width="40" height="40" fill="#4ade80"/>
+    <rect x="300" y="160" width="40" height="40" fill="#4ade80"/>
+    <rect x="340" y="160" width="40" height="40" fill="#16a34a"/>
+    <rect x="380" y="160" width="40" height="40" fill="#4ade80"/>
+    <rect x="420" y="160" width="40" height="40" fill="#4ade80"/>
+    <rect x="460" y="160" width="40" height="40" fill="#1e293b"/>
+    <rect x="20" y="200" width="40" height="40" fill="#1e293b"/>
+    <rect x="60" y="200" width="40" height="40" fill="#4ade80"/>
+    <rect x="100" y="200" width="40" height="40" fill="#16a34a"/>
+    <rect x="140" y="200" width="40" height="40" fill="#16a34a"/>
+    <rect x="180" y="200" width="40" height="40" fill="#4ade80"/>
+    <rect x="220" y="200" width="40" height="40" fill="#4ade80"/>
+    <rect x="260" y="200" width="40" height="40" fill="#4ade80"/>
+    <rect x="300" y="200" width="40" height="40" fill="#4ade80"/>
+    <rect x="340" y="200" width="40" height="40" fill="#16a34a"/>
+    <rect x="380" y="200" width="40" height="40" fill="#16a34a"/>
+    <rect x="420" y="200" width="40" height="40" fill="#4ade80"/>
+    <rect x="460" y="200" width="40" height="40" fill="#1e293b"/>
+    <rect x="60" y="240" width="40" height="40" fill="#1e293b"/>
+    <rect x="100" y="240" width="40" height="40" fill="#4ade80"/>
+    <rect x="140" y="240" width="40" height="40" fill="#16a34a"/>
+    <rect x="180" y="240" width="40" height="40" fill="#16a34a"/>
+    <rect x="220" y="240" width="40" height="40" fill="#4ade80"/>
+    <rect x="260" y="240" width="40" height="40" fill="#4ade80"/>
+    <rect x="300" y="240" width="40" height="40" fill="#16a34a"/>
+    <rect x="340" y="240" width="40" height="40" fill="#16a34a"/>
+    <rect x="380" y="240" width="40" height="40" fill="#4ade80"/>
+    <rect x="420" y="240" width="40" height="40" fill="#1e293b"/>
+    <rect x="100" y="280" width="40" height="40" fill="#1e293b"/>
+    <rect x="140" y="280" width="40" height="40" fill="#4ade80"/>
+    <rect x="180" y="280" width="40" height="40" fill="#16a34a"/>
+    <rect x="220" y="280" width="40" height="40" fill="#16a34a"/>
+    <rect x="260" y="280" width="40" height="40" fill="#16a34a"/>
+    <rect x="300" y="280" width="40" height="40" fill="#16a34a"/>
+    <rect x="340" y="280" width="40" height="40" fill="#4ade80"/>
+    <rect x="380" y="280" width="40" height="40" fill="#1e293b"/>
+    <rect x="140" y="320" width="40" height="40" fill="#1e293b"/>
+    <rect x="180" y="320" width="40" height="40" fill="#4ade80"/>
+    <rect x="220" y="320" width="40" height="40" fill="#16a34a"/>
+    <rect x="260" y="320" width="40" height="40" fill="#16a34a"/>
+    <rect x="300" y="320" width="40" height="40" fill="#4ade80"/>
+    <rect x="340" y="320" width="40" height="40" fill="#1e293b"/>
+    <rect x="180" y="360" width="40" height="40" fill="#1e293b"/>
+    <rect x="220" y="360" width="40" height="40" fill="#4ade80"/>
+    <rect x="260" y="360" width="40" height="40" fill="#4ade80"/>
+    <rect x="300" y="360" width="40" height="40" fill="#1e293b"/>
+    <rect x="220" y="400" width="40" height="40" fill="#1e293b"/>
+    <rect x="260" y="400" width="40" height="40" fill="#1e293b"/>
+    <rect x="260" y="440" width="20" height="40" fill="#1e293b"/>
+  </g>
+
+  <!-- Title: chibinuxt (pixel style text simulation) -->
+  <text x="600" y="340" text-anchor="middle" font-family="'Courier New', 'Monaco', monospace" font-size="72" font-weight="bold" fill="#4ade80" letter-spacing="8">
+    chibinuxt
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="410" text-anchor="middle" font-family="'Courier New', 'Monaco', monospace" font-size="32" fill="#22d3ee">
+    Build Your Own Nuxt
+  </text>
+
+  <!-- Description -->
+  <text x="600" y="470" text-anchor="middle" font-family="'Courier New', 'Monaco', monospace" font-size="20" fill="#94a3b8">
+    Understand Nuxt internals by building it from scratch
+  </text>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="590" width="1200" height="4" fill="#4ade80" opacity="0.6"/>
+
+  <!-- GitHub URL -->
+  <text x="600" y="570" text-anchor="middle" font-family="'Courier New', 'Monaco', monospace" font-size="16" fill="#64748b">
+    github.com/shoma-mano/chibinuxt
+  </text>
+
+  <!-- Pixel border corners -->
+  <rect x="20" y="20" width="40" height="4" fill="#4ade80"/>
+  <rect x="20" y="20" width="4" height="40" fill="#4ade80"/>
+  <rect x="1140" y="20" width="40" height="4" fill="#4ade80"/>
+  <rect x="1176" y="20" width="4" height="40" fill="#4ade80"/>
+  <rect x="20" y="606" width="40" height="4" fill="#4ade80"/>
+  <rect x="20" y="590" width="4" height="20" fill="#4ade80"/>
+  <rect x="1140" y="606" width="40" height="4" fill="#4ade80"/>
+  <rect x="1176" y="590" width="4" height="20" fill="#4ade80"/>
+</svg>
