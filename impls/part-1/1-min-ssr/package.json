@@ -2,6 +2,9 @@
   "name": "nuxt-framework",
   "private": "true",
   "license": "MIT",
+  "scripts": {
+    "start": "bun src/main.ts"
+  },
   "dependencies": {
     "@types/node": "^22.10.2",
     "h3": "^1.13.0",

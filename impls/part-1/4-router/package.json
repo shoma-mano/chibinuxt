@@ -3,6 +3,9 @@
   "private": "true",
   "type": "module",
   "license": "MIT",
+  "scripts": {
+    "start": "bun src/main.ts"
+  },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "h3": "^1.13.0",
