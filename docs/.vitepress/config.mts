@@ -35,7 +35,7 @@ export default defineConfig({
           { text: '03 CLIENT SFC', link: '/030-client-sfc' },
           { text: '04 ROUTER', link: '/040-router' },
           { text: '05 SPLIT PKG', link: '/050-split-into-packages' },
-          { text: '06 BUILD', link: '/060-build' },
+          { text: '07 BUILD', link: '/070-build' },
         ],
       },
     ],

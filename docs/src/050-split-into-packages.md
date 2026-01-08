@@ -25,7 +25,7 @@ The server features we created in previous sections are actually part of Nitro. 
 
 ### vite
 
-The `@nuxt/vite-builder` package handles the Vite build process. It bundles client and server entries using Vite.
+The `@nuxt/vite-builder` package handles the Vite build process. It bundles client and server entries using Vite and outputs them to the `.nuxt` directory.
 
 ### nuxt
 
@@ -172,7 +172,7 @@ Key points:
 
 ### bundle
 
-Create `@nuxt/vite-builder` package to handle Vite builds.
+Create `@nuxt/vite-builder` package to handle Vite builds. The build output is written to the `buildDir` (`.nuxt` directory in the playground).
 
 [`build.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/vite/src/build.ts)
 
@@ -181,26 +181,26 @@ import { build as _build, mergeConfig, type InlineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export interface BuildOptions {
-  appDistDir: string
+  buildDir: string
   clientEntry: string
   serverEntry: string
 }
 
 export const bundle = async (options: BuildOptions) => {
-  const { appDistDir, clientEntry, serverEntry } = options
+  const { buildDir, clientEntry, serverEntry } = options
 
   const defaultConfig = {
     plugins: [vue()],
     build: {
+      outDir: buildDir,
+      emptyOutDir: false,
       rollupOptions: {
         output: {
           format: 'esm',
-          dir: appDistDir,
         },
         preserveEntrySignatures: 'exports-only',
         treeshake: false,
       },
-      emptyOutDir: false,
     },
     define: {
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true',
@@ -243,14 +243,15 @@ export const bundle = async (options: BuildOptions) => {
 
 Key points:
 
-- `BuildOptions` interface defines paths for dist directory and entry files
+- `BuildOptions` interface defines `buildDir` for output directory (`.nuxt`) and paths for entry files
+- `outDir: buildDir` outputs both client and server bundles directly to the `.nuxt` directory
 - `ssr: true` is required for server config to properly build SSR bundles
 
 ## Nuxt
 
 ### Renderer
 
-Create the renderer that handles both client entry serving and SSR rendering. This is now a default export using `defineRenderHandler`.
+Create the renderer that handles both client entry serving and SSR rendering. The renderer reads built files from `buildDir` (`.nuxt` directory).
 
 [`renderer.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nuxt/src/core/runtime/nitro/renderer.ts)
 
@@ -260,13 +261,13 @@ import { readFileSync } from 'node:fs'
 import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
-import { appDistDir } from '../../nuxt'
+import { buildDir } from '../../nuxt'
 
 let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async () => {
   if (renderer) return renderer
   const createApp = await import(
-    join(appDistDir!, 'entry.server.js')
+    join(buildDir, 'entry.server.js')
   ).then(m => m.default)
   renderer = createRenderer(createApp, {
     renderToString,
@@ -279,7 +280,7 @@ export default defineRenderHandler(async event => {
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
     const code = readFileSync(
-      join(appDistDir!, 'entry.client.js'),
+      join(buildDir, 'entry.client.js'),
       'utf-8',
     )
     res.setHeader('Content-Type', 'application/javascript')
@@ -336,9 +337,9 @@ function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
 
 Key points:
 
-- The renderer is now a default export using `defineRenderHandler`
+- The renderer is a default export using `defineRenderHandler`
+- Uses `buildDir` (`.nuxt`) to locate built files instead of package dist directory
 - Client entry (`/entry.client.js`) serving is handled in nuxt's renderer, not in nitro
-- Uses `appDistDir` exported from nuxt.ts to locate built files
 
 ### loadNuxt
 
@@ -351,11 +352,11 @@ import { join, resolve } from 'node:path'
 import { createDevServer, createNitro } from 'nitro'
 import { bundle } from '@nuxt/vite-builder'
 
-export const appDistDir = join(import.meta.dirname, '../../dist/app')
+export const buildDir = resolve(process.cwd(), '.nuxt')
 
 export const loadNuxt = async () => {
   await bundle({
-    appDistDir,
+    buildDir,
     clientEntry: join(import.meta.dirname, '../app/entry.client.ts'),
     serverEntry: join(import.meta.dirname, '../app/entry.server.ts'),
   })
@@ -369,7 +370,8 @@ export const loadNuxt = async () => {
 
 Key points:
 
-- `appDistDir` is exported so the renderer can access it
+- `buildDir` is set to `.nuxt` in the current working directory (playground)
+- `buildDir` is exported so the renderer can access it
 - `createNitro` receives the renderer path
 - `createDevServer` receives the nitro instance
 
@@ -432,6 +434,18 @@ You can run the server by running the following command in playground.
 ```sh
 npx nuxi
 ```
+
+## Build Output
+
+After running `npx nuxi`, the Vite build outputs files to the `.nuxt` directory in the playground:
+
+```txt
+playground/.nuxt/
+├── entry.client.js
+└── entry.server.js
+```
+
+This is similar to how the real Nuxt framework outputs build artifacts to the `.nuxt` directory.
 
 ## Deep Dive
 
