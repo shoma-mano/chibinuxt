@@ -14,6 +14,18 @@ export default defineConfig({
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', { href: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap', rel: 'stylesheet' }],
+    // Open Graph
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'chibinuxt' }],
+    ['meta', { property: 'og:title', content: 'chibinuxt - Build Your Own Nuxt' }],
+    ['meta', { property: 'og:description', content: 'Understand Nuxt internals by building it from scratch. A step-by-step implementation guide.' }],
+    ['meta', { property: 'og:image', content: 'https://chibinuxt.vercel.app/og-image.png' }],
+    ['meta', { property: 'og:url', content: 'https://chibinuxt.vercel.app' }],
+    // Twitter Card
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'chibinuxt - Build Your Own Nuxt' }],
+    ['meta', { name: 'twitter:description', content: 'Understand Nuxt internals by building it from scratch. A step-by-step implementation guide.' }],
+    ['meta', { name: 'twitter:image', content: 'https://chibinuxt.vercel.app/og-image.png' }],
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
