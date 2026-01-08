@@ -5,19 +5,20 @@
   "description": "",
   "exports": {
     ".": {
-      "import": "./dist/core/index.mjs"
+      "import": "./dist/index.mjs"
     },
     "./runtime": {
       "import": "./dist/runtime/index.mjs"
+    },
+    "./types": {
+      "import": "./dist/types/index.mjs"
     }
   },
   "scripts": {
     "prepack": "unbuild"
   },
   "dependencies": {
-    "h3": "^1.13.0",
-    "vue": "^3.5.13",
-    "vue-bundle-renderer": "^2.1.1"
+    "h3": "^1.13.0"
   },
   "keywords": [],
   "author": "",

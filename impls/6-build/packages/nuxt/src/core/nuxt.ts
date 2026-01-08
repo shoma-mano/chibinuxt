@@ -1,14 +1,15 @@
-import { join } from 'node:path'
-import { createDevServer } from 'nitro'
+import { join, resolve } from 'node:path'
+import { createDevServer, createNitro } from 'nitro'
 import { bundle } from 'nuxt/vite'
 import { distDir } from '../dir'
-import { setupRenderer } from './runtime/nitro/renderer'
 
 export const loadNuxt = async () => {
-  // this is temporary way
-  process.env.APP_DIST_DIR = join(distDir, 'app')
+  const appDistDir = join(distDir, 'app')
+  process.env.APP_DIST_DIR = appDistDir
   await bundle()
-  setupRenderer()
-  const server = createDevServer()
+  const nitro = await createNitro({
+    renderer: resolve(distDir, 'core/runtime/nitro/renderer.js'),
+  })
+  const server = await createDevServer(nitro)
   return { server }
 }

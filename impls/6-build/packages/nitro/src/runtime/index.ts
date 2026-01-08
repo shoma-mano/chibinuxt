@@ -1,1 +1,2 @@
-export { defineRenderHandler, renderMiddleware } from './render'
+export { defineRenderHandler } from './render'
+export { useNitroApp } from './app'
