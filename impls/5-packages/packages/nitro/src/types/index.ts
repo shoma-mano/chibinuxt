@@ -1,1 +1,2 @@
-export type { Nitro, NitroOptions, NitroConfig, NitroApp } from './nitro'
+export * from './runtime'
+export type { Nitro, NitroOptions, NitroConfig } from './nitro'

@@ -1,9 +1,9 @@
 import { createServer } from 'node:http'
 import { toNodeListener } from 'h3'
-import { useNitroApp } from '../../runtime/app'
-import type { Nitro } from '../../types'
+import type { Nitro } from 'nitro/types'
+import { useNitroApp } from '../runtime/app'
 
-export const createDevServer = async (nitro: Nitro) => {
+export async function createDevServer(nitro: Nitro) {
   const listen = async () => {
     const { h3App } = useNitroApp()
     const renderer = await import(nitro.options.renderer!).then(m => m.default)
