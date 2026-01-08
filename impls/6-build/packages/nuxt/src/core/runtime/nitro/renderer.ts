@@ -5,14 +5,11 @@ import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
 import { buildDir } from 'nuxt'
 
-const clientDir = join(buildDir, 'dist/client')
-const serverDir = join(buildDir, 'dist/server')
-
 let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async () => {
   if (renderer) return renderer
   const createApp = await import(
-    join(serverDir, 'entry.server.js')
+    join(buildDir, 'entry.server.js')
   ).then(m => m.default)
   renderer = createRenderer(createApp, {
     renderToString,
@@ -25,7 +22,7 @@ export default defineRenderHandler(async event => {
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
     const code = readFileSync(
-      join(clientDir, 'entry.client.js'),
+      join(buildDir, 'entry.client.js'),
       'utf-8',
     )
     res.setHeader('Content-Type', 'application/javascript')
