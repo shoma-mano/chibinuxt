@@ -1,7 +1,6 @@
-import { join } from 'node:path'
-import { createDevServer } from 'nitro'
+import { join, resolve } from 'node:path'
+import { createDevServer, createNitro } from 'nitro'
 import { bundle } from '@nuxt/vite-builder'
-import { setupRenderer } from './runtime/nitro/renderer'
 
 export const loadNuxt = async () => {
   // this is temporary way
@@ -12,7 +11,9 @@ export const loadNuxt = async () => {
     clientEntry: join(import.meta.dirname, '../app/entry.client.ts'),
     serverEntry: join(import.meta.dirname, '../app/entry.server.ts'),
   })
-  setupRenderer()
-  const server = createDevServer()
+  const nitro = await createNitro({
+    renderer: resolve(import.meta.dirname, './runtime/nitro/renderer.ts'),
+  })
+  const server = await createDevServer(nitro)
   return { server }
 }

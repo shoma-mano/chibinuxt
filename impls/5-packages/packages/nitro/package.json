@@ -9,6 +9,9 @@
     },
     "./runtime": {
       "import": "./src/runtime/index.ts"
+    },
+    "./types": {
+      "import": "./src/types/index.ts"
     }
   },
   "scripts": {

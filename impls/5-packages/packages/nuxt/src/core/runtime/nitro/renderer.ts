@@ -1,4 +1,5 @@
 import { join } from 'node:path'
+import { readFileSync } from 'node:fs'
 import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
@@ -16,16 +17,25 @@ const getRenderer = async () => {
   return renderer
 }
 
-export const setupRenderer = () => {
-  defineRenderHandler(async event => {
-    const renderer = await getRenderer()
-    const { req, res } = event.node
-    const rendered = await renderer.renderToString({ url: req.url })
-    const data = renderHTML(rendered)
-    res.setHeader('Content-Type', 'text/html;charset=UTF-8')
-    res.end(data, 'utf-8')
-  })
-}
+export default defineRenderHandler(async event => {
+  const { req, res } = event.node
+  if (req.url === '/entry.client.js') {
+    const code = readFileSync(
+      join(process.env.APP_DIST_DIR!, 'entry.client.js'),
+      'utf-8',
+    )
+    res.setHeader('Content-Type', 'application/javascript')
+    res.end(code)
+    return { statusCode: 200, statusMessage: 'OK', headers: {} }
+  }
+  const renderer = await getRenderer()
+  const rendered = await renderer.renderToString({ url: req.url })
+  const body = renderHTML(rendered)
+  res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+  return {
+    body,
+  }
+})
 
 type Rendered = {
   html: string
