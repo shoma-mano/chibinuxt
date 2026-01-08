@@ -2,11 +2,10 @@ import { join, resolve } from 'node:path'
 import { createDevServer, createNitro } from 'nitro'
 import { bundle } from '@nuxt/vite-builder'
 
-export const appDistDir = join(import.meta.dirname, '../../dist/app')
+export const buildDir = resolve(process.cwd(), '.nuxt')
 export const loadNuxt = async () => {
-  // this is temporary way
   await bundle({
-    appDistDir,
+    buildDir,
     clientEntry: join(import.meta.dirname, '../app/entry.client.ts'),
     serverEntry: join(import.meta.dirname, '../app/entry.server.ts'),
   })

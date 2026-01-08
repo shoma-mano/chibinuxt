@@ -3,13 +3,13 @@ import { readFileSync } from 'node:fs'
 import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
-import { appDistDir } from '../../nuxt'
+import { buildDir } from '../../nuxt'
 
 let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async () => {
   if (renderer) return renderer
   const createApp = await import(
-    join(appDistDir!, 'entry.server.js')
+    join(buildDir, 'entry.server.js')
   ).then(m => m.default)
   renderer = createRenderer(createApp, {
     renderToString,
@@ -22,7 +22,7 @@ export default defineRenderHandler(async event => {
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
     const code = readFileSync(
-      join(appDistDir!, 'entry.client.js'),
+      join(buildDir, 'entry.client.js'),
       'utf-8',
     )
     res.setHeader('Content-Type', 'application/javascript')
