@@ -1,0 +1,29 @@
+{
+  "name": "nitro",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts"
+    },
+    "./runtime": {
+      "import": "./src/runtime/index.ts"
+    },
+    "./types": {
+      "import": "./src/types/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "h3": "^1.13.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.1"
+  }
+}
