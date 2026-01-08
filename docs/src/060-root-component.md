@@ -20,9 +20,80 @@ This is problematic because:
 
 The real Nuxt framework uses a template system and virtual modules:
 
-1. **Template Generation**: Nuxt uses `addTemplate()` to generate files at build time
-2. **Virtual File System**: Generated code is served through virtual modules (e.g., `#build/app-component.mjs`)
-3. **Vite Aliases**: Virtual module IDs like `#build/` are aliased to the generated files
+### 1. Template Definition
+
+Nuxt defines templates in [`packages/nuxt/src/core/templates.ts`](https://github.com/nuxt/nuxt/blob/main/packages/nuxt/src/core/templates.ts):
+
+```ts
+export const appComponentTemplate: NuxtTemplate = {
+  filename: 'app-component.mjs',
+  getContents: ctx => genExport(ctx.app.mainComponent!, ['default']),
+}
+
+export const rootComponentTemplate: NuxtTemplate = {
+  filename: 'root-component.mjs',
+  getContents: ctx => genExport(ctx.app.rootComponent!, ['default']),
+}
+```
+
+### 2. App.vue Resolution
+
+The `resolveApp` function in [`packages/nuxt/src/core/app.ts`](https://github.com/nuxt/nuxt/blob/main/packages/nuxt/src/core/app.ts) discovers the user's components:
+
+```ts
+export async function resolveApp (nuxt: Nuxt, app: NuxtApp) {
+  // Resolve main (app.vue)
+  app.mainComponent ||= await findPath(
+    layerDirs.flatMap(d => [join(d.app, 'App'), join(d.app, 'app')])
+  )
+  app.mainComponent ||= resolve(nuxt.options.appDir, 'components/welcome.vue')
+
+  // Resolve root component
+  app.rootComponent ||= await findPath([
+    '~/app.root',
+    resolve(nuxt.options.appDir, 'components/nuxt-root.vue')
+  ])
+}
+```
+
+### 3. Virtual File System
+
+The virtual plugin in [`packages/nuxt/src/core/plugins/virtual.ts`](https://github.com/nuxt/nuxt/blob/main/packages/nuxt/src/core/plugins/virtual.ts) resolves `#build/` imports:
+
+```ts
+load: {
+  filter: { id: PREFIX_RE },
+  handler (id) {
+    const key = withoutQuery(withoutPrefix(decodeURIComponent(id)))
+    return {
+      code: nuxt.vfs[key] || '',
+      map: null,
+    }
+  },
+}
+```
+
+### 4. Usage in Entry and Components
+
+The root component imports from `#build/root-component.mjs` in [`packages/nuxt/src/app/entry.ts`](https://github.com/nuxt/nuxt/blob/main/packages/nuxt/src/app/entry.ts):
+
+```ts
+import RootComponent from '#build/root-component.mjs'
+
+const vueApp = createSSRApp(RootComponent)
+```
+
+And `nuxt-root.vue` imports the app component:
+
+```vue
+<script setup>
+import AppComponent from '#build/app-component.mjs'
+</script>
+
+<template>
+  <AppComponent v-else />
+</template>
+```
 
 For chibinuxt, we'll implement a simplified version using Vite's virtual module plugin.
 

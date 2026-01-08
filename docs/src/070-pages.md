@@ -24,12 +24,76 @@ This is problematic because:
 
 ## How Does Nuxt Framework Solve This?
 
-The real Nuxt framework:
+The real Nuxt framework uses a sophisticated page scanning and route generation system:
 
-1. **Scans the pages directory**: Uses `resolvePagesRoutes()` to discover `.vue` files
-2. **Generates route code**: Uses `normalizeRoutes()` and template generation
-3. **Virtual modules**: Routes are served through `#build/routes` virtual module
-4. **Router imports from virtual**: `import routes from '#build/routes'`
+### 1. Page Scanning
+
+The `resolvePagesRoutes` function in [`packages/nuxt/src/pages/utils.ts`](https://github.com/nuxt/nuxt/blob/main/packages/nuxt/src/pages/utils.ts) scans page directories:
+
+```ts
+export async function resolvePagesRoutes (pattern: string | string[], nuxt = useNuxt()): Promise<NuxtPage[]> {
+  const pagesDirs = getLayerDirectories(nuxt).map(d => d.appPages)
+
+  const scannedFiles: ScannedFile[] = []
+  for (const dir of pagesDirs) {
+    const files = await resolveFiles(dir, pattern)
+    scannedFiles.push(...files.map(file => ({ relativePath: relative(dir, file), absolutePath: file })))
+  }
+
+  const allRoutes = generateRoutesFromFiles(uniqueBy(scannedFiles, 'relativePath'), {
+    shouldUseServerComponents: !!nuxt.options.experimental.componentIslands,
+  })
+
+  return uniqueBy(allRoutes, 'path')
+}
+```
+
+### 2. Route Generation from Files
+
+The `generateRoutesFromFiles` function parses file paths into route segments, handling:
+- Dynamic segments: `[param].vue` → `:param`
+- Optional segments: `[[param]].vue` → `:param?`
+- Catch-all: `[...param].vue` → `:param(.*)*`
+- Route groups: `(groupName)/page.vue`
+
+### 3. Template Generation
+
+The routes template is defined in [`packages/nuxt/src/pages/module.ts`](https://github.com/nuxt/nuxt/blob/main/packages/nuxt/src/pages/module.ts):
+
+```ts
+addTemplate({
+  filename: 'routes.mjs',
+  getContents ({ app }) {
+    if (!app.pages) { return 'export default []' }
+    const { routes, imports } = normalizeRoutes(app.pages, new Set(), {
+      serverComponentRuntime,
+      clientComponentRuntime,
+      overrideMeta: !!nuxt.options.experimental.scanPageMeta,
+    })
+    return [...imports, `export default ${routes}`].join('\n')
+  },
+})
+```
+
+### 4. Route Normalization
+
+The `normalizeRoutes` function converts `NuxtPage` objects to route definitions with:
+- Dynamic imports for page components
+- Server/client component mode switching
+- Static and dynamic metadata merging
+
+### 5. Router Usage
+
+The router imports from `#build/routes`:
+
+```ts
+import routes from '#build/routes'
+
+const router = createRouter({
+  history: import.meta.server ? createMemoryHistory() : createWebHistory(),
+  routes,
+})
+```
 
 We'll implement a simplified version of this pattern.
 
