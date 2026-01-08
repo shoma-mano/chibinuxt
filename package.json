@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs-dev": "cd docs && pnpm dev"
+    "docs-dev": "cd docs && pnpm dev",
+    "pull:ox-content": "git subtree pull --prefix=ox-content ox-content main --squash"
   },
   "keywords": [],
   "author": "",

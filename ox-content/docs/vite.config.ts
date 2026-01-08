@@ -2,55 +2,37 @@ import { defineConfig } from 'vite';
 import { oxContent } from 'vite-plugin-ox-content';
 
 /**
- * Ox Content Documentation Site
+ * chibinuxt Documentation Site
  *
- * Dogfooding: Using ox-content to build ox-content's own documentation.
- * Uses SSG to generate static HTML from Markdown files.
+ * Build Your Own Nuxt - documentation using ox-content
  */
 export default defineConfig(({ mode }) => {
   const isProd = mode === 'production';
-  const base = isProd ? '/ox-content/' : '/';
+  const base = isProd ? '/chibinuxt/' : '/';
 
   return {
-    // Site base path (for GitHub Pages in prod, root for dev)
     base,
 
     plugins: [
       oxContent({
-        srcDir: '.',
-        outDir: 'dist/docs',
+        srcDir: 'src/content',
+        outDir: 'dist',
         base,
 
-      // SSG options
-      ssg: {
-        siteName: 'Ox Content',
-        ogImage: 'https://ubugeeei.github.io/ox-content/og-image.png',
-      },
+        ssg: {
+          siteName: 'chibinuxt',
+          ogImage: 'https://shoma-mano.github.io/chibinuxt/og-image.png',
+        },
 
-      // Enable syntax highlighting with Shiki
-      highlight: true,
-      highlightTheme: 'vitesse-dark',
+        highlight: true,
+        highlightTheme: 'vitesse-dark',
 
-      // Mermaid diagrams disabled (using SVG instead)
-      mermaid: false,
-
-      // API documentation generation (like cargo doc)
-      docs: {
-        enabled: true,
-        src: ['../npm/vite-plugin-ox-content/src'],
-        out: 'api',
-        include: ['**/*.ts'],
-        exclude: ['**/*.test.*'],
-        toc: true,
-        groupBy: 'file',
-        githubUrl: 'https://github.com/ubugeeei/ox-content',
-        generateNav: true,
-      },
-    }),
+        mermaid: false,
+      }),
     ],
 
     build: {
-      outDir: 'dist/docs',
+      outDir: 'dist',
     },
   };
 });

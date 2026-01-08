@@ -1,11 +1,11 @@
 packages:
   - crates/ox_content_napi
-  - crates/ox_content_wasm/pkg
+  # - crates/ox_content_wasm/pkg
   - npm/*
   - docs
   - examples/*
-  - benchmarks/*
-  - benchmarks/bundle-size/apps/*
+  # - benchmarks/*
+  # - benchmarks/bundle-size/apps/*
 
 catalog:
   '@sveltejs/vite-plugin-svelte': ^5.0.0
