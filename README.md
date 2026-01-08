@@ -6,7 +6,7 @@ This project was inspired by [chibivue](https://github.com/chibivue-land/chibivu
 ## Getting Started
 
 ```bash
-cd impls/part-1/1-min-ssr
+cd impls/1-min-ssr
 pnpm install
 pnpm start
 ```

@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /part-1/010-min-ssr
+      link: /010-min-ssr
     - theme: alt
       text: GitHub
       link: https://github.com

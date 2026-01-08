@@ -1,8 +1,8 @@
-# 2-1 Split Package
+# 05 Split Package
 
 In this section, we'll split the package we created in the last section into `nuxt` and `nitro`.
 Furthermore, we'll create a playground to make it possible to use `nuxt` and `nitro` in the playground.
-The full code is available at [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-packages).
+The full code is available at [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/5-packages).
 
 ::: warning How to separate packages?
 We will use `pnpm workspace` to manage packages as Nuxt3 does.
@@ -15,7 +15,7 @@ If you are not familiar with `pnpm workspace`, here are the key points to unders
 
 ## What we don't cover here
 
-We don't cover the directory structure or each package's dependencies in this section. Please refer to [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/5-packages) for details.
+We don't cover the directory structure or each package's dependencies in this section. Please refer to [5-packages](https://github.com/shoma-mano/chibinuxt/tree/main/impls/5-packages) for details.
 
 ## Before we start
 
@@ -39,7 +39,7 @@ The `playground` package is a place where users can develop their applications u
 
 To mirror original, we will implement `createDevServer` and `defineRenderer` in `nitro` package.
 
-[`server.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nitro/src/core/dev-server/server.ts)
+[`server.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nitro/src/core/dev-server/server.ts)
 
 ```ts
 export const createDevServer = () => {
@@ -55,7 +55,7 @@ export const createDevServer = () => {
 }
 ```
 
-[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nitro/src/runtime/render.ts)
+[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nitro/src/runtime/render.ts)
 
 ```ts
 import { join } from 'node:path'
@@ -87,7 +87,7 @@ export const renderMiddleware = defineEventHandler(async event => {
 
 To call `defineRenderHandler`, create `setupRenderer` function in `nuxt` package.
 
-[`renderer.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/core/runtime/nitro/renderer.ts)
+[`renderer.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nuxt/src/core/runtime/nitro/renderer.ts)
 
 ```ts
 import { join } from 'node:path'
@@ -161,7 +161,7 @@ function htmlTemplate({ HEAD, APP }: HtmlTemplateParams): string {
 Call `setupRenderer` in `nuxt.ts`.
 And this is temporary way, but We will use `process.env.APP_DIST_DIR` to specify the directory where the entry file is located for now.
 
-[`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/core/nuxt.ts)
+[`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nuxt/src/core/nuxt.ts)
 
 ```ts{3}
 export const loadNuxt = async () => {
@@ -181,7 +181,7 @@ export const loadNuxt = async () => {
 To make it possible for users to access nuxt, we will create nuxi as a interface to nuxt.
 nuxi is sometimes thought of as a short name for Nuxt CLI, but it also means [Nuxt Interface](https://github.com/nuxt/cli/discussions/7).
 
-[`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/package.json)
+[`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nuxt/package.json)
 
 ```json
 "bin": {
@@ -189,7 +189,7 @@ nuxi is sometimes thought of as a short name for Nuxt CLI, but it also means [Nu
 },
 ```
 
-[`bin.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/bin.ts)
+[`bin.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nuxt/src/bin.ts)
 
 ```ts
 #!/usr/bin/env bun
@@ -212,14 +212,14 @@ we use bun for shebang in `bin.ts` for now to execute typescript directly from p
 Since `App.vue` is located in the playground and not in the same directory, we need to update the paths for `App.vue` and the pages directory.
 We will fix it later, but for now, we will hard code the path to the playground.
 
-[`entry.server.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/app/entry.server.ts)
-[`entry.client.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/app/entry.client.ts)
+[`entry.server.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nuxt/src/app/entry.server.ts)
+[`entry.client.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nuxt/src/app/entry.client.ts)
 
 ```ts
 import App from '../../../../playground/App.vue'
 ```
 
-[`router.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/5-packages/packages/nuxt/src/app/plugins/router.ts)
+[`router.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/5-packages/packages/nuxt/src/app/plugins/router.ts)
 
 ```ts
 import Hello from '../../../../../playground/pages/hello.vue'

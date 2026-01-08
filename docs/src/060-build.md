@@ -1,7 +1,7 @@
-# 2-2 Build
+# 06 Build
 
 In this section, we'll introduce a build step for the nuxt package using `unbuild`.
-The full code is available at [6-build](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-2/6-build).
+The full code is available at [6-build](https://github.com/shoma-mano/chibinuxt/tree/main/impls/6-build).
 
 ## Why do we need a build step?
 
@@ -13,7 +13,7 @@ In actual Nuxt, the framework is pre-built using [unbuild](https://github.com/un
 
 ##### package: `nuxt`
 
-Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/6-build/packages/nuxt/build.config.ts) to configure unbuild:
+Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/build.config.ts) to configure unbuild:
 
 ```ts
 import { defineBuildConfig, type BuildEntry } from 'unbuild'
@@ -56,7 +56,7 @@ Key points:
 
 ##### package: `nuxt`
 
-Update [`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/6-build/packages/nuxt/package.json) to expose the vite module through exports:
+Update [`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/package.json) to expose the vite module through exports:
 
 ```json
 {
@@ -86,7 +86,7 @@ Key changes:
 
 ##### package: `nuxt`
 
-Create [`dir.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/6-build/packages/nuxt/src/dir.ts) to correctly resolve the dist directory after build:
+Create [`dir.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/dir.ts) to correctly resolve the dist directory after build:
 
 ```ts
 import { dirname, join } from 'node:path'
@@ -104,7 +104,7 @@ When unbuild bundles the code, some files may end up in `chunks` or `shared` sub
 
 ##### package: `nuxt`
 
-Change the shebang from bun to node in [`bin.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/6-build/packages/nuxt/src/bin.ts):
+Change the shebang from bun to node in [`bin.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/bin.ts):
 
 Before (5-packages):
 ```ts
@@ -122,7 +122,7 @@ Since the code is now pre-built to JavaScript, we can use Node.js directly witho
 
 ##### package: `nuxt`
 
-Update the bundle function in [`build.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/6-build/packages/nuxt/src/vite/build.ts) to use the new distDir and built file paths:
+Update the bundle function in [`build.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/vite/build.ts) to use the new distDir and built file paths:
 
 ```ts
 import { join } from 'node:path'
@@ -199,7 +199,7 @@ Key changes:
 
 ##### package: `nuxt`
 
-Update the imports in [`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/6-build/packages/nuxt/src/core/nuxt.ts) to use the package exports:
+Update the imports in [`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/core/nuxt.ts) to use the package exports:
 
 ```ts
 import { join } from 'node:path'
@@ -226,7 +226,7 @@ Key changes:
 
 ##### package: `nuxt`
 
-Create an index file [`vite/index.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-2/6-build/packages/nuxt/src/vite/index.ts) to re-export the bundle function:
+Create an index file [`vite/index.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/vite/index.ts) to re-export the bundle function:
 
 ```ts
 export { bundle } from './build'

@@ -1,11 +1,11 @@
-# 1-4 Router
+# 04 Router
 
 In this section, we'll integrate Vue Router to enable SSR based on the URL and client-side routing.
-Full Code is available at [4-router](https://github.com/shoma-mano/chibinuxt/tree/main/impls/part-1/4-router)
+Full Code is available at [4-router](https://github.com/shoma-mano/chibinuxt/tree/main/impls/4-router)
 
 ## First, create routes in pages directory and add links in App.vue
 
-[`pages/hello.vue`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/pages/hello.vue)
+[`pages/hello.vue`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/pages/hello.vue)
 
 ```vue
 <script setup lang="ts"></script>
@@ -14,7 +14,7 @@ Full Code is available at [4-router](https://github.com/shoma-mano/chibinuxt/tre
 </template>
 ```
 
-[`pages/world.vue`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/pages/world.vue)
+[`pages/world.vue`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/pages/world.vue)
 
 ```vue
 <script setup lang="ts"></script>
@@ -23,7 +23,7 @@ Full Code is available at [4-router](https://github.com/shoma-mano/chibinuxt/tre
 </template>
 ```
 
-[`App.vue`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/App.vue)
+[`App.vue`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/App.vue)
 
 ```vue
 <script lang="ts" setup>
@@ -43,7 +43,7 @@ import { RouterView, RouterLink } from 'vue-router'
 We will make feature to automatically make routes from pages directory in the future, but we need to define routes manually for now.
 In Sever Side, we can not use createWebHistory, so we need switch history based on `import.meta.server`.
 
-[`router.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/router.ts)
+[`router.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/router.ts)
 
 ```ts
 import {
@@ -79,7 +79,7 @@ export const createRouter = () => {
 
 ## Add build config to enable to use import.meta.server
 
-[`vite.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/vite.ts)
+[`vite.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/vite.ts)
 
 ```ts{10-13,24-27}
 const clientConfig = mergeConfig(defaultConfig, {
@@ -111,7 +111,7 @@ const severConfig = mergeConfig(defaultConfig, {
 } satisfies InlineConfig)
 ```
 
-[`type.d.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/type.d.ts)
+[`type.d.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/type.d.ts)
 
 This is necessary to avoid type error, because `import.meta.server` is not defined in default.
 
@@ -123,7 +123,7 @@ interface ImportMeta {
 
 ## Install router in entry.server.ts and entry.client.ts
 
-[`entry.server.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/entry.server.ts)
+[`entry.server.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/entry.server.ts)
 
 We need to push initial URL manually in server side.
 And router.isReady is necessary to avoid hydration error.
@@ -140,7 +140,7 @@ export default async (ctx: { url: string }) => {
 }
 ```
 
-[`entry.client.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/entry.client.ts)
+[`entry.client.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/entry.client.ts)
 
 On client side, the router automatically picks up initial location from the URL, so we don't need to push the URL manually.
 
@@ -160,7 +160,7 @@ initApp().catch(console.error)
 The `renderToString` function receives the SSR context as the first argument and passes that context to the `createApp` function we provided to `createRenderer`. ([source code](https://github.com/nuxt-contrib/vue-bundle-renderer/blob/801bf02375155ec111b78148157f10435f71c972/src/runtime.ts#L259))
 This is the context we received in `entry.server.ts`. So let's modify `render.ts` to pass the context.
 
-[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/part-1/4-router/src/render.ts)
+[`render.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/4-router/src/render.ts)
 
 ```ts{14}
 export const renderMiddleware = defineEventHandler(async (event) => {

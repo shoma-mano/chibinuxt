@@ -14,28 +14,21 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Guide', link: '/part-1/010-min-ssr' },
+      { text: 'Guide', link: '/010-min-ssr' },
     ],
 
     logo: '/image.png',
 
     sidebar: [
       {
-        text: 'PART 1',
-        base: '/part-1/',
+        text: 'Guide',
         items: [
-          { text: '1-1 MIN SSR', link: '010-min-ssr' },
-          { text: '1-2 SERVER SFC', link: '020-server-sfc' },
-          { text: '1-3 CLIENT SFC', link: '030-client-sfc' },
-          { text: '1-4 ROUTER', link: '040-router' },
-        ],
-      },
-      {
-        text: 'PART 2',
-        base: '/part-2/',
-        items: [
-          { text: '2-1 SPLIT PKG', link: '050-split-into-packages' },
-          { text: '2-2 BUILD', link: '060-build' },
+          { text: '01 MIN SSR', link: '/010-min-ssr' },
+          { text: '02 SERVER SFC', link: '/020-server-sfc' },
+          { text: '03 CLIENT SFC', link: '/030-client-sfc' },
+          { text: '04 ROUTER', link: '/040-router' },
+          { text: '05 SPLIT PKG', link: '/050-split-into-packages' },
+          { text: '06 BUILD', link: '/060-build' },
         ],
       },
     ],
