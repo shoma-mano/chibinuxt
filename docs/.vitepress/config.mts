@@ -37,7 +37,7 @@ export default defineConfig({
           { text: '05 SPLIT PKG', link: '/050-split-into-packages' },
           { text: '06 ROOT COMPONENT', link: '/060-root-component' },
           { text: '07 PAGES', link: '/070-pages' },
-          { text: '08 BUILD', link: '/080-build' },
+          { text: '08 UNBUILD', link: '/080-unbuild' },
         ],
       },
     ],

@@ -1,5 +1,6 @@
 import { join, resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
+import type { H3Event } from 'h3'
 import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
@@ -19,7 +20,7 @@ const getRenderer = async () => {
   return renderer
 }
 
-export default defineRenderHandler(async event => {
+export default defineRenderHandler(async (event: H3Event) => {
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
     const code = readFileSync(

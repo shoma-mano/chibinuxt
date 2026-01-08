@@ -1,11 +1,37 @@
-# 08 Build
+# 08 Unbuild
 
 In this section, we'll introduce a build step for the packages using `unbuild`.
-The full code is available at [8-build](https://github.com/shoma-mano/chibinuxt/tree/main/impls/8-build).
+The full code is available at [8-unbuild](https://github.com/shoma-mano/chibinuxt/tree/main/impls/8-unbuild).
 
 ## Why do we need a build step?
 
 In actual Nuxt, the framework is pre-built using [unbuild](https://github.com/unjs/unbuild) before being published. We'll mirror this approach to make chibinuxt closer to the real Nuxt.
+
+## Why unbuild with mkdist?
+
+unbuild supports two bundlers internally: **rollup** and **mkdist**. When you specify a **directory** as an input (like `src/runtime/`), unbuild uses **mkdist** which preserves the directory structure in the output.
+
+This is crucial because nitro dynamically imports the renderer at runtime:
+
+```ts
+// packages/nitro/src/dev/server.ts
+const renderer = await import(nitro.options.renderer!).then(m => m.default)
+```
+
+The renderer path is passed from nuxt:
+
+```ts
+// packages/nuxt/src/core/nuxt.ts
+const nitro = await createNitro({
+  renderer: join(distDir, 'core/runtime/nitro/renderer.js'),
+})
+```
+
+For this dynamic import to work, the built files must maintain their exact directory structure. If we used rollup bundling (single file input), all files would be bundled together and the path `core/runtime/nitro/renderer.js` wouldn't exist.
+
+With mkdist:
+
+- `src/core/runtime/nitro/renderer.ts` → `dist/core/runtime/nitro/renderer.js` ✅
 
 ## Implementing the build step
 
@@ -13,7 +39,7 @@ In actual Nuxt, the framework is pre-built using [unbuild](https://github.com/un
 
 ##### package: `nitro`
 
-Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-build/packages/nitro/build.config.ts) to configure unbuild for nitro:
+Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-unbuild/packages/nitro/build.config.ts) to configure unbuild for nitro:
 
 ```ts
 import { defineBuildConfig } from 'unbuild'
@@ -21,11 +47,11 @@ import { defineBuildConfig } from 'unbuild'
 export default defineBuildConfig({
   declaration: true,
   entries: [
-    // Main entry
+    // Main entry - uses rollup (single file)
     { input: 'src/index.ts' },
-    // Runtime
+    // Runtime - uses mkdist (directory preserves structure)
     { input: 'src/runtime/', outDir: 'dist/runtime', format: 'esm' },
-    // Types
+    // Types - uses mkdist (directory preserves structure)
     { input: 'src/types/', outDir: 'dist/types', format: 'esm' },
   ],
   alias: {
@@ -38,7 +64,8 @@ export default defineBuildConfig({
 
 Key points:
 
-- Three separate entries for main, runtime, and types directories
+- **Directory inputs use mkdist**: `src/runtime/` and `src/types/` preserve their structure
+- **File inputs use rollup**: `src/index.ts` is bundled into a single file
 - Aliases are defined to resolve `nitro/runtime` subpath imports during build
 - `externals` prevents bundling of self-referencing imports
 
@@ -46,7 +73,7 @@ Key points:
 
 ##### package: `vite`
 
-Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-build/packages/vite/build.config.ts) to configure unbuild for vite:
+Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-unbuild/packages/vite/build.config.ts) to configure unbuild for vite:
 
 ```ts
 import { defineBuildConfig } from 'unbuild'
@@ -61,7 +88,7 @@ export default defineBuildConfig({
 
 ##### package: `nuxt`
 
-Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-build/packages/nuxt/build.config.ts) to configure unbuild:
+Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-unbuild/packages/nuxt/build.config.ts) to configure unbuild:
 
 ```ts
 import { defineBuildConfig, type BuildEntry } from 'unbuild'
@@ -69,13 +96,13 @@ import { defineBuildConfig, type BuildEntry } from 'unbuild'
 export default defineBuildConfig({
   declaration: true,
   entries: [
-    // Core
+    // Core - uses rollup
     { input: 'src/index.ts' },
-    // App
+    // App - uses mkdist (preserves structure for runtime imports)
     { input: 'src/app/', outDir: 'dist/app/', ext: 'js' },
-    // Runtime
+    // Runtime - uses mkdist (preserves structure for nitro renderer path)
     { input: 'src/core/runtime/', outDir: 'dist/core/runtime', format: 'esm', ext: 'js' },
-    // Bin
+    // Bin - uses rollup
     { input: 'src/bin.ts' },
   ],
   alias: {
@@ -87,15 +114,15 @@ export default defineBuildConfig({
 Key points:
 
 - `declaration: true` generates TypeScript declaration files (`.d.ts`)
-- Multiple entries are defined for different parts of the package
-- `src/app/` is built with `.js` extension to be used at runtime
-- Runtime directory is built separately to preserve its structure
+- **Directory entries preserve structure**: `src/app/` and `src/core/runtime/` use mkdist
+- The runtime directory structure is preserved so nitro can import `renderer.js` at the expected path
+- `ext: 'js'` ensures output files have `.js` extension for runtime imports
 
 ### Update package.json
 
 ##### package: `nuxt`
 
-Update [`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-build/packages/nuxt/package.json):
+Update [`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-unbuild/packages/nuxt/package.json):
 
 ```json
 {
@@ -126,7 +153,7 @@ Key changes:
 
 ##### package: `nuxt`
 
-Update [`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-build/packages/nuxt/src/core/nuxt.ts) to use distDir and built file paths:
+Update [`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-unbuild/packages/nuxt/src/core/nuxt.ts) to use distDir and built file paths:
 
 ```ts
 import { dirname, join, resolve } from 'node:path'
@@ -157,6 +184,7 @@ export const loadNuxt = async () => {
     routesCode,
   })
   const nitro = await createNitro({
+    // This path must match the mkdist output structure
     renderer: join(distDir, 'core/runtime/nitro/renderer.js'),
   })
   const server = await createDevServer(nitro)
@@ -168,14 +196,13 @@ Key changes:
 
 - `distDir` is computed inline (handles `chunks` or `shared` subdirectories from unbuild)
 - Input paths changed from `.ts` to `.js` since we're now using pre-built files
-- Renderer path points to built `.js` file
-- Includes page scanning and route generation from 7-pages
+- **Renderer path relies on preserved structure**: The path `core/runtime/nitro/renderer.js` works because mkdist maintains the directory structure
 
 ### Update renderer.ts
 
 ##### package: `nuxt`
 
-Update [`renderer.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-build/packages/nuxt/src/core/runtime/nitro/renderer.ts) to resolve buildDir directly:
+Update [`renderer.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-unbuild/packages/nuxt/src/core/runtime/nitro/renderer.ts) to resolve buildDir directly:
 
 ```ts
 import { join, resolve } from 'node:path'
@@ -231,7 +258,7 @@ Key change:
 
 ##### package: `nuxt`
 
-Create [`index.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-build/packages/nuxt/src/index.ts) to export public API:
+Create [`index.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/8-unbuild/packages/nuxt/src/index.ts) to export public API:
 
 ```ts
 export { loadNuxt, buildDir } from './core/nuxt'
@@ -239,7 +266,7 @@ export { loadNuxt, buildDir } from './core/nuxt'
 
 ## Run the build
 
-Run the following command in the root of 8-build:
+Run the following command in the root of 8-unbuild:
 
 ```sh
 pnpm start
@@ -252,12 +279,12 @@ This command will:
 
 ## Summary
 
-By introducing a build step:
+By introducing unbuild with mkdist:
 
-1. **Cleaner architecture**: The package structure mirrors how published npm packages work
-2. **Better performance**: Pre-built JavaScript runs faster than transpiling TypeScript at runtime
-3. **Production ready**: The packages are now structured similarly to real Nuxt and Nitro
-4. **Proper exports**: Packages expose proper entry points through package.json exports
-5. **Includes all features**: Virtual modules for App.vue and automatic page routing from previous sections
+1. **Structure preservation**: Directory inputs use mkdist which preserves the file structure, enabling dynamic imports with predictable paths
+2. **Runtime path resolution**: Nitro can dynamically import the renderer at `core/runtime/nitro/renderer.js` because mkdist maintains the exact path structure
+3. **Cleaner architecture**: The package structure mirrors how published npm packages work
+4. **Better performance**: Pre-built JavaScript runs faster than transpiling TypeScript at runtime
+5. **Production ready**: The packages are now structured similarly to real Nuxt and Nitro
 
-This build system will become more important as we add more features, as it allows us to properly separate compile-time and runtime code.
+This build system will become more important as we add more features, as it allows us to properly separate compile-time and runtime code while maintaining the directory structure needed for dynamic imports.
