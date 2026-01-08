@@ -1,6 +1,6 @@
 ## what is chibinuxt?
 
-[chibinuxt](https://chibinuxt.vercel.app/) is step-by-step implementation of Nuxt3.  
+[chibinuxt](https://chibinuxt.vercel.app/) is step-by-step implementation of Nuxt 4.  
 This project was inspired by [chibivue](https://github.com/chibivue-land/chibivue).
 
 ## Getting Started
