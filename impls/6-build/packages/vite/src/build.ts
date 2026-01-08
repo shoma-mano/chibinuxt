@@ -1,14 +1,18 @@
+import { join } from 'node:path'
 import { build as _build, mergeConfig, type InlineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export interface BuildOptions {
-  appDistDir: string
+  buildDir: string
   clientEntry: string
   serverEntry: string
 }
 
 export const bundle = async (options: BuildOptions) => {
-  const { appDistDir, clientEntry, serverEntry } = options
+  const { buildDir, clientEntry, serverEntry } = options
+
+  const clientOutDir = join(buildDir, 'dist/client')
+  const serverOutDir = join(buildDir, 'dist/server')
 
   const defaultConfig = {
     plugins: [vue()],
@@ -16,12 +20,10 @@ export const bundle = async (options: BuildOptions) => {
       rollupOptions: {
         output: {
           format: 'esm',
-          dir: appDistDir,
         },
         preserveEntrySignatures: 'exports-only',
         treeshake: false,
       },
-      emptyOutDir: false,
     },
     define: {
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true',
@@ -30,6 +32,7 @@ export const bundle = async (options: BuildOptions) => {
 
   const clientConfig = mergeConfig(defaultConfig, {
     build: {
+      outDir: clientOutDir,
       rollupOptions: {
         input: clientEntry,
         output: {
@@ -46,6 +49,7 @@ export const bundle = async (options: BuildOptions) => {
 
   const serverConfig = mergeConfig(defaultConfig, {
     build: {
+      outDir: serverOutDir,
       rollupOptions: {
         input: serverEntry,
         output: {

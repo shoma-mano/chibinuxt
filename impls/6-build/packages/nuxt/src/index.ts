@@ -1,1 +1,1 @@
-export { loadNuxt } from './core/nuxt'
+export { loadNuxt, buildDir } from './core/nuxt'

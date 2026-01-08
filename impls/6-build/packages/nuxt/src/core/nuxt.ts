@@ -3,11 +3,10 @@ import { createDevServer, createNitro } from 'nitro'
 import { bundle } from '@nuxt/vite-builder'
 import { distDir } from '../dir'
 
+export const buildDir = resolve(process.cwd(), '.nuxt')
 export const loadNuxt = async () => {
-  const appDistDir = join(distDir, 'app')
-  process.env.APP_DIST_DIR = appDistDir
   await bundle({
-    appDistDir,
+    buildDir,
     clientEntry: join(distDir, 'app/entry.client.js'),
     serverEntry: join(distDir, 'app/entry.server.js'),
   })

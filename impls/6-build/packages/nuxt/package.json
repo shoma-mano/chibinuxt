@@ -3,6 +3,12 @@
   "private": "true",
   "type": "module",
   "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "bin": {
     "nuxi": "dist/bin.mjs"
   },

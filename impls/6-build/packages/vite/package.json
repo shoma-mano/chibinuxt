@@ -9,6 +9,9 @@
       "types": "./dist/index.d.mts"
     }
   },
+  "scripts": {
+    "prepack": "unbuild"
+  },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "vite": "^6.0.3"

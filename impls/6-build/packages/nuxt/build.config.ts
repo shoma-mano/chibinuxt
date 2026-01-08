@@ -8,7 +8,7 @@ export default defineBuildConfig({
     // App
     { input: 'src/app/', outDir: 'dist/app/', ext: 'js' },
     // Runtime dirs
-    ...['core', 'pages'].map(
+    ...['core'].map(
       name =>
         ({
           input: `src/${name}/runtime/`,
