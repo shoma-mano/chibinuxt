@@ -1,17 +1,32 @@
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { createDevServer, createNitro } from 'nitro'
 import { bundle } from '@nuxt/vite-builder'
-import { distDir } from '../dir'
+import { scanPages, generateRoutesCode } from '../pages/scan'
+
+// Get the dist directory (handles chunks subdirectory from unbuild)
+let distDir = import.meta.dirname
+if (distDir.match(/(chunks|shared)$/)) {
+  distDir = dirname(distDir)
+}
 
 export const buildDir = resolve(process.cwd(), '.nuxt')
 export const loadNuxt = async () => {
+  const appComponent = resolve(process.cwd(), 'App.vue')
+  const pagesDir = resolve(process.cwd(), 'pages')
+
+  // Scan pages and generate routes code
+  const pages = await scanPages(pagesDir)
+  const routesCode = generateRoutesCode(pages)
+
   await bundle({
-    buildDir,
     clientEntry: join(distDir, 'app/entry.client.js'),
     serverEntry: join(distDir, 'app/entry.server.js'),
+    buildDir,
+    appComponent,
+    routesCode,
   })
   const nitro = await createNitro({
-    renderer: resolve(distDir, 'core/runtime/nitro/renderer.js'),
+    renderer: join(distDir, 'core/runtime/nitro/renderer.js'),
   })
   const server = await createDevServer(nitro)
   return { server }

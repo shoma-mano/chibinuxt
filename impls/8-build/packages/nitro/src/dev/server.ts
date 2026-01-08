@@ -1,6 +1,6 @@
 import { createServer } from 'node:http'
 import { toNodeListener } from 'h3'
-import type { Nitro } from '../types'
+import type { Nitro } from 'nitro/types'
 import { useNitroApp } from '../runtime/app'
 
 export async function createDevServer(nitro: Nitro) {

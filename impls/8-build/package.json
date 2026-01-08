@@ -4,6 +4,10 @@
   "scripts": {
     "start": "pnpm build && pnpm dev",
     "build": "pnpm --filter './packages/**' prepack",
-    "dev": "cd ./playground && pnpm dev"
+    "dev": "cd ./playground && pnpm dev",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
   }
 }

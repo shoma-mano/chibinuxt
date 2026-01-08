@@ -4,19 +4,15 @@ export default defineBuildConfig({
   declaration: true,
   entries: [
     // Core
-    { input: 'src/index' },
+    { input: 'src/index.ts' },
     // App
     { input: 'src/app/', outDir: 'dist/app/', ext: 'js' },
-    // Runtime dirs
-    ...['core'].map(
-      name =>
-        ({
-          input: `src/${name}/runtime/`,
-          outDir: `dist/${name}/runtime`,
-          format: 'esm',
-          ext: 'js',
-        }) as BuildEntry,
-    ),
+    // Runtime
+    { input: 'src/core/runtime/', outDir: 'dist/core/runtime', format: 'esm', ext: 'js' },
+    // Bin
     { input: 'src/bin.ts' },
   ],
+  alias: {
+    ['nuxt']: 'nuxt',
+  },
 })

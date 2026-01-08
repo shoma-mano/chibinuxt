@@ -1,5 +1,5 @@
 import { eventHandler } from 'h3'
-import type { RenderHandler } from '../../types'
+import type { RenderHandler } from 'nitro/types'
 
 export function defineRenderHandler(handler: RenderHandler) {
   return eventHandler(async event => {

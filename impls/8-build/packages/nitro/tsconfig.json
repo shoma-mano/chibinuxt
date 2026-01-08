@@ -22,11 +22,7 @@
     "jsx": "preserve",
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
-    "lib": ["es2022", "webworker", "dom.iterable"],
-    "paths": {
-      "nitro/runtime": ["./src/runtime"],
-      "nitro": ["./src/core"]
-    }
+    "lib": ["es2022", "webworker", "dom.iterable"]
   },
   "exclude": ["dist"]
 }

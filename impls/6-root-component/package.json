@@ -5,5 +5,8 @@
     "start": "pnpm build && pnpm install && pnpm dev",
     "build": "pnpm --filter './packages/**' prepack",
     "dev": "cd ./playground && pnpm dev"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
   }
 }

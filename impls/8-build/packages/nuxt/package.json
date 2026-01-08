@@ -3,28 +3,28 @@
   "private": "true",
   "type": "module",
   "license": "MIT",
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "bin": {
     "nuxi": "dist/bin.mjs"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs"
+    }
+  },
   "scripts": {
-    "prepack": "unbuild"
+    "prepack": "unbuild",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@nuxt/vite-builder": "workspace:*",
     "h3": "^1.13.0",
-    "nitro": "workspace:*",
     "vue": "^3.5.13",
     "vue-bundle-renderer": "^2.1.1",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "nitro": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
-    "unbuild": "^3.2.0"
+    "unbuild": "3.3.1"
   }
 }

@@ -3,6 +3,7 @@ import {
   createMemoryHistory,
   createWebHistory,
 } from 'vue-router'
+
 import routes from '#routes'
 
 export const createRouter = () => {

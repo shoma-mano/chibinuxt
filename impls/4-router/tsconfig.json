@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    /* Base options: */
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
@@ -10,13 +9,9 @@
     "moduleDetection": "force",
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
-    /* Strictness */
     "strict": true,
-    // TODO: enable noUncheckedIndexedAccess in subsequent PR
-    // "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitOverride": true,
-    /* If NOT transpiling with TypeScript: */
     "module": "preserve",
     "noEmit": true,
     "jsx": "preserve",
@@ -24,6 +19,5 @@
     "jsxFragmentFactory": "Fragment",
     "lib": ["es2022", "webworker", "dom.iterable"]
   },
-  "include": ["src"],
   "exclude": ["dist"]
 }

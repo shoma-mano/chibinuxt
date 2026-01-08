@@ -1,5 +1,5 @@
 import { createApp } from 'h3'
-import type { NitroApp } from '../../types'
+import type { NitroApp } from 'nitro/types'
 
 function createNitroApp(): NitroApp {
   const h3App = createApp()

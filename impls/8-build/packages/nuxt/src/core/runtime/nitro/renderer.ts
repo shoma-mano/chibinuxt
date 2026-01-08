@@ -1,9 +1,10 @@
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
-import { buildDir } from 'nuxt'
+
+const buildDir = resolve(process.cwd(), '.nuxt')
 
 let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async () => {

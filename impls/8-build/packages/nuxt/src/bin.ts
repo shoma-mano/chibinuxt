@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { loadNuxt } from './core/nuxt'
 
 const main = async () => {

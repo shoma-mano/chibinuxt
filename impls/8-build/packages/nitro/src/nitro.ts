@@ -1,4 +1,4 @@
-import type { Nitro, NitroConfig } from './types'
+import type { Nitro, NitroConfig } from 'nitro/types'
 
 export async function createNitro(config: NitroConfig = {}): Promise<Nitro> {
   const nitro: Nitro = {
