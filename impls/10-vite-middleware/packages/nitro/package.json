@@ -37,7 +37,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^22.10.1",
+    "@types/node": "^24.10.4",
     "unbuild": "^3.3.1"
   }
 }

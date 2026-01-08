@@ -10,8 +10,8 @@
     }
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^6.0.3"
+    "@vitejs/plugin-vue": "^6.0.0",
+    "vite": "^7.0.0"
   },
   "devDependencies": {
     "unbuild": "3.3.1"
