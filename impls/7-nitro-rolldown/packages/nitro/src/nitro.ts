@@ -1,10 +1,16 @@
 import { loadConfig } from 'c12'
 import { resolvePreset } from 'nitro/presets'
-import type { NitroConfig, NitroOptions } from 'nitro/types'
+import type { Nitro, NitroConfig, NitroOptions } from 'nitro/types'
 
-export const loadOptions = async (
-  config: NitroConfig,
-): Promise<NitroOptions> => {
+export const createNitro = async (config: NitroConfig = {}) => {
+  const options = await loadOptions(config)
+  const nitro: Nitro = {
+    options,
+  }
+  return nitro
+}
+
+const loadOptions = async (config: NitroConfig): Promise<NitroOptions> => {
   const options = await _loadUserConfig(config)
   return options
 }

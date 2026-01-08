@@ -1,0 +1,19 @@
+{
+  "name": "@nuxt/vite-builder",
+  "version": "0.0.1",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.3"
+  },
+  "devDependencies": {
+    "unbuild": "3.3.1"
+  }
+}

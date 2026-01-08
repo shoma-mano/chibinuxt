@@ -5,7 +5,7 @@
   "description": "",
   "exports": {
     ".": {
-      "import": "./dist/core/index.mjs"
+      "import": "./dist/index.mjs"
     },
     "./runtime": {
       "import": "./dist/runtime/index.mjs",

@@ -17,10 +17,8 @@ export default defineBuildConfig({
           ext: 'js',
         }) as BuildEntry,
     ),
-    { input: 'src/vite/index.ts' },
     { input: 'src/bin.ts' },
   ],
-  externals: ['nuxt/vite'],
   alias: {
     ['nuxt']: 'nuxt', // this is necessary for resolveAlias not to change id (https://github.com/unjs/unbuild/blob/997497b356b2ebe19112d2f6436a349a74885d68/src/builders/rollup/config.ts#L65)
   },

@@ -248,20 +248,16 @@ Key change:
 
 ## Run the build
 
-First, build all packages:
+Run the following command in the root of 6-build:
 
 ```sh
-cd packages/nitro && pnpm unbuild
-cd packages/vite && pnpm unbuild
-cd packages/nuxt && pnpm unbuild
+pnpm start
 ```
 
-Then run the server from playground:
+This command will:
 
-```sh
-cd playground
-npx nuxi
-```
+1. Build all packages (`pnpm build` runs `pnpm --filter './packages/**' prepack`)
+2. Start the dev server (`pnpm dev` runs `cd ./playground && pnpm dev`)
 
 ## Summary
 

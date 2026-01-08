@@ -1,6 +1,6 @@
 import { join } from 'node:path'
 import { build } from 'nitro'
-import { bundle } from '../vite/build'
+import { bundle } from '@nuxt/vite-builder'
 import { distDir } from '../dir'
 import { initNitro } from './nitro'
 
@@ -28,10 +28,15 @@ const createNuxt = (options: NuxtOptions): Nuxt => {
 
 export const loadNuxt = async () => {
   const options = loadNuxtConfig()
-  options.appDir = join(distDir, 'app')
+  const appDir = join(distDir, 'app')
+  options.appDir = appDir
   const nuxt = createNuxt(options)
   const nitro = await initNitro(nuxt)
-  await bundle(nuxt)
+  await bundle({
+    appDistDir: appDir,
+    clientEntry: join(distDir, 'app/entry.client.js'),
+    serverEntry: join(distDir, 'app/entry.server.js'),
+  })
   await build(nitro)
   return nuxt
 }

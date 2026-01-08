@@ -1,8 +1,8 @@
 import { createServer } from "node:http";
 import { join } from "node:path";
 import { readFileSync } from "node:fs";
-import { createRenderer } from "file:///Users/mano/nuxts/chibinuxt/impls/part-2/8-nitro-rolldown/node_modules/.pnpm/vue-bundle-renderer@2.1.1/node_modules/vue-bundle-renderer/dist/runtime.mjs";
-import { renderToString } from "file:///Users/mano/nuxts/chibinuxt/impls/part-2/8-nitro-rolldown/node_modules/.pnpm/vue@3.5.13_typescript@5.7.3/node_modules/vue/server-renderer/index.mjs";
+import { createRenderer } from "file:///Users/mano/nuxts/chibinuxt/impls/7-nitro-rolldown/node_modules/.pnpm/vue-bundle-renderer@2.1.1/node_modules/vue-bundle-renderer/dist/runtime.mjs";
+import { renderToString } from "file:///Users/mano/nuxts/chibinuxt/impls/7-nitro-rolldown/node_modules/.pnpm/vue@3.5.13_typescript@5.7.3/node_modules/vue/server-renderer/index.mjs";
 
 //#region ../node_modules/.pnpm/ufo@1.5.4/node_modules/ufo/dist/index.mjs
 const r = String.fromCharCode;

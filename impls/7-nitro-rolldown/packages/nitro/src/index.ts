@@ -1,2 +1,3 @@
-export { createDevServer } from './core/dev-server/server'
-export { createNitro } from './core/nitro'
+export { createNitro } from './nitro'
+export { createDevServer } from './dev/server'
+export { build } from './build'

@@ -9,19 +9,15 @@
   "exports": {
     ".": {
       "import": "./dist/index.mjs"
-    },
-    "./vite": {
-      "import": "./dist/vite/index.mjs"
     }
   },
   "scripts": {
     "prepack": "unbuild"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
+    "@nuxt/vite-builder": "workspace:*",
     "h3": "^1.13.0",
     "nitro": "workspace:*",
-    "vite": "^6.0.3",
     "vue": "^3.5.13",
     "vue-bundle-renderer": "^2.1.1",
     "vue-router": "^4.5.0"

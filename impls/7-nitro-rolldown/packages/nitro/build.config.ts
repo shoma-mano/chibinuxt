@@ -1,13 +1,12 @@
 import { defineBuildConfig } from 'unbuild'
 
-export const subpaths = ['core', 'kit', 'presets', 'rollup', 'runtime', 'types']
+export const subpaths = ['kit', 'presets', 'rollup', 'runtime', 'types']
 
 export default defineBuildConfig({
   declaration: true,
   entries: [
-    // Core
-    { input: 'src/core/index.ts' },
-    // './src/runtime/index.ts',
+    // Main entry
+    { input: 'src/index.ts' },
     // Runtime
     { input: 'src/runtime/', outDir: 'dist/runtime', format: 'esm' },
     // Presets

@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { rolldown } from 'rolldown'
 import type { Nitro } from 'nitro/types'
-import { getRolldownConfig } from '../../rolldown/config'
+import { getRolldownConfig } from './rolldown/config'
 
 export const build = async (nitro: Nitro) => {
   const rolldownConfig = getRolldownConfig(nitro)
