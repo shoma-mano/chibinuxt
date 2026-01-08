@@ -5,6 +5,10 @@ export default defineConfig({
   title: 'chibinuxt',
   description: 'Build Your Own Nuxt - A Retro Adventure',
   srcDir: 'src',
+  markdown: {
+    // Show h2 and h3 in the right sidebar (Table of Contents)
+    toc: { level: [2, 3] },
+  },
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/image.png' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
@@ -13,6 +17,9 @@ export default defineConfig({
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    outline: {
+      level: [2, 3],
+    },
     nav: [
       { text: 'Guide', link: '/010-min-ssr' },
     ],

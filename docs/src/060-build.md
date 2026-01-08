@@ -1,6 +1,6 @@
 # 06 Build
 
-In this section, we'll introduce a build step for the nuxt package using `unbuild`.
+In this section, we'll introduce a build step for the packages using `unbuild`.
 The full code is available at [6-build](https://github.com/shoma-mano/chibinuxt/tree/main/impls/6-build).
 
 ## Why do we need a build step?
@@ -9,7 +9,51 @@ In actual Nuxt, the framework is pre-built using [unbuild](https://github.com/un
 
 ## Implementing the build step
 
-### build.config.ts
+### Nitro build.config.ts
+
+##### package: `nitro`
+
+Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nitro/build.config.ts) to configure unbuild for nitro:
+
+```ts
+import { defineBuildConfig } from 'unbuild'
+
+export default defineBuildConfig({
+  declaration: true,
+  entries: [
+    './src/index.ts',
+    './src/runtime/index.ts',
+    './src/types/index.ts',
+  ],
+  alias: {
+    'nitro/runtime': './src/runtime/index.ts',
+    'nitro/types': './src/types/index.ts',
+    ['nitro']: 'nitro',
+  },
+})
+```
+
+Key points:
+
+- Three separate entries for main, runtime, and types
+- Aliases are defined to resolve `nitro/runtime` and `nitro/types` subpath imports during build
+
+### Vite build.config.ts
+
+##### package: `vite`
+
+Create [`build.config.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/vite/build.config.ts) to configure unbuild for vite:
+
+```ts
+import { defineBuildConfig } from 'unbuild'
+
+export default defineBuildConfig({
+  declaration: true,
+  entries: ['./src/index.ts'],
+})
+```
+
+### Nuxt build.config.ts
 
 ##### package: `nuxt`
 
@@ -35,41 +79,35 @@ export default defineBuildConfig({
           ext: 'js',
         }) as BuildEntry,
     ),
-    { input: 'src/vite/index.ts' },
     { input: 'src/bin.ts' },
   ],
-  externals: ['nuxt/vite'],
-  alias: {
-    ['nuxt']: 'nuxt',
-  },
 })
 ```
 
 Key points:
+
 - `declaration: true` generates TypeScript declaration files (`.d.ts`)
 - Multiple entries are defined for different parts of the package
 - `src/app/` is built with `.js` extension to be used at runtime
 - Runtime directories are built separately to preserve their structure
-- `nuxt/vite` is marked as external to prevent bundling issues
 
-### Update package.json exports
+### Update package.json
 
 ##### package: `nuxt`
 
-Update [`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/package.json) to expose the vite module through exports:
+Update [`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/package.json):
 
 ```json
 {
   "bin": {
     "nuxi": "dist/bin.mjs"
   },
-  "exports": {
-    "./vite": {
-      "import": "./dist/vite/index.mjs"
-    }
-  },
   "scripts": {
     "prepack": "unbuild"
+  },
+  "dependencies": {
+    "@nuxt/vite-builder": "workspace:*",
+    "nitro": "workspace:*"
   },
   "devDependencies": {
     "unbuild": "^3.2.0"
@@ -78,9 +116,10 @@ Update [`package.json`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/
 ```
 
 Key changes:
+
 - The bin now points to `dist/bin.mjs` (built JavaScript) instead of the TypeScript source
-- Added exports field to expose `nuxt/vite` subpath
 - Added `prepack` script to run unbuild before publishing
+- Uses `@nuxt/vite-builder` from workspace
 
 ### Create dir.ts helper
 
@@ -118,129 +157,103 @@ After (6-build):
 
 Since the code is now pre-built to JavaScript, we can use Node.js directly without bun.
 
-### Update build.ts paths
+### Update nuxt.ts
 
 ##### package: `nuxt`
 
-Update the bundle function in [`build.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/vite/build.ts) to use the new distDir and built file paths:
+Update [`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/core/nuxt.ts) to use distDir and built file paths:
 
 ```ts
-import { join } from 'node:path'
-import { build as _build, mergeConfig, type InlineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { join, resolve } from 'node:path'
+import { createDevServer, createNitro } from 'nitro'
+import { bundle } from '@nuxt/vite-builder'
 import { distDir } from '../dir'
-
-export const bundle = async () => {
-  try {
-    const defaultConfig = {
-      plugins: [vue()],
-      build: {
-        rollupOptions: {
-          output: {
-            format: 'esm',
-            dir: join(distDir, 'app'),
-          },
-          preserveEntrySignatures: 'exports-only',
-          treeshake: false,
-        },
-        emptyOutDir: false,
-      },
-      define: {
-        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true',
-      },
-    } satisfies InlineConfig
-
-    const clientConfig = mergeConfig(defaultConfig, {
-      build: {
-        rollupOptions: {
-          input: join(import.meta.dirname, '../app/entry.client.js'),
-          output: {
-            entryFileNames: 'entry.client.js',
-          },
-        },
-      },
-      appType: 'custom',
-      define: {
-        'import.meta.server': false,
-      },
-    } satisfies InlineConfig)
-    await _build(clientConfig)
-
-    const severConfig = mergeConfig(defaultConfig, {
-      build: {
-        rollupOptions: {
-          input: join(import.meta.dirname, '../app/entry.server.js'),
-          output: {
-            entryFileNames: 'entry.server.js',
-          },
-        },
-        ssr: true,
-      },
-      define: {
-        'import.meta.server': true,
-      },
-    } satisfies InlineConfig)
-    await _build(severConfig)
-
-    console.log('Build completed successfully!')
-  } catch (error) {
-    console.error('Build failed:', error)
-    process.exit(1)
-  }
-}
-```
-
-Key changes:
-- Import `distDir` from the new helper
-- Output directory is now `join(distDir, 'app')` instead of using environment variable
-- Input paths changed from `.ts` to `.js` since we're now using pre-built files
-
-### Update nuxt.ts imports
-
-##### package: `nuxt`
-
-Update the imports in [`nuxt.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/core/nuxt.ts) to use the package exports:
-
-```ts
-import { join } from 'node:path'
-import { createDevServer } from 'nitro'
-import { bundle } from 'nuxt/vite'
-import { distDir } from '../dir'
-import { setupRenderer } from './runtime/nitro/renderer'
 
 export const loadNuxt = async () => {
-  // this is temporary way
-  process.env.APP_DIST_DIR = join(distDir, 'app')
-  await bundle()
-  setupRenderer()
-  const server = createDevServer()
+  const appDistDir = join(distDir, 'app')
+  process.env.APP_DIST_DIR = appDistDir
+  await bundle({
+    appDistDir,
+    clientEntry: join(distDir, 'app/entry.client.js'),
+    serverEntry: join(distDir, 'app/entry.server.js'),
+  })
+  const nitro = await createNitro({
+    renderer: resolve(distDir, 'core/runtime/nitro/renderer.js'),
+  })
+  const server = await createDevServer(nitro)
   return { server }
 }
 ```
 
 Key changes:
-- Import `bundle` from `nuxt/vite` instead of relative path
-- Use `distDir` for APP_DIST_DIR
 
-### Create vite/index.ts
+- Import `distDir` from the new helper
+- Import `bundle` from `@nuxt/vite-builder` (separate package)
+- Output directory is now `join(distDir, 'app')`
+- Input paths changed from `.ts` to `.js` since we're now using pre-built files
+- Renderer path points to built `.js` file
+
+### Update renderer.ts
 
 ##### package: `nuxt`
 
-Create an index file [`vite/index.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/vite/index.ts) to re-export the bundle function:
+Update [`renderer.ts`](https://github.com/shoma-mano/chibinuxt/blob/main/impls/6-build/packages/nuxt/src/core/runtime/nitro/renderer.ts) to use environment variable for dist path:
 
 ```ts
-export { bundle } from './build'
+import { join } from 'node:path'
+import { readFileSync } from 'node:fs'
+import { defineRenderHandler } from 'nitro/runtime'
+import { createRenderer } from 'vue-bundle-renderer/runtime'
+import { renderToString } from 'vue/server-renderer'
+
+let renderer: ReturnType<typeof createRenderer>
+const getRenderer = async () => {
+  if (renderer) return renderer
+  const createApp = await import(
+    join(process.env.APP_DIST_DIR!, 'entry.server.js')
+  ).then(m => m.default)
+  renderer = createRenderer(createApp, {
+    renderToString,
+    manifest: {},
+  })
+  return renderer
+}
+
+export default defineRenderHandler(async event => {
+  const { req, res } = event.node
+  if (req.url === '/entry.client.js') {
+    const code = readFileSync(
+      join(process.env.APP_DIST_DIR!, 'entry.client.js'),
+      'utf-8',
+    )
+    res.setHeader('Content-Type', 'application/javascript')
+    res.end(code)
+    return { statusCode: 200, statusMessage: 'OK', headers: {} }
+  }
+  const renderer = await getRenderer()
+  const rendered = await renderer.renderToString({ url: req.url })
+  const body = renderHTML(rendered)
+  res.setHeader('Content-Type', 'text/html;charset=UTF-8')
+  return {
+    body,
+  }
+})
+
+// ... renderHTML and htmlTemplate functions remain the same
 ```
 
-This file serves as the entry point for the `nuxt/vite` export.
+Key change:
+
+- Uses `process.env.APP_DIST_DIR` instead of importing `appDistDir` directly (since it's set by nuxt.ts at runtime)
 
 ## Run the build
 
-First, build the nuxt package:
+First, build all packages:
 
 ```sh
-cd packages/nuxt
-pnpm run prepack
+cd packages/nitro && pnpm unbuild
+cd packages/vite && pnpm unbuild
+cd packages/nuxt && pnpm unbuild
 ```
 
 Then run the server from playground:
@@ -255,8 +268,9 @@ npx nuxi
 By introducing a build step:
 
 1. **Cleaner architecture**: The package structure mirrors how published npm packages work
-2. **Subpath exports**: We can expose specific modules like `nuxt/vite` through package.json exports
+2. **Separate vite package**: The `@nuxt/vite-builder` is now a separate workspace package
 3. **Better performance**: Pre-built JavaScript runs faster than transpiling TypeScript at runtime
-4. **Production ready**: The package is now structured similarly to real Nuxt
+4. **Production ready**: The packages are now structured similarly to real Nuxt and Nitro
+5. **Proper subpath exports**: Nitro exposes `nitro/runtime` and `nitro/types` through package.json exports
 
 This build system will become more important as we add more features, as it allows us to properly separate compile-time and runtime code.

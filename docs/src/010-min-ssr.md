@@ -106,5 +106,5 @@ server.listen(3030, () => {
 You can run the server with any typescript runner. In this book, we use `bun`.
 
 ```sh
-bun src/main.ts
+pnpm start
 ```
