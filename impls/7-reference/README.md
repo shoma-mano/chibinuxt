@@ -1,1 +1,0 @@
-initNitro、createNuxtなどを実装して、本家に近づける

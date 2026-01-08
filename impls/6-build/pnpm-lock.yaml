@@ -23,18 +23,15 @@ importers:
 
   packages/nuxt:
     dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^5.2.1
-        version: 5.2.1(vite@6.0.5(@types/node@22.10.2)(jiti@2.4.2))(vue@3.5.13(typescript@5.7.3))
+      '@nuxt/vite-builder':
+        specifier: workspace:*
+        version: link:../vite
       h3:
         specifier: ^1.13.0
         version: 1.13.0
       nitro:
         specifier: workspace:*
         version: link:../nitro
-      vite:
-        specifier: ^6.0.3
-        version: 6.0.5(@types/node@22.10.2)(jiti@2.4.2)
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.3)
@@ -48,6 +45,19 @@ importers:
       '@types/node':
         specifier: ^22.10.1
         version: 22.10.2
+      unbuild:
+        specifier: ^3.2.0
+        version: 3.2.0(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
+
+  packages/vite:
+    dependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.1
+        version: 5.2.1(vite@6.0.5(@types/node@22.10.2)(jiti@2.4.2))(vue@3.5.13(typescript@5.7.3))
+      vite:
+        specifier: ^6.0.3
+        version: 6.0.5(@types/node@22.10.2)(jiti@2.4.2)
+    devDependencies:
       unbuild:
         specifier: ^3.2.0
         version: 3.2.0(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
