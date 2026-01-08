@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "types": ["vite/client"],
+    "paths": {
+      "vite-plugin-ox-content": ["../../npm/vite-plugin-ox-content/src/index.ts"],
+      "vite-plugin-ox-content-vue": ["../../npm/vite-plugin-ox-content-vue/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts"]
+}

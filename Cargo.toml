@@ -1,0 +1,116 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.0.0"
+authors = ["ubugeeei"]
+categories = ["development-tools"]
+edition = "2021"
+homepage = "https://github.com/ubugeeei/ox-content"
+keywords = ["markdown", "documentation", "parser", "vite"]
+license = "MIT"
+repository = "https://github.com/ubugeeei/ox-content"
+rust-version = "1.83.0"
+
+[workspace.lints.rust]
+unsafe_code = "warn"
+absolute_paths_not_starting_with_crate = "warn"
+non_local_definitions = "warn"
+redundant_lifetimes = "warn"
+unit_bindings = "warn"
+unnameable_types = "warn"
+
+[workspace.lints.clippy]
+# Lint groups with lower priority
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+
+# Restrictions
+dbg_macro = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+
+# Allow
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+must_use_candidate = "allow"
+module_name_repetitions = "allow"
+too_many_lines = "allow"
+doc_markdown = "allow"
+similar_names = "allow"
+needless_pass_by_value = "allow"
+multiple_crate_versions = "allow"
+cargo_common_metadata = "allow"
+missing_const_for_fn = "allow"
+cast_possible_truncation = "allow"
+struct_excessive_bools = "allow"
+unnecessary_wraps = "allow"
+wildcard_imports = "allow"
+if_not_else = "allow"
+unnested_or_patterns = "allow"
+derive_partial_eq_without_eq = "allow"
+elidable_lifetime_names = "allow"
+range_plus_one = "allow"
+use_self = "allow"
+
+[workspace.dependencies]
+# Internal crates
+ox_content_allocator = { path = "crates/ox_content_allocator" }
+ox_content_ast = { path = "crates/ox_content_ast" }
+ox_content_parser = { path = "crates/ox_content_parser" }
+ox_content_renderer = { path = "crates/ox_content_renderer" }
+ox_content_napi = { path = "crates/ox_content_napi" }
+ox_content_vite = { path = "crates/ox_content_vite" }
+ox_content_og_image = { path = "crates/ox_content_og_image" }
+ox_content_docs = { path = "crates/ox_content_docs" }
+ox_content_search = { path = "crates/ox_content_search" }
+ox_content_ssg = { path = "crates/ox_content_ssg" }
+
+# Memory allocation
+bumpalo = "3.16"
+
+# NAPI bindings
+napi = "2"
+napi-derive = "2"
+napi-build = "2.1.3"
+
+# Parsing utilities
+logos = "0.14"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Error handling
+thiserror = "2"
+miette = { version = "7", features = ["fancy"] }
+
+# OXC parser
+oxc_allocator = "0.44"
+oxc_parser = "0.44"
+oxc_ast = "0.44"
+oxc_span = "0.44"
+
+# Testing
+criterion = "0.5"
+insta = "1"
+
+[profile.dev]
+debug = 2
+
+[profile.dev.package]
+insta.opt-level = 3
+similar.opt-level = 3
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = "symbols"
+debug = false
+panic = "abort"

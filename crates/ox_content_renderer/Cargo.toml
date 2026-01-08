@@ -1,0 +1,24 @@
+[package]
+name = "ox_content_renderer"
+version.workspace = true
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Markdown renderer for Ox Content"
+
+[lints]
+workspace = true
+
+[dependencies]
+ox_content_allocator = { workspace = true }
+ox_content_ast = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+ox_content_parser = { workspace = true }
+insta = { workspace = true }

@@ -1,0 +1,24 @@
+[package]
+name = "ox_content_vite"
+version.workspace = true
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Vite Environment API integration for Ox Content"
+
+[lints]
+workspace = true
+
+[dependencies]
+ox_content_allocator = { workspace = true }
+ox_content_ast = { workspace = true }
+ox_content_parser = { workspace = true }
+ox_content_renderer = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

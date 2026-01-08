@@ -1,0 +1,17 @@
+{
+  "name": "example-unplugin-vite-remark",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "unplugin-ox-content": "workspace:*",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "vite": "catalog:"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "example-unplugin-vite-markdown-it",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "unplugin-ox-content": "workspace:*",
+    "markdown-it-emoji": "^3.0.0"
+  },
+  "devDependencies": {
+    "vite": "catalog:"
+  }
+}
