@@ -1,1 +1,0 @@
-export { getServer } from './server'

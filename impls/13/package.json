@@ -1,9 +1,0 @@
-{
-  "name": "chibinuxt",
-  "private": "true",
-  "license": "MIT",
-  "type": "module",
-  "scripts": {
-    "build": "pnpm -r build"
-  }
-}
