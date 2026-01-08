@@ -1,0 +1,56 @@
+# Rust
+/target
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# NAPI bindings (build artifacts)
+crates/ox_content_napi/*.node
+
+# WASM bindings (build artifacts)
+crates/ox_content_wasm/pkg/
+
+# Build artifacts
+/dist
+**/dist/
+*.so
+*.dylib
+*.dll
+
+# Test and coverage
+/coverage
+*.lcov
+/htmlcov
+
+# Documentation
+/docs/api
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Benchmark results
+/criterion

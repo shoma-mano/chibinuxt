@@ -1,0 +1,29 @@
+[package]
+name = "ox_content_parser"
+version.workspace = true
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "High-performance Markdown parser for Ox Content"
+
+[lints]
+workspace = true
+
+[dependencies]
+ox_content_allocator = { workspace = true }
+ox_content_ast = { workspace = true }
+thiserror = { workspace = true }
+logos = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+insta = { workspace = true }
+
+[[bench]]
+name = "parser"
+harness = false

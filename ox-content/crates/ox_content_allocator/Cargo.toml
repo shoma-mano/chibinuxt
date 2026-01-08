@@ -1,0 +1,18 @@
+[package]
+name = "ox_content_allocator"
+version.workspace = true
+authors.workspace = true
+categories.workspace = true
+edition.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Arena allocator for Ox Content based on bumpalo"
+
+[lints]
+workspace = true
+
+[dependencies]
+bumpalo = { workspace = true, features = ["collections", "boxed"] }

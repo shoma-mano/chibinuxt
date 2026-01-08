@@ -1,0 +1,17 @@
+{
+  "name": "example-unplugin-vite-rehype",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "unplugin-ox-content": "workspace:*",
+    "rehype-slug": "^6.0.0"
+  },
+  "devDependencies": {
+    "vite": "catalog:"
+  }
+}

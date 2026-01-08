@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ox Content Playground</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Ox Content Playground</h1>
+        <p>Interactive Markdown parser and renderer</p>
+      </header>
+
+      <main>
+        <div class="editor-panel">
+          <div class="panel-header">
+            <h2>Markdown Input</h2>
+          </div>
+          <textarea id="markdown-input" placeholder="Enter Markdown here...">
+# Welcome to Ox Content
+
+This is a **fast** and _pluggable_ Markdown parser.
+
+## Features
+
+- Arena-based allocation with bumpalo
+- CommonMark compliant
+- GFM extensions support
+
+## Code Example
+
+```rust
+fn main() {
+    println!("Hello, Ox Content!");
+}
+```
+
+---
+
+> This is a blockquote.
+
+Visit the [Ox Content repository](https://github.com/ubugeeei/ox-content) for more information.
+          </textarea>
+        </div>
+
+        <div class="preview-panel">
+          <div class="panel-header">
+            <h2>HTML Output</h2>
+            <div class="tabs">
+              <button id="preview-tab" class="tab active">Preview</button>
+              <button id="html-tab" class="tab">HTML</button>
+              <button id="ast-tab" class="tab">AST</button>
+            </div>
+          </div>
+          <div id="preview-view" class="view active">
+            <div id="preview-content"></div>
+          </div>
+          <div id="html-view" class="view">
+            <pre id="html-content"></pre>
+          </div>
+          <div id="ast-view" class="view">
+            <pre id="ast-content"></pre>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <p>
+          Powered by <strong>Ox Content</strong>
+        </p>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
