@@ -1,16 +1,18 @@
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
+import type { H3Event } from 'h3'
 import { defineRenderHandler } from 'nitro/runtime'
 import { createRenderer } from 'vue-bundle-renderer/runtime'
 import { renderToString } from 'vue/server-renderer'
 
-const distDir = process.env.DIST_DIR!
+const buildDir = resolve(process.cwd(), '.nuxt')
+
 let renderer: ReturnType<typeof createRenderer>
 const getRenderer = async () => {
   if (renderer) return renderer
-  const createApp = await import(join(distDir, 'app', '_entry.server.js')).then(
-    m => m.default,
-  )
+  const createApp = await import(
+    join(buildDir, 'entry.server.js')
+  ).then(m => m.default)
   renderer = createRenderer(createApp, {
     renderToString,
     manifest: {},
@@ -18,10 +20,13 @@ const getRenderer = async () => {
   return renderer
 }
 
-export default defineRenderHandler(async event => {
+export default defineRenderHandler(async (event: H3Event) => {
   const { req, res } = event.node
   if (req.url === '/entry.client.js') {
-    const code = readFileSync(join(distDir, 'app', '_entry.client.js'), 'utf-8')
+    const code = readFileSync(
+      join(buildDir, 'entry.client.js'),
+      'utf-8',
+    )
     res.setHeader('Content-Type', 'application/javascript')
     res.end(code)
     return { statusCode: 200, statusMessage: 'OK', headers: {} }

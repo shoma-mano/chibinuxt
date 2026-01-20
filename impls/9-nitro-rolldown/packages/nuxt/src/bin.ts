@@ -1,8 +1,7 @@
-#!/usr/bin/env node
-import { loadNuxt } from './index.mjs'
+#!/usr/bin/env bun
+import { loadNuxt } from './core/nuxt'
 
 const main = async () => {
-  process.env.DIST_DIR = import.meta.dirname
   const nuxt = await loadNuxt()
   nuxt.server.listen()
 }

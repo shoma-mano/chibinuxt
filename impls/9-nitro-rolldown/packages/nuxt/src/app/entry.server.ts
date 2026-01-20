@@ -1,6 +1,7 @@
 import { createSSRApp } from 'vue'
-import App from '../../../../playground/App.vue'
 import { createRouter } from './plugins/router'
+// @ts-expect-error virtual module
+import App from '#app'
 
 export default async (ctx: { url: string }) => {
   const app = createSSRApp(App)

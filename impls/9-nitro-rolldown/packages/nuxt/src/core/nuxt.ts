@@ -1,42 +1,38 @@
-import { join } from 'node:path'
-import { build } from 'nitro'
+import { dirname, join, resolve } from 'node:path'
+import { build, createDevServer, createNitro } from 'nitro'
 import { bundle } from '@nuxt/vite-builder'
-import { distDir } from '../dir'
-import { initNitro } from './nitro'
+import { scanPages, generateRoutesCode } from '../pages/scan'
 
-type NuxtOptions = {
-  appDir?: string
+// Get the dist directory (handles chunks subdirectory from unbuild)
+let distDir = import.meta.dirname
+if (distDir.match(/(chunks|shared)$/)) {
+  distDir = dirname(distDir)
 }
 
-export type Nuxt = {
-  server?: any
-  options?: NuxtOptions
-  ready?: () => Promise<void>
-}
-
-const loadNuxtConfig = (): NuxtOptions => {
-  // implement later
-  return {}
-}
-
-const createNuxt = (options: NuxtOptions): Nuxt => {
-  const nuxt: Nuxt = {
-    options,
-  }
-  return nuxt
-}
-
+export const buildDir = resolve(process.cwd(), '.nuxt')
 export const loadNuxt = async () => {
-  const options = loadNuxtConfig()
-  const appDir = join(distDir, 'app')
-  options.appDir = appDir
-  const nuxt = createNuxt(options)
-  const nitro = await initNitro(nuxt)
+  const appComponent = resolve(process.cwd(), 'App.vue')
+  const pagesDir = resolve(process.cwd(), 'pages')
+
+  // Scan pages and generate routes code
+  const pages = await scanPages(pagesDir)
+  const routesCode = generateRoutesCode(pages)
+
   await bundle({
-    appDistDir: appDir,
     clientEntry: join(distDir, 'app/entry.client.js'),
     serverEntry: join(distDir, 'app/entry.server.js'),
+    buildDir,
+    appComponent,
+    routesCode,
   })
+
+  const nitro = await createNitro({
+    renderer: join(distDir, 'core/runtime/nitro/renderer.js'),
+  })
+
+  // Build nitro server with rolldown
   await build(nitro)
-  return nuxt
+
+  const server = createDevServer(nitro)
+  return { server }
 }

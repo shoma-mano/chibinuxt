@@ -1,10 +1,10 @@
 import { createServer } from "node:http";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { readFileSync } from "node:fs";
-import { createRenderer } from "file:///Users/mano/nuxts/chibinuxt/impls/7-nitro-rolldown/node_modules/.pnpm/vue-bundle-renderer@2.1.1/node_modules/vue-bundle-renderer/dist/runtime.mjs";
-import { renderToString } from "file:///Users/mano/nuxts/chibinuxt/impls/7-nitro-rolldown/node_modules/.pnpm/vue@3.5.13_typescript@5.7.3/node_modules/vue/server-renderer/index.mjs";
+import { createRenderer } from "file:///Users/mano/nuxts/chibinuxt/impls/9-nitro-rolldown/node_modules/.pnpm/vue-bundle-renderer@2.2.0/node_modules/vue-bundle-renderer/dist/runtime.mjs";
+import { renderToString } from "file:///Users/mano/nuxts/chibinuxt/impls/9-nitro-rolldown/node_modules/.pnpm/vue@3.5.13_typescript@5.9.3/node_modules/vue/server-renderer/index.mjs";
 
-//#region ../node_modules/.pnpm/ufo@1.5.4/node_modules/ufo/dist/index.mjs
+//#region ../node_modules/.pnpm/ufo@1.6.2/node_modules/ufo/dist/index.mjs
 const r = String.fromCharCode;
 const PROTOCOL_STRICT_REGEX = /^[\s\w\0+.-]{2,}:([/\\]{1,2})/;
 const PROTOCOL_REGEX = /^[\s\w\0+.-]{2,}:([/\\]{2})?/;
@@ -26,7 +26,7 @@ function withoutTrailingSlash(input = "", respectQueryAndFragment) {
 	let path = input;
 	let fragment = "";
 	const fragmentIndex = input.indexOf("#");
-	if (fragmentIndex >= 0) {
+	if (fragmentIndex !== -1) {
 		path = input.slice(0, fragmentIndex);
 		fragment = input.slice(fragmentIndex);
 	}
@@ -40,7 +40,7 @@ function withTrailingSlash(input = "", respectQueryAndFragment) {
 	let path = input;
 	let fragment = "";
 	const fragmentIndex = input.indexOf("#");
-	if (fragmentIndex >= 0) {
+	if (fragmentIndex !== -1) {
 		path = input.slice(0, fragmentIndex);
 		fragment = input.slice(fragmentIndex);
 		if (!path) return fragment;
@@ -332,7 +332,7 @@ const defuArrayFn = createDefu((object, key, currentValue) => {
 });
 
 //#endregion
-//#region ../node_modules/.pnpm/h3@1.13.0/node_modules/h3/dist/index.mjs
+//#region ../node_modules/.pnpm/h3@1.15.4/node_modules/h3/dist/index.mjs
 function hasProp(obj, prop) {
 	try {
 		return prop in obj;
@@ -340,26 +340,16 @@ function hasProp(obj, prop) {
 		return false;
 	}
 }
-var __defProp$2 = Object.defineProperty;
-var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, {
-	enumerable: true,
-	configurable: true,
-	writable: true,
-	value
-}) : obj[key] = value;
-var __publicField$2 = (obj, key, value) => {
-	__defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
-	return value;
-};
 var H3Error = class extends Error {
+	static __h3_error__ = true;
+	statusCode = 500;
+	fatal = false;
+	unhandled = false;
+	statusMessage;
+	data;
+	cause;
 	constructor(message, opts = {}) {
 		super(message, opts);
-		__publicField$2(this, "statusCode", 500);
-		__publicField$2(this, "fatal", false);
-		__publicField$2(this, "unhandled", false);
-		__publicField$2(this, "statusMessage");
-		__publicField$2(this, "data");
-		__publicField$2(this, "cause");
 		if (opts.cause && !this.cause) this.cause = opts.cause;
 	}
 	toJSON() {
@@ -372,7 +362,6 @@ var H3Error = class extends Error {
 		return obj;
 	}
 };
-__publicField$2(H3Error, "__h3_error__", true);
 function createError(input) {
 	if (typeof input === "string") return new H3Error(input);
 	if (isError(input)) return input;
@@ -479,10 +468,10 @@ function splitCookiesString(cookiesString) {
 const defer = typeof setImmediate === "undefined" ? (fn) => fn() : setImmediate;
 function send(event, data, type) {
 	if (type) defaultContentType(event, type);
-	return new Promise((resolve) => {
+	return new Promise((resolve$1) => {
 		defer(() => {
 			if (!event.handled) event.node.res.end(data);
-			resolve();
+			resolve$1();
 		});
 	});
 }
@@ -525,12 +514,12 @@ function sendStream(event, stream) {
 	} })).then(() => {
 		event.node.res.end();
 	});
-	if (hasProp(stream, "pipe") && typeof stream.pipe === "function") return new Promise((resolve, reject) => {
+	if (hasProp(stream, "pipe") && typeof stream.pipe === "function") return new Promise((resolve$1, reject) => {
 		stream.pipe(event.node.res);
 		if (stream.on) {
 			stream.on("end", () => {
 				event.node.res.end();
-				resolve();
+				resolve$1();
 			});
 			stream.on("error", (error) => {
 				reject(error);
@@ -555,30 +544,19 @@ function sendWebResponse(event, response) {
 	return sendStream(event, response.body);
 }
 const getSessionPromise = Symbol("getSession");
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, {
-	enumerable: true,
-	configurable: true,
-	writable: true,
-	value
-}) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-	__defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-	return value;
-};
 var H3Event = class {
+	"__is_event__" = true;
+	node;
+	web;
+	context = {};
+	_method;
+	_path;
+	_headers;
+	_requestBody;
+	_handled = false;
+	_onBeforeResponseCalled;
+	_onAfterResponseCalled;
 	constructor(req, res) {
-		__publicField(this, "__is_event__", true);
-		__publicField(this, "node");
-		__publicField(this, "web");
-		__publicField(this, "context", {});
-		__publicField(this, "_method");
-		__publicField(this, "_path");
-		__publicField(this, "_headers");
-		__publicField(this, "_requestBody");
-		__publicField(this, "_handled", false);
-		__publicField(this, "_onBeforeResponseCalled");
-		__publicField(this, "_onAfterResponseCalled");
 		this.node = {
 			req,
 			res
@@ -691,12 +669,12 @@ const H3Response = globalThis.Response;
 function createApp(options = {}) {
 	const stack = [];
 	const handler = createAppEventHandler(stack, options);
-	const resolve = createResolver(stack);
-	handler.__resolve__ = resolve;
-	const getWebsocket = cachedFn(() => websocketOptions(resolve, options));
+	const resolve$1 = createResolver(stack);
+	handler.__resolve__ = resolve$1;
+	const getWebsocket = cachedFn(() => websocketOptions(resolve$1, options));
 	const app$1 = {
 		use: (arg1, arg2, arg3) => use(app$1, arg1, arg2, arg3),
-		resolve,
+		resolve: resolve$1,
 		handler,
 		stack,
 		options,
@@ -975,11 +953,11 @@ function defineRenderHandler(handler) {
 
 //#endregion
 //#region ../packages/nuxt/dist/core/runtime/nitro/renderer.js
-const distDir = process.env.DIST_DIR;
+const buildDir = resolve(process.cwd(), ".nuxt");
 let renderer;
 const getRenderer = async () => {
 	if (renderer) return renderer;
-	const createApp$1 = await import(join(distDir, "app", "_entry.server.js")).then((m) => m.default);
+	const createApp$1 = await import(join(buildDir, "entry.server.js")).then((m) => m.default);
 	renderer = createRenderer(createApp$1, {
 		renderToString,
 		manifest: {}
@@ -989,7 +967,7 @@ const getRenderer = async () => {
 var renderer_default = defineRenderHandler(async (event) => {
 	const { req, res } = event.node;
 	if (req.url === "/entry.client.js") {
-		const code = readFileSync(join(distDir, "app", "_entry.client.js"), "utf-8");
+		const code = readFileSync(join(buildDir, "entry.client.js"), "utf-8");
 		res.setHeader("Content-Type", "application/javascript");
 		res.end(code);
 		return {

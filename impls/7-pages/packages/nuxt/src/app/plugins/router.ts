@@ -3,7 +3,7 @@ import {
   createMemoryHistory,
   createWebHistory,
 } from 'vue-router'
-
+// @ts-expect-error virtual module
 import routes from '#routes'
 
 export const createRouter = () => {

@@ -1,27 +1,36 @@
 import { build as _build, mergeConfig, type InlineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { virtual } from './plugins/virtual'
 
 export interface BuildOptions {
-  appDistDir: string
+  buildDir: string
   clientEntry: string
   serverEntry: string
+  appComponent: string
+  routesCode: string
 }
 
 export const bundle = async (options: BuildOptions) => {
-  const { appDistDir, clientEntry, serverEntry } = options
+  const { buildDir, clientEntry, serverEntry, appComponent, routesCode } = options
+
+  // Virtual file system for #app and #routes modules
+  const vfs: Record<string, string> = {
+    '#app': `export { default } from '${appComponent}'`,
+    '#routes': routesCode,
+  }
 
   const defaultConfig = {
-    plugins: [vue()],
+    plugins: [vue(), virtual(vfs)],
     build: {
+      outDir: buildDir,
+      emptyOutDir: false,
       rollupOptions: {
         output: {
           format: 'esm',
-          dir: appDistDir,
         },
         preserveEntrySignatures: 'exports-only',
         treeshake: false,
       },
-      emptyOutDir: false,
     },
     define: {
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true',
@@ -33,7 +42,7 @@ export const bundle = async (options: BuildOptions) => {
       rollupOptions: {
         input: clientEntry,
         output: {
-          entryFileNames: '_entry.client.js',
+          entryFileNames: 'entry.client.js',
         },
       },
     },
@@ -49,7 +58,7 @@ export const bundle = async (options: BuildOptions) => {
       rollupOptions: {
         input: serverEntry,
         output: {
-          entryFileNames: '_entry.server.js',
+          entryFileNames: 'entry.server.js',
         },
       },
       ssr: true,
@@ -59,6 +68,4 @@ export const bundle = async (options: BuildOptions) => {
     },
   } satisfies InlineConfig)
   await _build(serverConfig)
-
-  console.log('Build completed successfully!')
 }
