@@ -51,6 +51,7 @@ export default defineConfig({
           { text: '06 ROOT COMPONENT', link: '/060-root-component' },
           { text: '07 PAGES', link: '/070-pages' },
           { text: '08 UNBUILD', link: '/080-unbuild' },
+          { text: '09 NITRO ROLLDOWN', link: '/090-nitro-rolldown' },
         ],
       },
     ],
