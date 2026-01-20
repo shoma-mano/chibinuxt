@@ -12,7 +12,7 @@ hero:
       link: /010-min-ssr
     - theme: alt
       text: GitHub
-      link: https://github.com
+      link: https://github.com/chibivue-land/chibinuxt
   image:
     src: /kawaiko_nuxt_dot.png
 
