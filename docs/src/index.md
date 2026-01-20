@@ -14,7 +14,7 @@ hero:
       text: GitHub
       link: https://github.com
   image:
-    src: /kawaiko_nuxt.png
+    src: /kawaiko_nuxt_dot.png
 
 features:
   - title: Nitro
