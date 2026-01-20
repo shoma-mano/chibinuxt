@@ -11,7 +11,7 @@ export default defineConfig({
     toc: { level: [2, 3] },
   },
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/image.png' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/kawaiko_nuxt.png' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', { href: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap', rel: 'stylesheet' }],
