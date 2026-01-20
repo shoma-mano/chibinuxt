@@ -18,16 +18,10 @@ hero:
 
 features:
   - title: Nitro
-    icon:
-      src: /satake-ken.png
     details: Learn the basics of SSR, SFC, and routing
   - title: Vite
-    icon:
-      src: /satake-risu.png
     details: Implement HMR and Dev Server integration
   - title: Nuxt Modules
-    icon:
-      src: /satake-nezumi.png
     details: Explore how the module system works
 ---
 
