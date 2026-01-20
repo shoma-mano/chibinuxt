@@ -37,7 +37,7 @@ export default defineConfig({
       { text: 'Guide', link: '/010-min-ssr' },
     ],
 
-    logo: '/kawaiko_nuxt.png',
+    logo: '/kawaiko_nuxt_dot.png',
 
     sidebar: [
       {
