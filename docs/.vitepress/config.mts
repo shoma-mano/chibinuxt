@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/chibinuxt/',
+  base: '/',
   title: 'chibinuxt',
   description: 'Build Your Own Nuxt - A Retro Adventure',
   srcDir: 'src',
